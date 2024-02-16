@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import LoginPopup from './LoginPopup';
 
 const Mainpage = () => {
+
+  const [showLogin, setShowLogin] = useState(false);
+  const showLoginPopup = () => setShowLogin(true);
+  const hideLoginPopup = () => setShowLogin(false);
 
   // Dummy data for projects. New box appears in side if you make new project.
   // Date is for sorting projects by date.
@@ -36,11 +41,13 @@ const Mainpage = () => {
       <div className="flex-grow flex flex-col">
         <div className="bg-gray-900 text-white p-4 flex justify-between items-center">
           <h2 className="text-xl font-semibold">Project Management</h2>
-          <button className="bg-customButton hover:bg-customButtonHover text-white px-4 py-2 rounded">Logout</button>
+          <button className="bg-customButton hover:bg-customButtonHover text-white px-4 py-2 rounded" onClick={showLoginPopup}>Login</button>
           {/* Main Content Area */}
         </div>
         {/* Main content in this div!! */}
       </div>
+
+      {showLogin && <LoginPopup onClose={hideLoginPopup} />}
     </div>
   );
 };
