@@ -6,8 +6,6 @@ const AddProjectPopup = ({ onClose }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Project name: ", projectName);
-    console.log("Project description: ", projectDescription);
     onClose();
   };
 
@@ -24,7 +22,7 @@ const AddProjectPopup = ({ onClose }) => {
         >
           &times;
         </button>
-        <h2 className="text-black text-3xl font-bold text-center">
+        <h2 className="text-black text-3xl font-bold text-center mb-2">
           Uusi projekti
         </h2>
         <div className="flex flex-col space-y-2">

@@ -34,7 +34,9 @@ const LoginPopup = ({ onClose }) => {
         >
           &times;
         </button>
-        <h2 className="text-black text-3xl font-bold text-center">Login</h2>
+        <h2 className="text-black text-3xl font-bold text-center mb-2">
+          Login
+        </h2>
         <div className="flex flex-col space-y-2">
           <input
             className="bg-gray-200 text-black p-2 rounded"

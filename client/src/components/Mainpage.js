@@ -19,9 +19,21 @@ const Mainpage = () => {
     { id: 3, date: "02/03/2011" },
     { id: 4, date: "21/07/2011" },
   ];
+  // dummy data for notifications
+  var notificatons = [
+    { id: 1, date: "21/07/2011" },
+    { id: 2, date: "01/01/2011" },
+    { id: 3, date: "02/03/2011" },
+    { id: 4, date: "21/07/2011" },
+  ];
+
+  // fucntion that deletes notification from the list
+  function deleteNotification() {
+    console.log("Notification deleted");
+  }
 
   return (
-    <div className="flex h-screen bg-gray-800">
+    <div className="flex h-screen bg-gray-900">
       {/* Sidebar */}
       <div className="w-50 flex flex-col bg-gray-900 min-h-screen text-center">
         {/* Sidebar top text */}
@@ -39,8 +51,8 @@ const Mainpage = () => {
             ></div>
           ))}
           <button
-            className="w-40 h-20 bg-white place-items-end rounded-xl hover:rounded-2xl transition-all duration-300 ease-in-out flex items-center justify-center"
-            title="addProjectButton"
+            className="w-40 h-20 bg-white place-items-end rounded-xl hover:rounded-2xl transition-all duration-300 ease-in-out flex items-center justify-center "
+            title="Lisää uusi projekti"
             onClick={showAddProjectPopup}
           >
             <IoMdAdd className=" w-10 h-10" />
@@ -49,7 +61,7 @@ const Mainpage = () => {
       </div>
 
       {/* Wide top bar with logout button */}
-      <div className="flex-grow flex flex-col">
+      <div className="flex-grow flex flex-col bg-gray-800">
         <div className="bg-gray-900 text-white p-4 flex justify-between items-center">
           <h2 className="text-xl font-semibold">Project Management</h2>
           <button
@@ -61,6 +73,23 @@ const Mainpage = () => {
           {/* Main Content Area */}
         </div>
         {/* Main content in this div!! */}
+        {/*Notifications panel*/}
+        <div className=" flex-col items w-fit ml-10 mt-5 mb-5 bg-gray-700 shadow-lg p-9 rounded overflow-auto relative h-fit">
+          <h2 className="text-white text-2xl font-semibold">Tapahtumat</h2>
+          {notificatons.map((notification) => (
+            <div
+              key={notification.id}
+              className="w-80 h-16 bg-gray-900 mt-4 ml-4 transition-all duration-300 ease-in-out shadow rounded-bl-lg rounded-br-lg p-4 text-white relative"
+              title={`Notification ${notification.id}`}
+            >
+              <a href="/projekti">Asia x tapahtui projektissa y</a>
+              <button
+                className="w-2 h-2 bg-red-500 rounded-full absolute top-0 right-0 m-1"
+                onClick={() => deleteNotification()}
+              ></button>
+            </div>
+          ))}
+        </div>
       </div>
 
       {showLogin && <LoginPopup onClose={hideLoginPopup} />}
