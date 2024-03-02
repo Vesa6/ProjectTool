@@ -4,7 +4,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+
+
 In the project directory, you can run:
+
+### `bash startdev.sh`
+
+Run this at ProjectTool root to start both client and server in watch mode where both read changes in real time and restarts component if it detects changes.
 
 ### `npm start`
 
