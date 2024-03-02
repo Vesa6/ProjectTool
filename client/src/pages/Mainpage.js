@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import LoginPopup from "./LoginPopup";
-import AddProjectPopup from "./AddProjectPopup";
+import LoginPopup from "../components/LoginPopup";
+import AddProjectPopup from "../components/AddProjectPopup";
 import { IoMdAdd } from "react-icons/io";
 
 const Mainpage = () => {
