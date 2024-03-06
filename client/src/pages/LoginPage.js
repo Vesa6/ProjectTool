@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import taskmaster from "../taskmaster_logo.png";
 import { IoMdPizza } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -25,8 +26,9 @@ const LoginPage = () => {
         onSubmit={handleSubmit}
         className=" bg-gray-900 w-fit h-fit text-white absolute top-1/2 left-1/2 flex-col p-8 rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 max-w-md max-h-md"
       >
+        <img src={taskmaster} alt="TaskMaster logo" className=" w-30 m-0 p-0" />
         <p className="font-semibold text-center text-2xl">TaskMaster </p>
-        <img src={taskmaster} alt="TaskMaster logo" className=" w-30" />
+
         <div className="flex-col">
           <p className="mb-1 font-semibold"> Email:</p>
 
@@ -43,9 +45,22 @@ const LoginPage = () => {
         >
           Login
         </button>
-        <div className="flex flex-col text-center text-customButton text-sm mt-3">
-          <p>Forgot Your password?</p>
-          <p>Create an account</p>
+        <div className="flex flex-col text-center mt-3">
+          <Link to="/register">
+            <button
+              type="submit"
+              className="hover:bg-customButton px-4 py-2 rounded bg-customButtonHover w-full text-white"
+            >
+              Register
+            </button>
+          </Link>
+
+          <Link
+            to="/pswdreq"
+            className="text-sm text-customButton mt-2 hover:text-customButtonHover"
+          >
+            Forgot Your password?
+          </Link>
         </div>
       </form>
     </div>
