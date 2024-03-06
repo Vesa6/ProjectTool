@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { MdArrowBackIos } from "react-icons/md";
+import { IoMdClose } from "react-icons/io";
 
 const LogOutPopup = ({ onClose }) => {
   const handleSubmit = async (event) => {
@@ -14,11 +14,12 @@ const LogOutPopup = ({ onClose }) => {
         onSubmit={handleSubmit}
         className=" bg-gray-900 w-fit h-fit text-white absolute top-1/2 left-1/2 flex-col p-8 rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 max-w-md max-h-md"
       >
-        <MdArrowBackIos
-          className=" h-5 w-5 text-white mb-5 cursor-pointer"
-          onClick={onClose}
-        />
-
+        <div className="flex flex-row-reverse w-full">
+          <IoMdClose
+            className=" h-5 w-5 text-white mb-5 cursor-pointer"
+            onClick={onClose}
+          />
+        </div>
         <h1 className="text-white text-2xl pt-3 pb-5">Log out</h1>
         <p className=" text-sm mb-3">Are you sure you want to log out?</p>
         <div className=" flex flex-row-reverse w-full">

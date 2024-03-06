@@ -42,7 +42,7 @@ const Mainpage = () => {
         </div>
 
         {/* Project boxes, "icons" */}
-        <div className="flex-grow p-4 overflow-y-auto">
+        <div className="flex-col p-4 overflow-y-auto">
           {projects.map((project) => (
             <div
               key={project.id}
@@ -50,8 +50,9 @@ const Mainpage = () => {
               title={`Project ${project.id}`}
             ></div>
           ))}
+          <div className="flex-grow mt-auto"></div>
           <button
-            className="w-40 h-20 bg-white place-items-end rounded-xl hover:rounded-2xl transition-all duration-300 ease-in-out flex items-center justify-center "
+            className="w-40 h-20 bg-white place-items-end rounded-xl hover:rounded-2xl transition-all duration-300 ease-in-out flex items-center justify-center mt-auto mb-auto"
             title="Lisää uusi projekti"
             onClick={showAddProjectPopup}
           >
@@ -68,7 +69,7 @@ const Mainpage = () => {
             className="bg-customButton hover:bg-customButtonHover text-white px-4 py-2 rounded"
             onClick={showLoginPopup}
           >
-            Login
+            Logout
           </button>
           {/* Main Content Area */}
         </div>
