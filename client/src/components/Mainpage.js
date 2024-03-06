@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import LoginPopup from "./LoginPopup";
+import LogOutPopup from "./LogOutPopup";
 import AddProjectPopup from "./AddProjectPopup";
 import { IoMdAdd } from "react-icons/io";
 
 const Mainpage = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  const showLoginPopup = () => setShowLogin(true);
-  const hideLoginPopup = () => setShowLogin(false);
+  const [showLogout, setShowLogout] = useState(false);
+  const showLogoutPopup = () => setShowLogout(true);
+  const hideLogoutPopup = () => setShowLogout(false);
   const [showAddProject, setShowAddProject] = useState(false);
   const showAddProjectPopup = () => setShowAddProject(true);
   const hideAddProjectPopup = () => setShowAddProject(false);
@@ -66,7 +66,7 @@ const Mainpage = () => {
           <h2 className="text-xl font-semibold">Project Management</h2>
           <button
             className="bg-customButton hover:bg-customButtonHover text-white px-4 py-2 rounded"
-            onClick={showLoginPopup}
+            onClick={showLogoutPopup}
           >
             Login
           </button>
@@ -92,7 +92,7 @@ const Mainpage = () => {
         </div>
       </div>
 
-      {showLogin && <LoginPopup onClose={hideLoginPopup} />}
+      {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );

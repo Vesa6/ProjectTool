@@ -49,9 +49,9 @@ const LoginPage = () => {
           <Link to="/register">
             <button
               type="submit"
-              className="hover:bg-customButton px-4 py-2 rounded bg-customButtonHover w-full text-white"
+              className="hover:bg-customButtonHover px-4 py-2 rounded bg-blue-500 w-full text-white"
             >
-              Register
+              Sign up
             </button>
           </Link>
 

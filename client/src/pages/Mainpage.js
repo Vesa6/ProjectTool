@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import LoginPopup from "../components/LoginPopup";
+import LogOutPopup from "../components/LogOutPopup";
 import AddProjectPopup from "../components/AddProjectPopup";
 import { IoMdAdd } from "react-icons/io";
 
@@ -92,7 +92,7 @@ const Mainpage = () => {
         </div>
       </div>
 
-      {showLogin && <LoginPopup onClose={hideLoginPopup} />}
+      {showLogin && <LogOutPopup onClose={hideLoginPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );
