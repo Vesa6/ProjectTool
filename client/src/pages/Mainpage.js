@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import LogOutPopup from "./LogOutPopup";
-import AddProjectPopup from "./AddProjectPopup";
+import LogOutPopup from "../components/LogOutPopup";
+import AddProjectPopup from "../components/AddProjectPopup";
 import { IoMdAdd } from "react-icons/io";
 
 const Mainpage = () => {
-  const [showLogout, setShowLogout] = useState(false);
-  const showLogoutPopup = () => setShowLogout(true);
-  const hideLogoutPopup = () => setShowLogout(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const showLoginPopup = () => setShowLogin(true);
+  const hideLoginPopup = () => setShowLogin(false);
   const [showAddProject, setShowAddProject] = useState(false);
   const showAddProjectPopup = () => setShowAddProject(true);
   const hideAddProjectPopup = () => setShowAddProject(false);
@@ -42,7 +42,7 @@ const Mainpage = () => {
         </div>
 
         {/* Project boxes, "icons" */}
-        <div className="flex-grow p-4 overflow-y-auto">
+        <div className="flex-col p-4 overflow-y-auto">
           {projects.map((project) => (
             <div
               key={project.id}
@@ -50,8 +50,9 @@ const Mainpage = () => {
               title={`Project ${project.id}`}
             ></div>
           ))}
+          <div className="flex-grow mt-auto"></div>
           <button
-            className="w-40 h-20 bg-white place-items-end rounded-xl hover:rounded-2xl transition-all duration-300 ease-in-out flex items-center justify-center "
+            className="w-40 h-20 bg-white place-items-end rounded-xl hover:rounded-2xl transition-all duration-300 ease-in-out flex items-center justify-center mt-auto mb-auto"
             title="Lisää uusi projekti"
             onClick={showAddProjectPopup}
           >
@@ -66,9 +67,9 @@ const Mainpage = () => {
           <h2 className="text-xl font-semibold">Project Management</h2>
           <button
             className="bg-customButton hover:bg-customButtonHover text-white px-4 py-2 rounded"
-            onClick={showLogoutPopup}
+            onClick={showLoginPopup}
           >
-            Login
+            Logout
           </button>
           {/* Main Content Area */}
         </div>
@@ -92,7 +93,7 @@ const Mainpage = () => {
         </div>
       </div>
 
-      {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
+      {showLogin && <LogOutPopup onClose={hideLoginPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );
