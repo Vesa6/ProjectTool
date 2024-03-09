@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import LoginPopup from "../components/LoginPopup";
+import LogOutPopup from "../components/LogOutPopup";
 import AddProjectPopup from "../components/AddProjectPopup";
 import ProjectOverview from "../components/ProjectOverview";
 import Sidebar from "../components/Sidebar";
@@ -9,9 +9,9 @@ import Tasks from "../components/Tasks";
 import Notifications from "../components/Notifications";
 
 const Mainpage = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  const showLoginPopup = () => setShowLogin(true);
-  const hideLoginPopup = () => setShowLogin(false);
+  const [showLogout, setShowLogout] = useState(false);
+  const showLogoutPopup = () => setShowLogout(true);
+  const hideLogoutPopup = () => setShowLogout(false);
   const [showAddProject, setShowAddProject] = useState(false);
   const showAddProjectPopup = () => setShowAddProject(true);
   const hideAddProjectPopup = () => setShowAddProject(false);
@@ -56,7 +56,7 @@ const Mainpage = () => {
       />
       <div className="flex-grow flex flex-col bg-gray-800">
         <div className="flex-grow p-4 overflow-y-auto">
-          <Navbar navigateToLogin={showLoginPopup} />
+          <Navbar /* Not sure about where to add login atm *//>
           <div className="mt-4">
             <div className="flex flex-col md:flex-row">
               <ProjectOverview />
@@ -72,7 +72,7 @@ const Mainpage = () => {
           </div>
         </div>
       </div>
-      {showLogin && <LoginPopup onClose={hideLoginPopup} />}
+      {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );
