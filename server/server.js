@@ -1,43 +1,31 @@
 const cors = require('cors');
 const express = require('express');
 const loginRoute = require('./routes/login');
-const { MongoClient, ServerApiVersion} = require('mongodb');
-require('dotenv').config({ path:'../.env'})
+const userRoute = require('./routes/userController')
+const connectToDatabase = require('./database/mongo');
+const bodyParser = require('body-parser')
+
 
 const app = express();
+connectToDatabase()
+    .then(db => {
+        // Pass the database connection to other modules if needed
+        app.locals.db = db;
+        console.log('MongoDB connection available in the application');
+    })
+    .catch(err => {
+    console.error('Failed to connect to MongoDB:', err);
+});
 app.use(express.json());
 app.use(cors());
-//process.env.MONGORUI is the value of MONGOURI in .env file
-const client = new MongoClient(process.env.MONGOURI, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    }
-})
-  async function run() {
-    try {
-      // Connect the client to the server
-      const database = client.db("test");
-      const logins = database.collection("logins")
-      var test_user = {
-        username: "hello",
-        passoword: "test",
-      }
-      const result = await logins.insertOne(test_user)
-      console.log(`TEST insert into users collection with id ${result.insertedId}`)
-     /* db.collection.insert({Username: "HELLO",
-                          Password: "hello"});*/
-
-    } finally {
-      // Ensures that the client will close when you finish/error
-      await client.close();
-    }
-  }
-
-run()
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json())
 app.use('/login', loginRoute);
+app.use('/api/users', userRoute);
 
 app.listen(3001, () => {
     console.log('Server is running on port 3001');
 });
+
+
+
