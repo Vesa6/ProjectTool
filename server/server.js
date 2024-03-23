@@ -1,7 +1,7 @@
 const cors = require('cors');
 const express = require('express');
-const loginRoute = require('./routes/login');
-const userRoute = require('./routes/userController')
+const loginRoute = require('./routes/loginRouter');
+const userRoute = require('./routes/userRouter')
 const connectToDatabase = require('./database/mongo');
 const bodyParser = require('body-parser')
 
