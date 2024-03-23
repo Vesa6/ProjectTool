@@ -7,6 +7,8 @@ import Navbar from "../components/Navbar";
 import Costs from "../components/Costs";
 import Tasks from "../components/Tasks";
 import Notifications from "../components/Notifications";
+import Calendar from "../components/Calendar";
+import "react-calendar/dist/Calendar.css";
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -17,6 +19,11 @@ const Mainpage = () => {
   const hideAddProjectPopup = () => setShowAddProject(false);
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [activeUser, setActiveUser] = useState(1);
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  const handleToggleCalendarView = () => {
+    setShowCalendar((prevState) => !prevState);
+  };
 
   const projects = [
     { id: 1, date: "21/07/2024" },
@@ -56,19 +63,24 @@ const Mainpage = () => {
       />
       <div className="flex-grow flex flex-col bg-gray-800">
         <div className="flex-grow p-4 overflow-y-auto">
-          <Navbar /* Not sure about where to add login atm *//>
+          <Navbar toggleCalendarView={() => handleToggleCalendarView()}/>
           <div className="mt-4">
-            <div className="flex flex-col md:flex-row">
-              <ProjectOverview />
-              <div className="md:w-1/3 md:ml-4 mt-4 md:mt-0">
-                <Costs />
-                <Tasks />
-              </div>
-            </div>
-            <Notifications
-              notifications={notifications}
-              deleteNotification={deleteNotification}
-            />
+            {showCalendar ? (
+              <Calendar />
+            ) : (
+              <> {/* This is shorthand for fragment, means that everything is in one parent */}
+                <div className="flex flex-col md:flex-row">
+                  <ProjectOverview />
+                  <div className="md:w-1/3 md:ml-4 mt-4 md:mt-0">
+                    <Costs />
+                    <Tasks />
+                  </div>
+                </div>
+                <Notifications
+                  notifications={notifications}
+                  deleteNotifi                />
+              </>
+            )}
           </div>
         </div>
       </div>

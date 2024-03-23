@@ -2,11 +2,17 @@ import React from "react";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
 const Tasks = () => {
+
+  // These will be replaced by the actual data from the database.
   const tasksData = [
-    { name: "Not started", value: 4, color: "#3B82F6" },
-    { name: "Completed", value: 7, color: "#10B981" },
-    { name: "In Progress", value: 7, color: "#EF4444" },
+    { name: "Not started", deadline: "01/01/2024"},
+    { name: "Completed", deadline: "01/01/2024"},
+    { name: "In Progress", deadline: "01/01/2024"},
   ];
+
+  const notStartedColor = "#3B82F6"
+  const completedColor = "#10B981"
+  const inProgressColor = "#EF4444"
 
   return (
     <div className="bg-gray-700 p-4 rounded shadow-lg">
@@ -22,9 +28,15 @@ const Tasks = () => {
             outerRadius={80}
             fill="#8884d8"
           >
-            {tasksData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
+            {tasksData.map((entry, index) => {
+              if (entry.name === "Not started") 
+                entry.color = notStartedColor;
+              else if (entry.name === "Completed") 
+                entry.color = completedColor;
+              else 
+                entry.color = inProgressColor;
+              return <Cell key={`cell-${index}`} fill={entry.color} />;
+            })}
           </Pie>
         </PieChart>
         <div className="flex justify-center mt-4 space-x-4">
