@@ -27,12 +27,12 @@ loginRouter.post('/', async(request, response) => {
 
 loginRouter.get('/:username', async(request,response) => {
     try{
-    const db = request.app.locals.db;
-    const filter = {username: request.params.username}
-    const result = await db.collection("login").find(filter).toArray();
-    response.json(result)
-    console.log("GET User with uuid succesful")
-    console.log(result)
+        const db = request.app.locals.db;
+        const filter = {username: request.params.username}
+        const result = await db.collection("login").find(filter).toArray();
+        response.json(result)
+        console.log("GET User with uuid succesful")
+        console.log(result)
     }catch(e){
         console.log(e)
         response.status(400).end("error")
@@ -62,8 +62,6 @@ loginRouter.put('/:username', async(request, response) => {
         const filter = {username: request.params.username}
         const result = await db.collection("login").updateOne(filter, update, updateOptions);
         response.json(result)
-        console.log("PUT succesful")
-        console.log(result)
     }catch(e){
         response.status(400).end("Error")
         console.log(e)

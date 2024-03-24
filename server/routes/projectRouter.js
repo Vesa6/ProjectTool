@@ -1,11 +1,11 @@
-const userRouter = require('express').Router()
-const testData = require('../testdata/usersdata')
+const projectRouter = require('express').Router()
+const testData = require('../testdata/projectsdata')
 
-userRouter.get('/', async(request, response) => {
+projectRouter.get('/', async(request, response) => {
     try{
         console.log("getting")
         const db = request.app.locals.db;
-        const result = await db.collection("users").find().toArray();
+        const result = await db.collection("projects").find().toArray();
         response.json(result)
         console.log(result)
         console.log("GET ALL succesful")
@@ -15,7 +15,7 @@ userRouter.get('/', async(request, response) => {
     }
 })
 
-userRouter.post('/', async(request, response) => {
+projectRouter.post('/', async(request, response) => {
     const body = request.body
     console.log("Sending POST request")
     if (body.id  && body.data){
@@ -26,7 +26,7 @@ userRouter.post('/', async(request, response) => {
         try{
             const db = request.app.locals.db;
             if (user){
-            const result = await db.collection("users").insertOne(user);
+            const result = await db.collection("projects").insertOne(user);
             console.log("POST was succesful")
             response.json(result)
         }
@@ -44,11 +44,11 @@ userRouter.post('/', async(request, response) => {
 
 
 
-userRouter.get('/:id', async(request,response) => {
+projectRouter.get('/:id', async(request,response) => {
     try{
     const db = request.app.locals.db;
     const filter = {id: request.params.id}
-    const result = await db.collection("users").find(filter).toArray();
+    const result = await db.collection("projects").find(filter).toArray();
     response.json(result)
     console.log("GET User with uuid succesful")
     console.log(result)
@@ -60,7 +60,7 @@ userRouter.get('/:id', async(request,response) => {
 
 
 
-userRouter.put('/:id', async(request, response) => {
+projectRouter.put('/:id', async(request, response) => {
     const updateOptions = {
         // If set to true, creates a new document when no document matches the filter
         upsert: false,
@@ -78,7 +78,7 @@ userRouter.put('/:id', async(request, response) => {
     try{
         const db = request.app.locals.db;
         const filter = {id: request.params.id}
-        const result = await db.collection("users").updateOne(filter, update, updateOptions);
+        const result = await db.collection("projects").updateOne(filter, update, updateOptions);
         response.json(result)
         console.log("PUT succesful")
         console.log(result)
@@ -88,12 +88,12 @@ userRouter.put('/:id', async(request, response) => {
     }
 })
 
-userRouter.delete('/:id',async(request, response) => {
+projectRouter.delete('/:id',async(request, response) => {
     try{
         const db = request.app.locals.db;
         const filter = {id: request.params.id}
         console.log(filter)
-        const result = await db.collection("users").deleteOne(filter);
+        const result = await db.collection("projects").deleteOne(filter);
         response.json(result)
         console.log("DELETE was succesful")
     }catch(e){
@@ -104,12 +104,12 @@ userRouter.delete('/:id',async(request, response) => {
 })
 
 
-userRouter.get('/test/addtestdata', async(request, response) => {
+projectRouter.get('/test/addtestdata', async(request, response) => {
     try{
         const db = request.app.locals.db
          testData.forEach(jsonObj => {
             console.log(jsonObj)
-            db.collection("users").insertOne(jsonObj);  
+            db.collection("projects").insertOne(jsonObj);  
         });
         response.json("test data added")
     }catch(e){
@@ -118,14 +118,14 @@ userRouter.get('/test/addtestdata', async(request, response) => {
     }
 })
 
-userRouter.get('/test/deletetestdata', async(request, response) => {
+projectRouter.get('/test/deletetestdata', async(request, response) => {
     try{
         const db = request.app.locals.db
-        let users = await db.collection("users").find().toArray();
+        let users = await db.collection("projects").find().toArray();
         console.log(users)
         users.forEach(object => {
             let filter = {_id: object._id }
-            db.collection("users").deleteOne(filter);  
+            db.collection("projects").deleteOne(filter);  
         })
         response.json("test data removed")
     }catch(e){
@@ -134,4 +134,4 @@ userRouter.get('/test/deletetestdata', async(request, response) => {
     }
 })
 
-module.exports = userRouter
+module.exports = projectRouter
