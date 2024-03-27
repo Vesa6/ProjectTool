@@ -1,8 +1,6 @@
 echo "Starting client & server in watch mode"
 cd client
-npm install
-npm run start 
+START npm run start 
 cd ..
 cd server
-npm install
-npm run watch 
+START npm run watch 
