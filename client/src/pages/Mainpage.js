@@ -8,6 +8,7 @@ import Costs from "../components/Costs";
 import Tasks from "../components/Tasks";
 import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
+import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
 
 const Mainpage = () => {
@@ -20,9 +21,16 @@ const Mainpage = () => {
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [activeUser, setActiveUser] = useState(1);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [showTasksview, setShowTasksview] = useState(false);
 
   const handleToggleCalendarView = () => {
+    setShowTasksview(false);
     setShowCalendar((prevState) => !prevState);
+  };
+
+  const handleToggleTasksView = () => {
+    setShowCalendar(false);
+    setShowTasksview((prevState) => !prevState);
   };
 
   const projects = [
@@ -46,7 +54,8 @@ const Mainpage = () => {
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
 
-  const activeUserName = users.find((user) => user.id === activeUser)?.name || "???";
+  const activeUserName =
+    users.find((user) => user.id === activeUser)?.name || "???";
 
   function deleteNotification() {
     console.log("Notification deleted");
@@ -63,12 +72,19 @@ const Mainpage = () => {
       />
       <div className="flex-grow flex flex-col bg-gray-800">
         <div className="flex-grow p-4 overflow-y-auto">
-          <Navbar toggleCalendarView={() => handleToggleCalendarView()}/>
+          <Navbar
+            toggleCalendarView={() => handleToggleCalendarView()}
+            toggleTasksView={() => handleToggleTasksView()}
+          />
           <div className="mt-4">
             {showCalendar ? (
               <Calendar />
+            ) : showTasksview ? (
+              <TasksView />
             ) : (
-              <> {/* This is shorthand for fragment, means that everything is in one parent */}
+              <>
+                {" "}
+                {/* This is shorthand for fragment, means that everything is in one parent */}
                 <div className="flex flex-col md:flex-row">
                   <ProjectOverview />
                   <div className="md:w-1/3 md:ml-4 mt-4 md:mt-0">
@@ -76,9 +92,7 @@ const Mainpage = () => {
                     <Tasks />
                   </div>
                 </div>
-                <Notifications
-                  notifications={notifications}
-                  deleteNotifi                />
+                <Notifications notifications={notifications} />
               </>
             )}
           </div>
