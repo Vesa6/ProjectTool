@@ -1,19 +1,25 @@
 import React from "react";
 import { IoMdAdd } from "react-icons/io";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
-const Sidebar = ({ projects, activeProjectId, setActiveProjectId, showAddProjectPopup, activeUserName, showLoginPopup }) => {
+const Sidebar = ({
+  projects,
+  activeProjectId,
+  setActiveProjectId,
+  showAddProjectPopup,
+  activeUserName,
+}) => {
   const calculateDaysLeft = (projectDate) => {
     const currentDate = moment();
     const targetDate = moment(projectDate, "DD/MM/YYYY");
-  
+
     // console.log('Current Date:', currentDate.format("DD/MM/YYYY"));
     // console.log('Target Date:', targetDate.format("DD/MM/YYYY"));
     // console.log('Days Left:', targetDate.diff(currentDate, "days"));
-  
+
     return targetDate.diff(currentDate, "days");
   };
-  
 
   return (
     <div className="w-64 flex flex-col bg-gray-800 min-h-screen">
@@ -26,10 +32,11 @@ const Sidebar = ({ projects, activeProjectId, setActiveProjectId, showAddProject
         <p className="text-gray-400">Project Manager</p>
       </div>
       <div className="flex flex-col items-center">
-        <button className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded"
-          onClick={showLoginPopup}>
-          Login
-        </button>
+        <Link to="/login">
+          <button className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded">
+            Login
+          </button>
+        </Link>
       </div>
 
       {/* Search Projects */}
@@ -57,7 +64,9 @@ const Sidebar = ({ projects, activeProjectId, setActiveProjectId, showAddProject
           >
             <div>
               <p className="text-white font-semibold">Project {project.id}</p>
-              <p className="text-gray-400 text-sm">DAYS LEFT: {calculateDaysLeft(project.date)}</p>
+              <p className="text-gray-400 text-sm">
+                DAYS LEFT: {calculateDaysLeft(project.date)}
+              </p>
             </div>
           </div>
         ))}
