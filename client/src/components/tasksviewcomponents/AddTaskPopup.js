@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
-const AddTaskPopup = ({ onClose }) => {
+const AddTaskPopup = ({ onClose, setTasks, tasks }) => {
   const [taskName, setTaskName] = useState("");
   const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const [status, setStatus] = useState("Not started");
+  const [deadline, setDeadline] = useState("");
 
   const handleTaskNameChange = (e) => {
     setTaskName(e.target.value);
@@ -11,6 +13,20 @@ const AddTaskPopup = ({ onClose }) => {
 
   const handleAddTask = () => {
     // Add logic to handle adding the task
+
+    // Create a new task object
+    const newTask = {
+      id: tasks.length + 1,
+      project: projectName,
+      name: taskName,
+      assignee: assignee,
+      deadline: deadline,
+      status: status,
+    };
+
+    // Add the new task to the tasks array
+    setTasks([...tasks, newTask]);
+
     console.log("Task added:", taskName);
     // Reset task name input
     setTaskName("");
@@ -48,14 +64,23 @@ const AddTaskPopup = ({ onClose }) => {
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
           />
+          <label className="text-white" htmlFor="taskName">
+            Task Name:
+          </label>
+          <input
+            className="bg-gray-200 text-black p-2 rounded"
+            type="text"
+            value={taskName}
+            onChange={(e) => setTaskName(e.target.value)}
+          />
           <label className="text-white" htmlFor="projectDescription">
             Assignee:
           </label>
           <input
             className="bg-gray-200 text-black p-2 rounded"
             type="text"
-            value={projectDescription}
-            onChange={(e) => setProjectDescription(e.target.value)}
+            value={assignee}
+            onChange={(e) => setAssignee(e.target.value)}
           />
           <label className="text-white" htmlFor="status">
             Status:
@@ -71,11 +96,14 @@ const AddTaskPopup = ({ onClose }) => {
           <input
             className="bg-gray-200 text-black p-2 rounded"
             type="date"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
           ></input>
           <div className="h-5" />
           <button
             className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
             type="submit"
+            onSubmit={handleSubmit}
           >
             Create
           </button>

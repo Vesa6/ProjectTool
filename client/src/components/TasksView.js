@@ -31,7 +31,7 @@ const TasksView = () => {
       name: "login page",
       description: "Description 1",
       assignee: "Ismo",
-      deadline: "01/01/2024",
+      deadline: "2024-01-01",
       status: "Not started",
     },
     {
@@ -40,7 +40,7 @@ const TasksView = () => {
       name: "login backend",
       description: "Description 2",
       assignee: "Teppo",
-      deadline: "01/01/2024",
+      deadline: "2024-01-01",
       status: "Completed",
     },
     {
@@ -49,7 +49,7 @@ const TasksView = () => {
       name: "main backend",
       description: "Description 3",
       assignee: "Matti",
-      deadline: "01/01/2024",
+      deadline: "2024-01-01",
       status: "In Progress",
     },
     {
@@ -58,7 +58,7 @@ const TasksView = () => {
       name: "main page",
       description: "Description 4",
       assignee: "Maija",
-      deadline: "01/01/2024",
+      deadline: "2024-01-01",
       status: "Completed",
     },
     {
@@ -67,7 +67,7 @@ const TasksView = () => {
       name: "login page",
       description: "Description 5",
       assignee: "Ismo",
-      deadline: "01/01/2024",
+      deadline: "2024-01-01",
       status: "Not started",
     },
     {
@@ -76,7 +76,7 @@ const TasksView = () => {
       name: "login backend",
       description: "Description 6",
       assignee: "Teppo",
-      deadline: "01/01/2024",
+      deadline: "2024-01-01",
       status: "Completed",
     },
     {
@@ -85,7 +85,7 @@ const TasksView = () => {
       name: "main backend",
       description: "Description 7",
       assignee: "Matti",
-      deadline: "01/01/2024",
+      deadline: "2024-01-01",
       status: "In Progress",
     },
     {
@@ -94,7 +94,7 @@ const TasksView = () => {
       name: "main page",
       description: "Description 8",
       assignee: "Maija",
-      deadline: "01/01/2024",
+      deadline: "2024-01-01",
       status: "Completed",
     },
   ]);
@@ -177,7 +177,13 @@ const TasksView = () => {
           })}
         </tbody>
       </table>
-      {showAddTask && <AddTaskPopup onClose={hideAddTaskPopup} />}
+      {showAddTask && (
+        <AddTaskPopup
+          onClose={hideAddTaskPopup}
+          setTasks={setTasks}
+          tasks={tasks}
+        />
+      )}
     </div>
   );
 };
