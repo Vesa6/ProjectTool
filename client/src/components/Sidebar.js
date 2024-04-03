@@ -1,6 +1,7 @@
 import React from "react";
 import { IoMdAdd } from "react-icons/io";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId, showAddProjectPopup, activeUserName, showLoginPopup }) => {
   const calculateDaysLeft = (ends) => {
@@ -14,7 +15,6 @@ const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId,
   
     return targetDate.diff(currentDate, "days");
   };
-  
 
   return (
     <div className="w-64 flex flex-col bg-gray-800 min-h-screen">
@@ -27,10 +27,11 @@ const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId,
         <p className="text-gray-400">Project Manager</p>
       </div>
       <div className="flex flex-col items-center">
-        <button className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded"
-          onClick={showLoginPopup}>
-          Login
-        </button>
+        <Link to="/login">
+          <button className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded">
+            Login
+          </button>
+        </Link>
       </div>
 
       {/* Search Projects */}

@@ -8,8 +8,8 @@ import Costs from "../components/Costs";
 import Tasks from "../components/Tasks";
 import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
+import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
-import TaskTable from "../components/TaskList";
 import { set } from "mongoose";
 
 const Mainpage = () => {
@@ -22,12 +22,18 @@ const Mainpage = () => {
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [activeUser, setActiveUser] = useState(1);
   const [showCalendar, setShowCalendar] = useState(false);
+
   const [projects, setProjects] = useState([{ id: 1, date: "21/07/2024" },
   { id: 2, date: "01/02/2024" },
   { id: 3, date: "02/09/2024" },
   { id: 4, date: "21/07/2024" },]);
 
+  const [showTasksview, setShowTasksview] = useState(false);
+
+
+  /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
   const handleToggleCalendarView = () => {
+    setShowTasksview(false);
     setShowCalendar((prevState) => !prevState);
   };
 
@@ -36,7 +42,12 @@ const Mainpage = () => {
     { id: 2, date: "01/01/2011" },
     { id: 3, date: "02/03/2011" },
     { id: 4, date: "21/07/2011" },
-  ]);
+    ]);
+
+  const handleToggleTasksView = () => {
+    setShowCalendar(false);
+    setShowTasksview((prevState) => !prevState);
+  };
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -58,7 +69,6 @@ const Mainpage = () => {
     { id: 2, name: "Matti Meikäläinen", role: "Tyhjän toimittaja" },
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
-
   
   const activeUserName = users.find((user) => user.id === activeUser)?.name || "???";
   const activeProject = projects.find(project => project._id === activeProjectId);
@@ -85,12 +95,19 @@ const Mainpage = () => {
       {/*<TaskTable />*/}
       <div className="flex-grow flex flex-col bg-gray-800">
         <div className="flex-grow p-4 overflow-y-auto">
-          <Navbar toggleCalendarView={() => handleToggleCalendarView()}/>
+          <Navbar
+            toggleCalendarView={() => handleToggleCalendarView()}
+            toggleTasksView={() => handleToggleTasksView()}
+          />
           <div className="mt-4">
             {showCalendar ? (
               <Calendar />
+            ) : showTasksview ? (
+              <TasksView />
             ) : (
-              <> {/* This is shorthand for fragment, means that everything is in one parent */}
+              <>
+                {" "}
+                {/* This is shorthand for fragment, means that everything is in one parent */}
                 <div className="flex flex-col md:flex-row">
                   <ProjectOverview tasks={tasks} />
                   <div className="md:w-1/3 md:ml-4 mt-4 md:mt-0">
