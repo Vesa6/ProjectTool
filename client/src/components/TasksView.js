@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddTaskPopup from "./tasksviewcomponents/AddTaskPopup";
 import { Tooltip } from "react-tooltip";
+import EditTaskPopup from "./tasksviewcomponents/EditTaskPopup";
 
 function applyFilter() {
   const filter = document.getElementById("filter").value;
@@ -24,6 +25,14 @@ const TasksView = () => {
   const [showAddTask, setShowAddTask] = useState(false);
   const showAddTaskPopup = () => setShowAddTask(true);
   const hideAddTaskPopup = () => setShowAddTask(false);
+
+  const [taskToEdit, setTaskToEdit] = useState({});
+  const hideEditTaskPopup = () => setTaskToEdit({});
+
+  const findTask = (taskId) => {
+    setTaskToEdit(tasks.find((task) => task.id === taskId));
+  };
+
   const [tasks, setTasks] = useState([
     {
       id: 1,
@@ -122,7 +131,12 @@ const TasksView = () => {
   const TaskTooltip = ({ taskId, onDelete, onComplete }) => (
     <Tooltip id={`options-${taskId}`} clickable>
       <div className="p-2 rounded text-sm flex flex-col w-20">
-        <button className="text-white hover:text-slate-300">Edit</button>
+        <button
+          className="text-white hover:text-slate-300"
+          onClick={() => findTask(taskId)}
+        >
+          Edit
+        </button>
         <button
           className="text-white hover:text-slate-300"
           onClick={() => onDelete(taskId)}
@@ -207,6 +221,13 @@ const TasksView = () => {
           onClose={hideAddTaskPopup}
           setTasks={setTasks}
           tasks={tasks}
+        />
+      )}
+      {taskToEdit.id && (
+        <EditTaskPopup
+          onClose={hideEditTaskPopup}
+          setTasks={setTasks}
+          taskToEdit={taskToEdit}
         />
       )}
     </div>
