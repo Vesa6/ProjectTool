@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddTaskPopup from "./tasksviewcomponents/AddTaskPopup";
 import { Tooltip } from "react-tooltip";
+import { set } from "mongoose";
 
 function applyFilter() {
   const filter = document.getElementById("filter").value;
@@ -106,6 +107,17 @@ const TasksView = () => {
     );
   };
 
+  const changeToCompleted = (taskId) => {
+    setTasks((currentTasks) =>
+      currentTasks.map((task) => {
+        if (task.id === taskId) {
+          task.status = "Completed";
+        }
+        return task;
+      })
+    );
+  };
+
   return (
     <div className="h-screen">
       <div className="flex">
@@ -167,6 +179,12 @@ const TasksView = () => {
                           onClick={() => deleteTask(task.id)}
                         >
                           Delete
+                        </button>
+                        <button
+                          className="text-white hover:text-slate-300"
+                          onClick={() => changeToCompleted(task.id)}
+                        >
+                          Mark as completed
                         </button>
                       </div>
                     </Tooltip>
