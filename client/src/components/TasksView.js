@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddTaskPopup from "./tasksviewcomponents/AddTaskPopup";
 import { Tooltip } from "react-tooltip";
-import { set } from "mongoose";
 
 function applyFilter() {
   const filter = document.getElementById("filter").value;
@@ -101,10 +100,12 @@ const TasksView = () => {
   ]);
 
   const deleteTask = (taskId) => {
-    // TODO: Implement task deletion API call
-    setTasks((currentTasks) =>
-      currentTasks.filter((task) => task.id !== taskId)
-    );
+    console.log("Deleting task with ID:", taskId);
+    setTasks((currentTasks) => {
+      const filteredTasks = currentTasks.filter((task) => task.id !== taskId);
+      console.log("Remaining tasks after deletion:", filteredTasks);
+      return filteredTasks;
+    });
   };
 
   const changeToCompleted = (taskId) => {
@@ -118,11 +119,30 @@ const TasksView = () => {
     );
   };
 
+  const TaskTooltip = ({ taskId, onDelete, onComplete }) => (
+    <Tooltip id={`options-${taskId}`} clickable>
+      <div className="p-2 rounded text-sm flex flex-col w-20">
+        <button className="text-white hover:text-slate-300">Edit</button>
+        <button
+          className="text-white hover:text-slate-300"
+          onClick={() => onDelete(taskId)}
+        >
+          Delete
+        </button>
+        <button
+          className="text-white hover:text-slate-300"
+          onClick={() => onComplete(taskId)}
+        >
+          Mark as completed
+        </button>
+      </div>
+    </Tooltip>
+  );
+
   return (
     <div className="h-screen">
       <div className="flex">
         <h1 className="text-white text-3xl">Tasks</h1>
-
         <select
           name="Filter by"
           id="filter"
@@ -156,43 +176,30 @@ const TasksView = () => {
           </tr>
         </thead>
         <tbody className="text-center">
-          {tasks.map((task) => {
-            return (
-              <tr key={task.id} className="mt-10">
-                <td className="text-white">{task.project}</td>
-                <td className="text-white">{task.name}</td>
-                <td className="text-white">{task.deadline}</td>
-                <td className="text-white">{task.status}</td>
-                <td className="text-white">{task.assignee}</td>
-                <td className="text-slate-500 text-4xl flex justify-center items-center mt-3">
-                  <div className="flex justify-center items-center">
-                    <a data-tooltip-id="options" data-tooltip-place="left">
-                      <BsThreeDotsVertical />
-                    </a>
-                    <Tooltip id="options" clickable>
-                      <div className="p-2 rounded text-sm flex flex-col w-20">
-                        <button className="text-white hover:text-slate-300">
-                          Edit
-                        </button>
-                        <button
-                          className="text-white hover:text-slate-300"
-                          onClick={() => deleteTask(task.id)}
-                        >
-                          Delete
-                        </button>
-                        <button
-                          className="text-white hover:text-slate-300"
-                          onClick={() => changeToCompleted(task.id)}
-                        >
-                          Mark as completed
-                        </button>
-                      </div>
-                    </Tooltip>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
+          {tasks.map((task) => (
+            <tr key={task.id} className="mt-10">
+              <td className="text-white">{task.project}</td>
+              <td className="text-white">{task.name}</td>
+              <td className="text-white">{task.deadline}</td>
+              <td className="text-white">{task.status}</td>
+              <td className="text-white">{task.assignee}</td>
+              <td className="text-slate-500 text-4xl flex justify-center items-center mt-3">
+                <div className="flex justify-center items-center">
+                  <a
+                    data-tooltip-id={`options-${task.id}`}
+                    data-tooltip-place="left"
+                  >
+                    <BsThreeDotsVertical />
+                  </a>
+                  <TaskTooltip
+                    taskId={task.id}
+                    onDelete={deleteTask}
+                    onComplete={changeToCompleted}
+                  />
+                </div>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       {showAddTask && (
@@ -205,4 +212,5 @@ const TasksView = () => {
     </div>
   );
 };
+
 export default TasksView;
