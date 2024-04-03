@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 
-const AddProjectPopup = ({ onClose }) => {
+const AddTaskPopup = ({ onClose }) => {
+  const [taskName, setTaskName] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleTaskNameChange = (e) => {
+    setTaskName(e.target.value);
+  };
 
-    if (!projectName || !projectDescription) {
-      alert("Please fill in all fields");
-      return;
-    }
+  const handleAddTask = () => {
+    // Add logic to handle adding the task
+    console.log("Task added:", taskName);
+    // Reset task name input
+    setTaskName("");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add logic to handle submitting the task
+    handleAddTask();
     onClose();
   };
 
@@ -27,7 +36,7 @@ const AddProjectPopup = ({ onClose }) => {
           &times;
         </button>
         <h2 className=" text-2xl font-bold text-center m-3 text-white">
-          Create Project:
+          Create Task:
         </h2>
         <div className="flex flex-col space-y-2">
           <label className="text-white" htmlFor="projectName">
@@ -40,7 +49,7 @@ const AddProjectPopup = ({ onClose }) => {
             onChange={(e) => setProjectName(e.target.value)}
           />
           <label className="text-white" htmlFor="projectDescription">
-            Project Description:
+            Assignee:
           </label>
           <input
             className="bg-gray-200 text-black p-2 rounded"
@@ -48,27 +57,14 @@ const AddProjectPopup = ({ onClose }) => {
             value={projectDescription}
             onChange={(e) => setProjectDescription(e.target.value)}
           />
-          <label className="text-white" htmlFor="projectManager">
-            Project Manager:
+          <label className="text-white" htmlFor="status">
+            Status:
           </label>
-          <input
-            className="bg-gray-200 text-black p-2 rounded"
-            type="text"
-          ></input>
-          <label className="text-white" htmlFor="projectBudget">
-            Budgeted hours:
-          </label>
-          <input
-            className="bg-gray-200 text-black p-2 rounded"
-            type="number"
-          ></input>
-          <label className="text-white" htmlFor="startDate">
-            Begins on:
-          </label>
-          <input
-            className="bg-gray-200 text-black p-2 rounded"
-            type="date"
-          ></input>
+          <select className="bg-gray-200 text-black p-2 rounded" name="status">
+            <option value="Not started">Not started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
           <label className="text-white" htmlFor="deadline">
             Deadline:
           </label>
@@ -89,4 +85,4 @@ const AddProjectPopup = ({ onClose }) => {
   );
 };
 
-export default AddProjectPopup;
+export default AddTaskPopup;

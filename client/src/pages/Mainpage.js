@@ -10,6 +10,7 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
+import { set } from "mongoose";
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -23,6 +24,7 @@ const Mainpage = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [showTasksview, setShowTasksview] = useState(false);
 
+  /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
   const handleToggleCalendarView = () => {
     setShowTasksview(false);
     setShowCalendar((prevState) => !prevState);
