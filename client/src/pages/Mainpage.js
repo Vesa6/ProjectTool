@@ -10,7 +10,7 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
-import { set } from "mongoose";
+import { Link, Navigate, useNavigate} from "react-router-dom";
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -29,6 +29,22 @@ const Mainpage = () => {
   { id: 4, date: "21/07/2024" },]);
 
   const [showTasksview, setShowTasksview] = useState(false);
+  const [user, SetUser] = useState("");
+  const navigate = useNavigate()
+
+
+  function checkLogin(){
+    let user = window.localStorage.getItem("loggedUser")
+    if(user){
+    let jsonedUser = JSON.parse(user)
+    SetUser(jsonedUser.name)
+    }
+  };
+
+  const handleLogout = () => {
+    window.localStorage.setItem("loggedUser", "")
+   navigate("/login")
+  }
 
 
   /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
@@ -65,7 +81,7 @@ const Mainpage = () => {
   }, []);
 
   let users = [
-    { id: 1, name: "Test Person", role: "Projektipäällikkö" },
+    { id: 1, name: user, role: "Projektipäällikkö" },
     { id: 2, name: "Matti Meikäläinen", role: "Tyhjän toimittaja" },
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
@@ -80,6 +96,10 @@ const Mainpage = () => {
         currentNotifications.filter(notification => notification.id !== notificationId));
   };
 
+  if (user === ""){
+    checkLogin()
+    return <Navigate to="/login"></Navigate>
+  }
   return (
 
     <div className="flex h-screen bg-gray-900">
@@ -122,11 +142,15 @@ const Mainpage = () => {
             )}
           </div>
         </div>
+        <button className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded center" onClick={handleLogout}>
+        Logout
+      </button>
       </div>
       {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );
+
 };
 
 export default Mainpage;
