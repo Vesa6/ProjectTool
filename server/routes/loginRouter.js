@@ -1,7 +1,10 @@
 const loginRouter = require('express').Router()
 const bcrypt = require('bcrypt')
+require('dotenv').config({ path: '../.env' })
+const jwt = require('jsonwebtoken')
 
 loginRouter.post('/', async (request, response) => {
+    let secret = process.env.SECRET;
     const body = request.body
     const db = request.app.locals.db
     console.log("Sending LOGIN request")
@@ -22,7 +25,13 @@ loginRouter.post('/', async (request, response) => {
                 return response.status(400).send("Wrong password")
             }
             console.log("Password matches")
-            return response.status(200).send("Login Succesful")
+            const userForToken = {
+                email: user.email,
+                id: user._id
+            }
+            console.log(user)
+            const token = jwt.sign(userForToken, secret, {expiresIn: 60*60})
+            return response.status(200).send({token, email: user[0].email, name: user[0].name});
         } else {
             return response.status(400).send("No account associated with this email")
         }
@@ -33,10 +42,10 @@ loginRouter.post('/', async (request, response) => {
 
 })
 
-loginRouter.get('/:username', async (request, response) => {
+loginRouter.get('/:id', async (request, response) => {
     try {
         const db = request.app.locals.db;
-        const filter = { username: request.params.username }
+        const filter = { id: request.params.id }
         const result = await db.collection("login").find(filter).toArray();
         response.json(result)
         console.log("GET User with uuid succesful")

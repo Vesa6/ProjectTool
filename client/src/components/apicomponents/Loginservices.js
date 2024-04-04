@@ -11,8 +11,6 @@ const login = async (content) => {
     }catch(e){
         return e
     }
-
 }   
-
 
 export default {login}

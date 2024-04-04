@@ -1,7 +1,8 @@
 import React from "react";
 import { IoMdAdd } from "react-icons/io";
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const Sidebar = ({
   projects,
@@ -10,6 +11,7 @@ const Sidebar = ({
   showAddProjectPopup,
   activeUserName,
 }) => {
+  const navigate = useNavigate
   const calculateDaysLeft = (projectDate) => {
     const currentDate = moment();
     const targetDate = moment(projectDate, "DD/MM/YYYY");
@@ -20,6 +22,8 @@ const Sidebar = ({
 
     return targetDate.diff(currentDate, "days");
   };
+
+
 
   return (
     <div className="w-64 flex flex-col bg-gray-800 min-h-screen">

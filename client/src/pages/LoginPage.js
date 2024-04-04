@@ -27,10 +27,10 @@ const LoginPage = () => {
     // Perform login logic here
     try {
       response = await LoginServices.login(user)
-      console.log(response)
       if (response.status === 200) {
         alert("Login Succesful")
         navigate('/')
+        window.localStorage.setItem('loggedUser', JSON.stringify(response.data))
       } else {
         alert("Login Failed")
       }
@@ -42,6 +42,7 @@ const LoginPage = () => {
 
   };
 
+  
   return (
     <div className="bg-gray-700 w-screen h-screen relative">
       <form

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LogOutPopup from "../components/LogOutPopup";
 import AddProjectPopup from "../components/AddProjectPopup";
 import ProjectOverview from "../components/ProjectOverview";
@@ -10,6 +10,7 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
+import { Link, Navigate, useNavigate} from "react-router-dom";
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -22,6 +23,22 @@ const Mainpage = () => {
   const [activeUser, setActiveUser] = useState(1);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showTasksview, setShowTasksview] = useState(false);
+  const [user, SetUser] = useState("");
+  const navigate = useNavigate()
+
+
+  function checkLogin(){
+    let user = window.localStorage.getItem("loggedUser")
+    if(user){
+    let jsonedUser = JSON.parse(user)
+    SetUser(jsonedUser.name)
+    }
+  };
+
+  const handleLogout = () => {
+    window.localStorage.setItem("loggedUser", "")
+   navigate("/login")
+  }
 
   /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
   const handleToggleCalendarView = () => {
@@ -50,7 +67,7 @@ const Mainpage = () => {
   ];
 
   let users = [
-    { id: 1, name: "Test Person", role: "Projektipäällikkö" },
+    { id: 1, name: user, role: "Projektipäällikkö" },
     { id: 2, name: "Matti Meikäläinen", role: "Tyhjän toimittaja" },
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
@@ -62,6 +79,10 @@ const Mainpage = () => {
     console.log("Notification deleted");
   }
 
+  if (user === ""){
+    checkLogin()
+    return <Navigate to="/login"></Navigate>
+  }
   return (
     <div className="flex h-screen bg-gray-900">
       <Sidebar
@@ -70,7 +91,7 @@ const Mainpage = () => {
         setActiveProjectId={setActiveProjectId}
         showAddProjectPopup={showAddProjectPopup}
         activeUserName={activeUserName}
-      />
+      /> 
       <div className="flex-grow flex flex-col bg-gray-800">
         <div className="flex-grow p-4 overflow-y-auto">
           <Navbar
@@ -98,11 +119,15 @@ const Mainpage = () => {
             )}
           </div>
         </div>
+        <button className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded center" onClick={handleLogout}>
+        Logout
+      </button>
       </div>
       {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );
+
 };
 
 export default Mainpage;
