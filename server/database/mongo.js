@@ -1,4 +1,4 @@
-require('dotenv').config({ path:'../.env'})
+require('dotenv').config({ path: '../.env' })
 const { MongoClient } = require('mongodb');
 
 const url = process.env.MONGOURI;
@@ -6,7 +6,7 @@ const dbName = 'test';
 
 async function connectToDatabase() {
     const client = new MongoClient(url, {});
-    
+
     try {
         await client.connect();
         console.log('Connected to MongoDB');

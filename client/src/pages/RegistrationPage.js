@@ -1,13 +1,24 @@
 import React, { useState } from "react";
 import { MdArrowBackIos } from "react-icons/md";
 import { Link } from "react-router-dom";
+import jsonServices from "../components/apicomponents/Loginservices" 
 
 const RegistrationPage = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("")
 
+  const handleName = (e) => {
+    setName(e.target.value);
+  };
+ 
   const handleEmail = (e) => {
     setEmail(e.target.value);
+  };
+
+  const handleRepeatPassword = (e) => {
+    setRepeatPassword(e.target.value);
   };
 
   const handlePassword = (e) => {
@@ -17,6 +28,10 @@ const RegistrationPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Perform registration logic here
+    if (repeatPassword !== password){
+      alert("Passwords don't match")
+      return
+    }
     console.log("Registration submitted");
   };
 
@@ -35,14 +50,14 @@ const RegistrationPage = () => {
 
         <div className="flex-col">
           <p className="mb-1 font-semibold"> Name:</p>
-          <input type="text" className="w-full text-black max-w-50 h-7 mb-4" />
+          <input type="text" className="w-full text-black max-w-50 h-7 mb-4" onChange={handleName}/>
           <p className="mb-1 font-semibold"> Email:</p>
-          <input type="email" className="w-full text-black max-w-50 h-7 mb-4" />
+          <input type="email" className="w-full text-black max-w-50 h-7 mb-4" onChange={handleEmail}/>
         </div>
         <p className="mb-1 font-semibold"> Password:</p>
-        <input type="password" className="w-full mb-4 text-black h-7" />
-        <p className="mb-1 font-semibold"> Repeat password:</p>
-        <input type="password" className="w-full mb-4 text-black h-7" />
+        <input type="password" className="w-full mb-4 text-black h-7" onChange={handlePassword}/>
+        <p className="mb-1 font-semibold"> Repeat Password:</p>
+        <input type="password" className="w-full mb-4 text-black h-7" onChange={handleRepeatPassword}/>
         <br />
         <button
           type="submit"

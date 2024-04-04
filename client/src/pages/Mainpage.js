@@ -10,7 +10,6 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
-import { set } from "mongoose";
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);

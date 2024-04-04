@@ -5,13 +5,15 @@ const userRoute = require('./routes/userRouter');
 const projectRoute = require('./routes/projectRouter');
 const tasksRoute = require('./routes/tasksRouter');
 const connectToDatabase = require('./database/mongo');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const regRouter = require('./routes/registrationRouter');
 
 function initRoutes(app) {
     app.use('/login', loginRoute);
     app.use('/api/users', userRoute);
     app.use('/api/projects', projectRoute);
     app.use('/api/tasks', tasksRoute);
+    app.use('/registration', regRouter)
 }
 
 
