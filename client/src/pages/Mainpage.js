@@ -10,7 +10,10 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
+
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate} from "react-router-dom";
+
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -80,7 +83,7 @@ const Mainpage = () => {
   }
 
   let users = [
-    { id: 1, name: "Test Person", role: "Projektipäällikkö" },
+    { id: 1, name: user, role: "Projektipäällikkö" },
     { id: 2, name: "Matti Meikäläinen", role: "Tyhjän toimittaja" },
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
@@ -100,8 +103,9 @@ const Mainpage = () => {
     return <Navigate to="/login"></Navigate>
   }
 
+  //Here if DB does not load, shows this to give it some time.
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; 
   }
 
   return (
@@ -155,12 +159,10 @@ const Mainpage = () => {
         >
           Logout
         </button>
-      </div>
       {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );
-  
 };
 
 export default Mainpage;

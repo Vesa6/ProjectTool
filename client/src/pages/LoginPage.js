@@ -1,42 +1,69 @@
 import React, { useState } from "react";
 import taskmaster from "../taskmaster_logo.png";
-import { IoMdPizza } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { MdArrowBackIos } from "react-icons/md";
+import LoginServices from "../components/apicomponents/Loginservices"
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate()
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePassword = (e) => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    let response = ""
+    let user = {
+      email: email,
+      password: password
+    }
     // Perform login logic here
+    try {
+      response = await LoginServices.login(user)
+      if (response.status === 200) {
+        alert("Login Succesful")
+        navigate('/')
+        window.localStorage.setItem('loggedUser', JSON.stringify(response.data))
+      } else {
+        alert("Login Failed")
+      }
+    } catch (e) {
+      console.log(response)
+      alert("Email or Password is incorrect")
+    }
+
+
   };
 
+  
   return (
     <div className="bg-gray-700 w-screen h-screen relative">
       <form
         onSubmit={handleSubmit}
         className=" bg-gray-900 w-fit h-fit text-white absolute top-1/2 left-1/2 flex-col p-8 rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 max-w-md max-h-md"
       >
+        <Link to="/">
+          <MdArrowBackIos className="h-5 w-5 text-white mb-5" />
+        </Link>
+
         <img src={taskmaster} alt="TaskMaster logo" className=" w-30 m-0 p-0" />
         <p className="font-semibold text-center text-2xl">TaskMaster </p>
 
         <div className="flex-col">
           <p className="mb-1 font-semibold"> Email:</p>
 
-          <input type="text" className="w-full text-black max-w-50 h-7" />
+          <input type="text" className="w-full text-black max-w-50 h-7" onChange={handleEmail} />
         </div>
         <br />
         <p className="mb-1 font-semibold"> Password:</p>
-        <input type="password" className="w-full mb-4 text-black h-7" />
+        <input type="password" className="w-full mb-4 text-black h-7" onChange={handlePassword} />
 
         <br />
         <button
