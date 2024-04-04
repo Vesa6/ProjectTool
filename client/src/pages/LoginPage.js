@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import taskmaster from "../taskmaster_logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdArrowBackIos } from "react-icons/md";
 import LoginServices from "../components/apicomponents/Loginservices"
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate()
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -18,15 +19,23 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let response = ""
     let user = {
       email: email,
       password: password
     }
     // Perform login logic here
     try {
-      let response = await LoginServices.login(user)
+      response = await LoginServices.login(user)
       console.log(response)
-    }catch(e){
+      if (response.status === 200) {
+        alert("Login Succesful")
+        navigate('/')
+      } else {
+        alert("Login Failed")
+      }
+    } catch (e) {
+      console.log(response)
       alert("Email or Password is incorrect")
     }
 

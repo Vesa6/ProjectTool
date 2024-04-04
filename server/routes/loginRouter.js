@@ -12,24 +12,23 @@ loginRouter.post('/', async (request, response) => {
         try {
             passhash = user[0].password
         } catch (e) {
-            return response.status(401).end(console.log("no user found"));
+            return response.status(400).send("no user found");
         }
         if (passhash) {
             const isPwdCorrect = user === null
                 ? false
                 : await bcrypt.compare(body.password, user[0].password)
             if (!isPwdCorrect) {
-                return response.status(401).end(console.log("Wrong password"))
+                return response.status(400).send("Wrong password")
             }
             console.log("Password matches")
-            return response.status(200)
+            return response.status(200).send("Login Succesful")
         } else {
-            return response.status(400).end(console.log("No account associated with this email"))
+            return response.status(400).send("No account associated with this email")
         }
 
     } else {
-        response.json("POST failed")
-        response.status(400).end(console.log("Login failed, username or password is not correct"))
+        response.status(400).send("Login failed, username or password is not correct")
     }
 
 })
