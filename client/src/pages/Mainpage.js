@@ -10,11 +10,7 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
-<<<<<<< Updated upstream
-import { set } from "mongoose";
-=======
 import { Link, Navigate, useNavigate } from "react-router-dom";
->>>>>>> Stashed changes
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -31,8 +27,6 @@ const Mainpage = () => {
   const [projects, setProjects] = useState([]);
 
   const [showTasksview, setShowTasksview] = useState(false);
-<<<<<<< Updated upstream
-=======
   const [user, SetUser] = useState("");
   const navigate = useNavigate()
 
@@ -49,7 +43,6 @@ const Mainpage = () => {
     window.localStorage.setItem("loggedUser", "")
     navigate("/login")
   }
->>>>>>> Stashed changes
 
 
   /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
@@ -102,14 +95,10 @@ const Mainpage = () => {
       currentNotifications.filter(notification => notification.id !== notificationId));
   };
 
-<<<<<<< Updated upstream
-  return (
-=======
   if (user === "") {
     checkLogin()
     return <Navigate to="/login"></Navigate>
   }
->>>>>>> Stashed changes
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -160,24 +149,18 @@ const Mainpage = () => {
             </div>
           )}
         </div>
-<<<<<<< Updated upstream
-=======
         <button
           className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded center"
           onClick={handleLogout}
         >
           Logout
         </button>
->>>>>>> Stashed changes
       </div>
       {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );
-<<<<<<< Updated upstream
-=======
   
->>>>>>> Stashed changes
 };
 
 export default Mainpage;
