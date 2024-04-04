@@ -6,7 +6,7 @@ const testData = [
       "started": "10.10.1995",
       "ends": "10.10.2024",
       "tasks": [
-          { "id": 1, "name": "Task 1 for Project 1", "status": "In Progress", "deadline": "01/05/2024"},
+          { "id": 1, "name": "Task 1 for Project 1", "status": "Not started", "deadline": "01/05/2024"},
           { "id": 2, "name": "Task 2 for Project 1", "status": "Completed", "deadline": "01/01/2024"}
       ]
   },
@@ -28,7 +28,7 @@ const testData = [
       "started": "10.10.1995",
       "ends": "10.10.2024",
       "tasks": [
-          { "id": 1, "name": "Task 1 for Project 3", "status": "In Progress", "deadline": "01/07/2024" },
+          { "id": 1, "name": "Task 1 for Project 3", "status": "Not started", "deadline": "01/07/2024" },
           { "id": 2, "name": "Task 2 for Project 3", "status": "Completed", "deadline": "01/03/2024" }
       ]
   }

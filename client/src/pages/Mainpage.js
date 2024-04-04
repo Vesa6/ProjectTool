@@ -10,7 +10,11 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
+<<<<<<< Updated upstream
 import { set } from "mongoose";
+=======
+import { Link, Navigate, useNavigate } from "react-router-dom";
+>>>>>>> Stashed changes
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -22,13 +26,30 @@ const Mainpage = () => {
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [activeUser, setActiveUser] = useState(1);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [projects, setProjects] = useState([{ id: 1, date: "21/07/2024" },
-  { id: 2, date: "01/02/2024" },
-  { id: 3, date: "02/09/2024" },
-  { id: 4, date: "21/07/2024" },]);
+  const [projects, setProjects] = useState([]);
 
   const [showTasksview, setShowTasksview] = useState(false);
+<<<<<<< Updated upstream
+=======
+  const [user, SetUser] = useState("");
+  const navigate = useNavigate()
+
+
+  function checkLogin() {
+    let user = window.localStorage.getItem("loggedUser")
+    if (user) {
+      let jsonedUser = JSON.parse(user)
+      SetUser(jsonedUser.name)
+    }
+  };
+
+  const handleLogout = () => {
+    window.localStorage.setItem("loggedUser", "")
+    navigate("/login")
+  }
+>>>>>>> Stashed changes
 
 
   /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
@@ -38,11 +59,10 @@ const Mainpage = () => {
   };
 
   const [notifications, setNotifications] = useState([
-    { id: 1, date: "21/07/2011" },
-    { id: 2, date: "01/01/2011" },
-    { id: 3, date: "02/03/2011" },
-    { id: 4, date: "21/07/2011" },
-    ]);
+    { id: 1, message: "New person added to Project Z", date: "02/04/2024" },
+    { id: 2, message: "New person added to Project Y", date: "03/04/2024" },
+    { id: 3, message: "Project X has 7 days left", date: "04/04/2024" },
+  ]);
 
   const handleToggleTasksView = () => {
     setShowCalendar(false);
@@ -50,40 +70,53 @@ const Mainpage = () => {
   };
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/projects');
-        if (!response.ok) throw new Error('Error in response (check path)');
-        const data = await response.json();
+    console.log(projects);
+    fetch('http://localhost:3001/api/projects')
+      .then(response => response.json())
+      .then(data => {
         setProjects(data);
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-      }
-    };
-
-    fetchProjects();
+        setIsLoading(false);
+      })
+      .catch(error => console.error('Error:', error));
   }, []);
+
+  function parseAllTasks(projects) {
+    // Use flatMap to iterate through each project and collect all tasks
+    const allTasks = projects.flatMap(project => project.tasks);
+    return allTasks;
+  }
 
   let users = [
     { id: 1, name: "Test Person", role: "Projektipäällikkö" },
     { id: 2, name: "Matti Meikäläinen", role: "Tyhjän toimittaja" },
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
-  
+
   const activeUserName = users.find((user) => user.id === activeUser)?.name || "???";
   const activeProject = projects.find(project => project._id === activeProjectId);
 
   const tasks = activeProject?.tasks;
 
   const deleteNotification = (notificationId) => {
-    setNotifications(currentNotifications => 
-        currentNotifications.filter(notification => notification.id !== notificationId));
+    setNotifications(currentNotifications =>
+      currentNotifications.filter(notification => notification.id !== notificationId));
   };
 
+<<<<<<< Updated upstream
   return (
+=======
+  if (user === "") {
+    checkLogin()
+    return <Navigate to="/login"></Navigate>
+  }
+>>>>>>> Stashed changes
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
     <div className="flex h-screen bg-gray-900">
-      {console.log("Active project:", activeProject)}
       <Sidebar
         projects={projects}
         activeProjectId={activeProjectId}
@@ -92,41 +125,59 @@ const Mainpage = () => {
         activeUserName={activeUserName}
         activeProject={activeProject}
       />
-      {/*<TaskTable />*/}
       <div className="flex-grow flex flex-col bg-gray-800">
         <div className="flex-grow p-4 overflow-y-auto">
           <Navbar
-            toggleCalendarView={() => handleToggleCalendarView()}
-            toggleTasksView={() => handleToggleTasksView()}
+            toggleCalendarView={handleToggleCalendarView}
+            toggleTasksView={handleToggleTasksView}
           />
-          <div className="mt-4">
-            {showCalendar ? (
-              <Calendar />
-            ) : showTasksview ? (
-              <TasksView />
-            ) : (
-              <>
-                {" "}
-                {/* This is shorthand for fragment, means that everything is in one parent */}
+          {activeProjectId ? (
+            <div className="bg-gray-700 text-white p-4 m-4 rounded-lg">
+              <h2 className="text-xl font-bold">{activeProject?.project}</h2>
+              <p>{activeProject?.description}</p>
+              <ProjectOverview project={activeProject} />
+              {/* Display more project details here */}
+            </div>
+          ) : (
+            <div className="mt-4">
+              {showCalendar ? (
+                <Calendar />
+              ) : showTasksview ? (
+                <TasksView />
+              ) : (
                 <div className="flex flex-col md:flex-row">
-                  <ProjectOverview tasks={tasks} />
-                  <div className="md:w-1/3 md:ml-4 mt-4 md:mt-0">
-                    <Costs />
-                    <Tasks />
+                  <div className="md:flex-grow">
+                    <Notifications
+                      notifications={notifications}
+                      deleteNotification={deleteNotification}
+                    />
+                  </div>
+                  <div className="md:w-1/2 md:ml-4 mt-4 md:mt-0">
+                    <Tasks projects={parseAllTasks(projects)} />
                   </div>
                 </div>
-                <Notifications
-                  notifications={notifications}
-                  deleteNotification={deleteNotification}/>
-              </>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
+<<<<<<< Updated upstream
+=======
+        <button
+          className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded center"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
+>>>>>>> Stashed changes
       </div>
       {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );
+<<<<<<< Updated upstream
+=======
+  
+>>>>>>> Stashed changes
 };
 
 export default Mainpage;

@@ -10,7 +10,7 @@ const Costs = () => {
   ];
 
   return (
-    <div className="bg-gray-700 p-4 rounded shadow-lg mb-4">
+    <div className="bg-gray-700 p-4 rounded shadow-lg mb-4 mt-4">
       <h2 className="text-white text-xl font-semibold mb-4">COSTS (in thousands)</h2>
       <div className="flex justify-between mb-4">
         {costsData.map((cost, index) => (

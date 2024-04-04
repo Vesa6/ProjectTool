@@ -8,11 +8,11 @@ const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId,
     console.log(ends)
     const currentDate = moment();
     const targetDate = moment(ends, "DD/MM/YYYY");
-  
+
     //  console.log('Current Date:', currentDate.format("DD/MM/YYYY"));
     //  console.log('Target Date:', targetDate.format("DD/MM/YYYY"));
     //  console.log('Days Left:', targetDate.diff(currentDate, "days"));
-  
+
     return targetDate.diff(currentDate, "days");
   };
 
@@ -48,18 +48,12 @@ const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId,
         {projects.map((project) => (
           <div
             key={project._id}
-            className={`
-              flex items-center justify-between
-              px-4 py-3 mb-2 rounded-md cursor-pointer
-              transition-all duration-300 ease-in-out
-              ${project._id === activeProjectId ? "bg-blue-600" : "bg-gray-700"}
-              hover:bg-blue-600
-            `}
-            onClick={() => setActiveProjectId(project._id)}
+            className={`flex items-center justify-between px-4 py-3 mb-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out ${project._id === activeProjectId ? "bg-blue-600" : "bg-gray-700"} hover:bg-blue-600`}
+            onClick={() => setActiveProjectId(activeProjectId === project._id ? undefined : project._id)}
           >
             <div>
               <p className="text-white font-semibold">{project.project}</p>
-              <p className="text-gray-400 text-sm">DAYS LEFT: {calculateDaysLeft(project.ends)}</p>
+              {/* Other project details */}
             </div>
           </div>
         ))}

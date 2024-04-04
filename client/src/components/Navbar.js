@@ -26,7 +26,7 @@ const Navbar = ({ toggleCalendarView, toggleTasksView }) => {
           className="bg-navBarButton mt-2 w-60 h-20 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded"
           onClick={toggleCalendarView}
         >
-          SCHEDULE
+          Calendar
         </button>
       </div>
     </div>

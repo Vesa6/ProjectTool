@@ -1,18 +1,25 @@
 import React from "react";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-const Tasks = () => {
+const Tasks = ({ projects }) => { // tasks passed as props
 
-  // These will be replaced by the actual data from the database.
-  const tasksData = [
-    { name: "Not started", deadline: "01/01/2024"},
-    { name: "Completed", deadline: "01/01/2024"},
-    { name: "In Progress", deadline: "01/01/2024"},
-  ];
+  // Calculate the status totals
+  const tasksStatus = projects.reduce((acc, task) => {
+    if (task.status === "Not started") acc[0].value += 1;
+    else if (task.status === "Completed") acc[1].value += 1;
+    else if (task.status === "In Progress") acc[2].value += 1;
+    return acc;
+  }, [
+    { name: "Not started", value: 0 },
+    { name: "Completed", value: 0 },
+    { name: "In Progress", value: 0 },
+  ]);
 
-  const notStartedColor = "#3B82F6"
-  const completedColor = "#10B981"
-  const inProgressColor = "#EF4444"
+  const colors = {
+    "Not started": "#3B82F6",
+    "Completed": "#10B981",
+    "In Progress": "#EF4444",
+  };
 
   return (
     <div className="bg-gray-700 p-4 rounded shadow-lg">
@@ -20,7 +27,7 @@ const Tasks = () => {
       <div className="flex flex-col items-center">
         <PieChart width={200} height={200}>
           <Pie
-            data={tasksData}
+            data={tasksStatus}
             dataKey="value"
             nameKey="name"
             cx="50%"
@@ -28,23 +35,18 @@ const Tasks = () => {
             outerRadius={80}
             fill="#8884d8"
           >
-            {tasksData.map((entry, index) => {
-              if (entry.name === "Not started") 
-                entry.color = notStartedColor;
-              else if (entry.name === "Completed") 
-                entry.color = completedColor;
-              else 
-                entry.color = inProgressColor;
-              return <Cell key={`cell-${index}`} fill={entry.color} />;
-            })}
+            {tasksStatus.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={colors[entry.name]} />
+            ))}
           </Pie>
+          <Tooltip />
         </PieChart>
         <div className="flex justify-center mt-4 space-x-4">
-          {tasksData.map((entry, index) => (
+          {tasksStatus.map((entry, index) => (
             <div key={index} className="flex items-center">
               <div
                 className="w-4 h-4 rounded-full mr-2"
-                style={{ backgroundColor: entry.color }}
+                style={{ backgroundColor: colors[entry.name] }}
               ></div>
               <p className="text-white">{entry.name} ({entry.value})</p>
             </div>
