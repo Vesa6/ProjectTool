@@ -1,26 +1,35 @@
 const loginRouter = require('express').Router()
+const bcrypt = require('bcrypt')
 
 loginRouter.post('/', async (request, response) => {
     const body = request.body
-    console.log("Sending POST request")
-    if (body.username && body.password) {
-        const user = {
-            username: body.username,
-            password: body.password,
-        }
+    const db = request.app.locals.db
+    console.log("Sending LOGIN request")
+    if (body.email && body.password) {
+        let filter = { email: body.email }
+        const user = await db.collection("login").find(filter).toArray();
+        let passhash = ""
         try {
-            const db = request.app.locals.db;
-            if (user) {
-                const result = await db.collection("login").insertOne(user);
-                console.log("POST was succesful")
-                response.json(result)
-            }
+            passhash = user[0].password
         } catch (e) {
-            response.status(400).end(console.log(e))
+            return response.status(401).end(console.log("no user found"));
         }
+        if (passhash) {
+            const isPwdCorrect = user === null
+                ? false
+                : await bcrypt.compare(body.password, user[0].password)
+            if (!isPwdCorrect) {
+                return response.status(401).end(console.log("Wrong password"))
+            }
+            console.log("Password matches")
+            return response.status(200)
+        } else {
+            return response.status(400).end(console.log("No account associated with this email"))
+        }
+
     } else {
         response.json("POST failed")
-        response.status(400).end(console.log("Request failed because username or password is empty"))
+        response.status(400).end(console.log("Login failed, username or password is not correct"))
     }
 
 })

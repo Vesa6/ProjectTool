@@ -2,9 +2,9 @@ import Axios from 'axios'
 
 let path =  "http://localhost:3001"
 
-const url = `${path}/login`
+const url = `${path}/registration`
 
-const login = async (content) => {
+const register = async (content) => {
     try{
     const response = await Axios.post(url, content)
     return response
@@ -14,5 +14,4 @@ const login = async (content) => {
 
 }   
 
-
-export default {login}
+export default {register}

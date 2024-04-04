@@ -2,6 +2,35 @@ const regRouter = require('express').Router()
 const testData = require('../testdata/logindata')
 const bcrypt = require('bcrypt')
 
+regRouter.post('/', async (request, response) => {
+    const body = request.body;
+    const saltRounds = 10;
+    let emailList = []
+    const db = request.app.locals.db
+    try {
+        let users = await db.collection("login").find().toArray();
+        users.forEach(object => {
+            emailList.push(object.email)
+        })
+        if (emailList.includes(body.email)) {
+            console.log("Email already in use")
+            response.status(400).send("Email already in use")
+        } else {
+            let passHash = await bcrypt.hash(body.password, saltRounds)
+            let regUser = {
+                name: body.name,
+                email: body.email,
+                password: passHash
+            }
+            db.collection("login").insertOne(regUser);
+            console.log("Registration succesful")
+            response.status(201).end("Registration succesful")
+        }
+    } catch (e) {
+        console.log(e)
+        response.status(400).end("error")
+    }
+})
 
 regRouter.get('/test/addtestdata', async (request, response) => {
     const saltRounds = 10

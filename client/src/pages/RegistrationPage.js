@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import { MdArrowBackIos } from "react-icons/md";
 import { Link } from "react-router-dom";
-import jsonServices from "../components/apicomponents/Loginservices" 
+import RegServices from "../components/apicomponents/Registerationservices"
+import { useNavigate } from 'react-router-dom'
+
 
 const RegistrationPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("")
+  const navigate = useNavigate()
 
   const handleName = (e) => {
     setName(e.target.value);
   };
- 
+
   const handleEmail = (e) => {
     setEmail(e.target.value);
   };
@@ -25,14 +28,34 @@ const RegistrationPage = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    let response = ""
     // Perform registration logic here
-    if (repeatPassword !== password){
+    if (repeatPassword !== password) {
       alert("Passwords don't match")
       return
     }
-    console.log("Registration submitted");
+    if (email.length === 0 || password.length === 0 || name.length === 0) {
+      alert("All fields are required")
+      return
+    }
+    let newUser = {
+      name: name,
+      email: email,
+      password: password
+    }
+    response = await RegServices.register(newUser)
+    console.log(response)
+    if (response.status === 201) {
+      alert("Registration succesful");
+      navigate("/login")
+    } else {
+      alert("Registration failed")
+      console.log(response)
+    }
+
+
   };
 
   return (
@@ -50,14 +73,14 @@ const RegistrationPage = () => {
 
         <div className="flex-col">
           <p className="mb-1 font-semibold"> Name:</p>
-          <input type="text" className="w-full text-black max-w-50 h-7 mb-4" onChange={handleName}/>
+          <input type="text" className="w-full text-black max-w-50 h-7 mb-4" onChange={handleName} />
           <p className="mb-1 font-semibold"> Email:</p>
-          <input type="email" className="w-full text-black max-w-50 h-7 mb-4" onChange={handleEmail}/>
+          <input type="email" className="w-full text-black max-w-50 h-7 mb-4" onChange={handleEmail} />
         </div>
         <p className="mb-1 font-semibold"> Password:</p>
-        <input type="password" className="w-full mb-4 text-black h-7" onChange={handlePassword}/>
+        <input type="password" className="w-full mb-4 text-black h-7" onChange={handlePassword} />
         <p className="mb-1 font-semibold"> Repeat Password:</p>
-        <input type="password" className="w-full mb-4 text-black h-7" onChange={handleRepeatPassword}/>
+        <input type="password" className="w-full mb-4 text-black h-7" onChange={handleRepeatPassword} />
         <br />
         <button
           type="submit"
