@@ -10,10 +10,7 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
-
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Link, Navigate, useNavigate} from "react-router-dom";
-
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -26,29 +23,24 @@ const Mainpage = () => {
   const [activeUser, setActiveUser] = useState(1);
   const [showCalendar, setShowCalendar] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
   const [projects, setProjects] = useState([]);
-
   const [showTasksview, setShowTasksview] = useState(false);
   const [user, SetUser] = useState("");
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   function checkLogin() {
-    let user = window.localStorage.getItem("loggedUser")
+    let user = window.localStorage.getItem("loggedUser");
     if (user) {
-      let jsonedUser = JSON.parse(user)
-      SetUser(jsonedUser.name)
+      let jsonedUser = JSON.parse(user);
+      SetUser(jsonedUser.name);
     }
   };
 
   const handleLogout = () => {
-    window.localStorage.setItem("loggedUser", "")
-    navigate("/login")
-  }
+    window.localStorage.setItem("loggedUser", "");
+    navigate("/login");
+  };
 
-
-  /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
   const handleToggleCalendarView = () => {
     setShowTasksview(false);
     setShowCalendar((prevState) => !prevState);
@@ -77,20 +69,18 @@ const Mainpage = () => {
   }, []);
 
   function parseAllTasks(projects) {
-    // Use flatMap to iterate through each project and collect all tasks
     const allTasks = projects.flatMap(project => project.tasks);
     return allTasks;
   }
 
   let users = [
-    { id: 1, name: user, role: "Projektipäällikkö" },
+    { id: 1, name: "Test Person", role: "Projektipäällikkö" },
     { id: 2, name: "Matti Meikäläinen", role: "Tyhjän toimittaja" },
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
 
   const activeUserName = users.find((user) => user.id === activeUser)?.name || "???";
   const activeProject = projects.find(project => project._id === activeProjectId);
-
   const tasks = activeProject?.tasks;
 
   const deleteNotification = (notificationId) => {
@@ -99,13 +89,12 @@ const Mainpage = () => {
   };
 
   if (user === "") {
-    checkLogin()
-    return <Navigate to="/login"></Navigate>
+    checkLogin();
+    return <Navigate to="/login" />;
   }
 
-  //Here if DB does not load, shows this to give it some time.
   if (isLoading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
@@ -124,32 +113,29 @@ const Mainpage = () => {
             toggleCalendarView={handleToggleCalendarView}
             toggleTasksView={handleToggleTasksView}
           />
-          {activeProjectId ? (
+          {showCalendar ? (
+            <Calendar />
+          ) : showTasksview ? (
+            <TasksView />
+          ) : activeProjectId ? (
             <div className="bg-gray-700 text-white p-4 m-4 rounded-lg">
               <h2 className="text-xl font-bold">{activeProject?.project}</h2>
               <p>{activeProject?.description}</p>
               <ProjectOverview project={activeProject} />
-              {/* Display more project details here */}
             </div>
           ) : (
             <div className="mt-4">
-              {showCalendar ? (
-                <Calendar />
-              ) : showTasksview ? (
-                <TasksView />
-              ) : (
-                <div className="flex flex-col md:flex-row">
-                  <div className="md:flex-grow">
-                    <Notifications
-                      notifications={notifications}
-                      deleteNotification={deleteNotification}
-                    />
-                  </div>
-                  <div className="md:w-1/2 md:ml-4 mt-4 md:mt-0">
-                    <Tasks projects={parseAllTasks(projects)} />
-                  </div>
+              <div className="flex flex-col md:flex-row">
+                <div className="md:flex-grow">
+                  <Notifications
+                    notifications={notifications}
+                    deleteNotification={deleteNotification}
+                  />
                 </div>
-              )}
+                <div className="md:w-1/2 md:ml-4 mt-4 md:mt-0">
+                  <Tasks projects={parseAllTasks(projects)} />
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -159,6 +145,7 @@ const Mainpage = () => {
         >
           Logout
         </button>
+      </div>
       {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
