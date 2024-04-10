@@ -114,7 +114,7 @@ const Mainpage = () => {
             toggleTasksView={handleToggleTasksView}
           />
           {showCalendar ? (
-            <Calendar />
+            <Calendar activeProject={activeProject} />
           ) : showTasksview ? (
             <TasksView />
           ) : activeProjectId ? (

@@ -4,23 +4,23 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { format, parseISO } from "date-fns";
 
-const events = [
-  {
-    title: 'Team Meeting',
-    start: '2024-03-25',
-    id: 'event-1'
-  },
-  {
-    title: 'Project Deadline',
-    start: '2024-03-24',
-    id: 'event-2'
-  },
-  {
-    title: 'Company Workshop',
-    start: '2024-03-21',
-    id: 'event-3'
-  }
-];
+// const events = [
+//   {
+//     title: 'Team Meeting',
+//     start: '2024-03-25',
+//     id: 'event-1'
+//   },
+//   {
+//     title: 'Project Deadline',
+//     start: '2024-03-24',
+//     id: 'event-2'
+//   },
+//   {
+//     title: 'Company Workshop',
+//     start: '2024-03-21',
+//     id: 'event-3'
+//   }
+// ];
 
 const FullCalendarComponent = ({ setHighlightedDay, highlightedDay, eventsCalendar: eventsInCalendar }) => (
   <FullCalendar
@@ -39,9 +39,9 @@ const FullCalendarComponent = ({ setHighlightedDay, highlightedDay, eventsCalend
   />
 );
 
-const CalendarView = () => {
+const CalendarView = ({activeProject}) => {
   const [highlightedDay, setHighlightedDay] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [eventsCalendar, seteventsCalendar] = useState([...events]);
+  const [eventsCalendar, seteventsCalendar] = useState([...activeProject.tasks]);
   const [newEvent, setNewEvent] = useState({
     title: '',
     date: '',
@@ -76,6 +76,11 @@ const CalendarView = () => {
       return currentEvents.filter(event => event.id !== 'selected-date').concat(highlighted);
     });
   }, [highlightedDay]);
+
+  // This watches for if the active project changes -> changes stuff in calendar to match project
+  useEffect(() => {
+    seteventsCalendar([...activeProject.tasks]);
+  }, [activeProject]);
 
   const handleAddTask = () => {
     const { title, date, time, allDay, important, location, participants } = newEvent;
