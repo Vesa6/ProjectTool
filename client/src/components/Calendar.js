@@ -39,9 +39,10 @@ const FullCalendarComponent = ({ setHighlightedDay, highlightedDay, eventsCalend
   />
 );
 
-const CalendarView = ({activeProject}) => {
+const CalendarView = ({activeProject, allProjects}) => {
   const [highlightedDay, setHighlightedDay] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [eventsCalendar, seteventsCalendar] = useState([...activeProject.tasks]);
+  // This weird syntax is the "nullish coalescing operator", basically just makes sure we don't acess nulls.
+  const [eventsCalendar, seteventsCalendar] = useState([...activeProject?.tasks ?? allProjects.flatMap(project => project.tasks)]);
   const [newEvent, setNewEvent] = useState({
     title: '',
     date: '',
@@ -78,8 +79,11 @@ const CalendarView = ({activeProject}) => {
   }, [highlightedDay]);
 
   // This watches for if the active project changes -> changes stuff in calendar to match project
+  // If none selected, then it just shows all tasks from all projects and does some ugly mapping to add the project name to the task
   useEffect(() => {
-    seteventsCalendar([...activeProject.tasks]);
+    seteventsCalendar([...activeProject?.tasks ?? allProjects.flatMap(project => 
+      project.tasks.map(task => 
+        ({ ...task, title: `${project.project}: ${task.title}`})))]);
   }, [activeProject]);
 
   const handleAddTask = () => {
