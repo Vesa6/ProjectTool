@@ -39,18 +39,18 @@ const FullCalendarComponent = ({ setHighlightedDay, highlightedDay, eventsCalend
   />
 );
 
-const CalendarView = ({activeProject, allProjects}) => {
+//activeProjectId is currently passed down to disable "add task" dynamically.
+//TODO: Cleanup and refactor this component
+const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
   const [highlightedDay, setHighlightedDay] = useState(format(new Date(), "yyyy-MM-dd"));
   // This weird syntax is the "nullish coalescing operator", basically just makes sure we don't acess nulls.
   const [eventsCalendar, seteventsCalendar] = useState([...activeProject?.tasks ?? allProjects.flatMap(project => project.tasks)]);
   const [newEvent, setNewEvent] = useState({
-    title: '',
-    date: '',
-    time: '',
-    location: '',
+    title: 'YARE YARE DAZE',
+    status: 'In progress',
+    start: highlightedDay,
+    end: '',
     participants: [],
-    important: false,
-    allDay: false,
   });
   const [isPopupscreenOpen, setIsPopupscreenOpen] = useState(false);
 
@@ -81,32 +81,74 @@ const CalendarView = ({activeProject, allProjects}) => {
   // This watches for if the active project changes -> changes stuff in calendar to match project
   // If none selected, then it just shows all tasks from all projects and does some ugly mapping to add the project name to the task
   useEffect(() => {
-    seteventsCalendar([...activeProject?.tasks ?? allProjects.flatMap(project => 
-      project.tasks.map(task => 
-        ({ ...task, title: `${project.project}: ${task.title}`})))]);
+    seteventsCalendar([...activeProject?.tasks ?? allProjects.flatMap(project =>
+      project.tasks.map(task =>
+        ({ ...task, title: `${project.project}: ${task.title}` })))]);
   }, [activeProject]);
 
-  const handleAddTask = () => {
-    const { title, date, time, allDay, important, location, participants } = newEvent;
+  // This hacky use effect ensures that dates work even if user does not change it.
+  useEffect(() => {
+    setNewEvent(current => ({
+      ...current,
+      start: highlightedDay
+    }));
+  }, [highlightedDay]);
+  
 
-    if (title.trim() && date) {
-      const dateTime = allDay ? date : `${date}T${time}`; // If it's not an allday event then get date and time
+  /*
+  * Add begin
+  *
+  * */
 
-      const newCalendarEvent = {
-        id: `event-${eventsCalendar.length + 1}`,
-        title,
-        start: dateTime,
-        allDay,
-        color: important ? '#ff0000' : '#007bff', //red if important, blue if not
-        extendedProps: { location, participants },
-      };
+  async function addTaskToProject(projectId, newTask) {
+    const url = `http://localhost:3001/api/projects/${projectId}/add-task`;
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newTask)
+        });
 
-      //TODO: add db post here and remove this
-      seteventsCalendar(currentEvents => [...currentEvents, newCalendarEvent]);
-      setIsPopupscreenOpen(false);
-      setNewEvent({ title: '', date: '', time: '', location: '', participants: [], important: false, allDay: false });
+        if (!response.ok) {
+            throw new Error('Failed to add task');
+        }
+
+        console.log('Task added successfully');
+    } catch (error) {
+        console.error('Error adding task:', error);
     }
+}
+
+  const handleAddTask = () => {
+    console.log(activeProject)
+    addTaskToProject(activeProject._id, newEvent);
+    setIsPopupscreenOpen(false);
   };
+
+  /*
+ * Add end
+ *
+ * */
+
+  // if (title.trim() && date) {
+  //   const dateTime = allDay ? date : `${date}T${time}`; // If it's not an allday event then get date and time
+
+  //   const newCalendarEvent = {
+  //     id: `event-${eventsCalendar.length + 1}`,
+  //     title,
+  //     start: dateTime,
+  //     allDay,
+  //     color: important ? '#ff0000' : '#007bff', //red if important, blue if not
+  //     extendedProps: { location, participants },
+  //   };
+
+  //   //TODO: add db post here and remove this
+  //   seteventsCalendar(currentEvents => [...currentEvents, newCalendarEvent]);
+  //   setIsPopupscreenOpen(false);
+  //   setNewEvent({ title: '', date: '', time: '', location: '', participants: [], important: false, allDay: false });
+  // }
 
   return (
     <div className="relative flex h-screen text-white">
@@ -118,17 +160,26 @@ const CalendarView = ({activeProject, allProjects}) => {
         />
       </div>
       <div className="bg-gray-800 overflow-y-auto p-4 w-1/5">
-        <button
-          onClick={() => setIsPopupscreenOpen(true)}
-          className="px-4 py-2 mb-4 text-white bg-blue-500 rounded"
-        >
-          Add Task
-        </button>
+        {activeProjectId ? (
+          <button
+            onClick={() => setIsPopupscreenOpen(true)}
+            className="px-4 py-2 mb-4 text-white bg-blue-500 rounded"
+          >
+            Add Task
+          </button>
+        ) : (
+          <button
+            disabled
+            className="px-4 py-2 mb-4 text-white bg-blue-500 rounded opacity-50 cursor-not-allowed"
+          >
+            Select a project to add a task...
+          </button>
+        )}
         {isPopupscreenOpen && (
           <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
             <div className="w-full max-w-md p-6 bg-gray-900 rounded-lg text-white">
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-xl font-semibold">New event</h2>
+                <h2 className="text-xl font-semibold">New Event</h2>
                 <button onClick={() => setIsPopupscreenOpen(false)}>✖️</button>
               </div>
               <div className="mb-4">
@@ -138,40 +189,20 @@ const CalendarView = ({activeProject, allProjects}) => {
                   id="title"
                   className="w-full p-2 text-white bg-gray-800 rounded"
                   value={newEvent.title}
-                  onChange={e => setNewEvent({ ...newEvent, title: e.target.value })} // This practically just inserts stuff to state
+                  onChange={e => setNewEvent({ ...newEvent, title: e.target.value })}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label htmlFor="date" className="block mb-2">Date:</label>
+                  <label htmlFor="date" className="block mb-2">Task date:</label>
                   <input
                     type="date"
-                    id="date"
+                    id="start"
                     className="w-full p-2 text-white bg-gray-800 rounded"
-                    value={newEvent.date}
-                    onChange={e => setNewEvent({ ...newEvent, date: e.target.value })}
+                    value={newEvent.start}
+                    onChange={e => setNewEvent({ ...newEvent, start: e.target.value })}
                   />
                 </div>
-                <div>
-                  <label htmlFor="time" className="block mb-2">Time:</label>
-                  <input
-                    type="time"
-                    id="time"
-                    className="w-full p-2 text-white bg-gray-800 rounded"
-                    value={newEvent.time}
-                    onChange={e => setNewEvent({ ...newEvent, time: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="mb-4">
-                <label htmlFor="location" className="block mb-2">Location:</label>
-                <input
-                  type="text"
-                  id="location"
-                  className="w-full p-2 text-white bg-gray-800 rounded"
-                  value={newEvent.location}
-                  onChange={e => setNewEvent({ ...newEvent, location: e.target.value })}
-                />
               </div>
               <div className="mb-4">
                 <label htmlFor="participants" className="block mb-2 text-sm">Select Participants:</label>
@@ -189,26 +220,6 @@ const CalendarView = ({activeProject, allProjects}) => {
                   ))}
                 </select>
               </div>
-              <div className="mb-4">
-                <input
-                  type="checkbox"
-                  id="important"
-                  className="w-4 h-4 mr-2 text-blue-600 bg-gray-800 rounded border-gray-300 focus:ring-blue-500"
-                  checked={newEvent.important}
-                  onChange={e => setNewEvent({ ...newEvent, important: e.target.checked })}
-                />
-                <label htmlFor="important" className="text-sm">Mark as Important</label>
-              </div>
-              <div className="mb-4">
-                <input
-                  type="checkbox"
-                  id="allDay"
-                  className="w-4 h-4 mr-2 text-blue-600 bg-gray-800 rounded border-gray-300 focus:ring-blue-500"
-                  checked={newEvent.allDay}
-                  onChange={e => setNewEvent({ ...newEvent, allDay: e.target.checked })}
-                />
-                <label htmlFor="allDay" className="text-sm">All Day</label>
-              </div>
               <div className="flex justify-between">
                 <button onClick={() => setIsPopupscreenOpen(false)} className="px-4 py-2 bg-red-500 rounded hover:bg-red-600 focus:outline-none">Cancel</button>
                 <button onClick={handleAddTask} className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 focus:outline-none">Add</button>
@@ -219,6 +230,8 @@ const CalendarView = ({activeProject, allProjects}) => {
       </div>
     </div>
   );
+  
+  
 
 };
 
