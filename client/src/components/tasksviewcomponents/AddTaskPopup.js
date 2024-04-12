@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 
-const AddTaskPopup = ({ onClose, setTasks, tasks }) => {
+const AddTaskPopup = ({
+  onClose,
+  setTasks,
+  tasks,
+  checkFieldsNotify,
+  successNotify,
+}) => {
   const [taskName, setTaskName] = useState("");
   const [projectName, setProjectName] = useState("");
   const [assignee, setAssignee] = useState("");
@@ -13,6 +19,12 @@ const AddTaskPopup = ({ onClose, setTasks, tasks }) => {
 
   const handleAddTask = () => {
     // Add logic to handle adding the task
+
+    // check that all the fields are filled
+    if (!taskName || !projectName || !assignee || !deadline) {
+      checkFieldsNotify();
+      return;
+    }
 
     // Create a new task object
     const newTask = {
@@ -28,15 +40,16 @@ const AddTaskPopup = ({ onClose, setTasks, tasks }) => {
     setTasks([...tasks, newTask]);
 
     console.log("Task added:", taskName);
+    successNotify();
     // Reset task name input
     setTaskName("");
+    onClose();
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Add logic to handle submitting the task
     handleAddTask();
-    onClose();
   };
 
   return (

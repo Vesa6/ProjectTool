@@ -136,9 +136,23 @@ const TasksView = () => {
       })
     );
   };
-  const successNotify = () => {
+  const successfulEditNotify = () => {
     console.log("in success notify");
     toast.success("Task edited successfully", {
+      position: "top-center",
+      theme: "dark",
+    });
+    /*     alert("Task edited successfully"); */
+  };
+  const successfulAddNotify = () => {
+    toast.success("Task added successfully", {
+      position: "top-center",
+      theme: "dark",
+    });
+  };
+
+  const checkFieldsNotify = () => {
+    toast.error("Please fill in all fields", {
       position: "top-center",
       theme: "dark",
     });
@@ -179,8 +193,9 @@ const TasksView = () => {
           id="filter"
           className="rounded ml-auto"
           onChange={applyFilter}
+          defaultValue={""}
         >
-          <option value="" selected disabled>
+          <option value="" disabled>
             Filter by:
           </option>
           <option value="All">All</option>
@@ -238,6 +253,8 @@ const TasksView = () => {
           onClose={hideAddTaskPopup}
           setTasks={setTasks}
           tasks={tasks}
+          checkFieldsNotify={checkFieldsNotify}
+          successNotify={successfulAddNotify}
         />
       )}
       {taskToEdit.id && (
@@ -245,7 +262,8 @@ const TasksView = () => {
           onClose={hideEditTaskPopup}
           setTasks={setTasks}
           taskToEdit={taskToEdit}
-          successNotify={successNotify}
+          checkFieldsNotify={checkFieldsNotify}
+          successNotify={successfulEditNotify}
         />
       )}
     </div>

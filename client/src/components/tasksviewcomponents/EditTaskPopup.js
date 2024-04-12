@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
 
-const EditTaskPopup = ({ onClose, taskToEdit, successNotify }) => {
+const EditTaskPopup = ({
+  onClose,
+  taskToEdit,
+  successNotify,
+  checkFieldsNotify,
+}) => {
   const [assignee, setAssignee] = useState(taskToEdit.assignee);
   const [status, setStatus] = useState(taskToEdit.status);
   const [deadline, setDeadline] = useState(taskToEdit.deadline);
@@ -23,23 +27,17 @@ const EditTaskPopup = ({ onClose, taskToEdit, successNotify }) => {
     // Reset task name input
     // check that all the fields are filled
     if (assignee === "" || status === "" || deadline === "") {
-      toast.error("Please fill all the fields", {
-        position: "top-center",
-        theme: "dark",
-      });
+      checkFieldsNotify();
       return;
     }
 
     taskToEdit.assignee = assignee;
     taskToEdit.status = status;
     taskToEdit.deadline = deadline;
-
+    successNotify();
     // add api logic here
 
-    // success notify
-
     onClose();
-    successNotify();
   };
 
   const handleSubmit = (event) => {
@@ -50,7 +48,6 @@ const EditTaskPopup = ({ onClose, taskToEdit, successNotify }) => {
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
-      <ToastContainer />
       <form
         onSubmit={handleSubmit}
         className="bg-slate-900 rounded-lg shadow-xl pt-16 px-16 pb-5 relative w-1/3 max-w-lg"
@@ -83,7 +80,6 @@ const EditTaskPopup = ({ onClose, taskToEdit, successNotify }) => {
           <select
             className="bg-gray-200 text-black p-2 rounded"
             name="status"
-            value={status}
             defaultValue={taskToEdit.status}
             onChange={handleStatusChange}
           >
