@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import taskmaster from "../taskmaster_logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { MdArrowBackIos } from "react-icons/md";
-import LoginServices from "../components/apicomponents/Loginservices"
+import LoginServices from "../components/apicomponents/Loginservices";
+import { ToastContainer, toast } from "react-toastify";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -19,32 +20,42 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let response = ""
+    let response = "";
     let user = {
       email: email,
-      password: password
-    }
+      password: password,
+    };
     // Perform login logic here
     try {
-      response = await LoginServices.login(user)
+      response = await LoginServices.login(user);
       if (response.status === 200) {
-        alert("Login Succesful")
-        navigate('/')
-        window.localStorage.setItem('loggedUser', JSON.stringify(response.data))
+        toast.success("Login successful!", {
+          position: "top-center",
+          theme: "dark",
+        });
+        navigate("/");
+        window.localStorage.setItem(
+          "loggedUser",
+          JSON.stringify(response.data)
+        );
       } else {
-        alert("Login Failed")
+        toast.error(" Login unsuccessful, please try again!", {
+          position: "top-center",
+          theme: "dark",
+        });
       }
     } catch (e) {
-      console.log(response)
-      alert("Email or Password is incorrect")
+      console.log(response);
+      toast.error(" Login unsuccessful, please try again!", {
+        position: "top-center",
+        theme: "dark",
+      });
     }
-
-
   };
 
-  
   return (
     <div className="bg-gray-700 w-screen h-screen relative">
+      <ToastContainer />
       <form
         onSubmit={handleSubmit}
         className=" bg-gray-900 w-fit h-fit text-white absolute top-1/2 left-1/2 flex-col p-8 rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 max-w-md max-h-md"
@@ -59,11 +70,19 @@ const LoginPage = () => {
         <div className="flex-col">
           <p className="mb-1 font-semibold"> Email:</p>
 
-          <input type="text" className="w-full text-black max-w-50 h-7" onChange={handleEmail} />
+          <input
+            type="text"
+            className="w-full text-black max-w-50 h-7"
+            onChange={handleEmail}
+          />
         </div>
         <br />
         <p className="mb-1 font-semibold"> Password:</p>
-        <input type="password" className="w-full mb-4 text-black h-7" onChange={handlePassword} />
+        <input
+          type="password"
+          className="w-full mb-4 text-black h-7"
+          onChange={handlePassword}
+        />
 
         <br />
         <button

@@ -12,8 +12,6 @@ import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
 
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Link, Navigate, useNavigate} from "react-router-dom";
-
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -31,22 +29,20 @@ const Mainpage = () => {
 
   const [showTasksview, setShowTasksview] = useState(false);
   const [user, SetUser] = useState("");
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   function checkLogin() {
-    let user = window.localStorage.getItem("loggedUser")
+    let user = window.localStorage.getItem("loggedUser");
     if (user) {
-      let jsonedUser = JSON.parse(user)
-      SetUser(jsonedUser.name)
+      let jsonedUser = JSON.parse(user);
+      SetUser(jsonedUser.name);
     }
-  };
-
-  const handleLogout = () => {
-    window.localStorage.setItem("loggedUser", "")
-    navigate("/login")
   }
 
+  const handleLogout = () => {
+    window.localStorage.setItem("loggedUser", "");
+    navigate("/login");
+  };
 
   /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
   const handleToggleCalendarView = () => {
@@ -67,18 +63,18 @@ const Mainpage = () => {
 
   useEffect(() => {
     console.log(projects);
-    fetch('http://localhost:3001/api/projects')
-      .then(response => response.json())
-      .then(data => {
+    fetch("http://localhost:3001/api/projects")
+      .then((response) => response.json())
+      .then((data) => {
         setProjects(data);
         setIsLoading(false);
       })
-      .catch(error => console.error('Error:', error));
+      .catch((error) => console.error("Error:", error));
   }, []);
 
   function parseAllTasks(projects) {
     // Use flatMap to iterate through each project and collect all tasks
-    const allTasks = projects.flatMap(project => project.tasks);
+    const allTasks = projects.flatMap((project) => project.tasks);
     return allTasks;
   }
 
@@ -88,24 +84,30 @@ const Mainpage = () => {
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
 
-  const activeUserName = users.find((user) => user.id === activeUser)?.name || "???";
-  const activeProject = projects.find(project => project._id === activeProjectId);
+  const activeUserName =
+    users.find((user) => user.id === activeUser)?.name || "???";
+  const activeProject = projects.find(
+    (project) => project._id === activeProjectId
+  );
 
   const tasks = activeProject?.tasks;
 
   const deleteNotification = (notificationId) => {
-    setNotifications(currentNotifications =>
-      currentNotifications.filter(notification => notification.id !== notificationId));
+    setNotifications((currentNotifications) =>
+      currentNotifications.filter(
+        (notification) => notification.id !== notificationId
+      )
+    );
   };
 
   if (user === "") {
-    checkLogin()
-    return <Navigate to="/login"></Navigate>
+    checkLogin();
+    return <Navigate to="/login"></Navigate>;
   }
 
   //Here if DB does not load, shows this to give it some time.
   if (isLoading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
@@ -159,8 +161,9 @@ const Mainpage = () => {
         >
           Logout
         </button>
-      {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
-      {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
+        {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
+        {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
+      </div>
     </div>
   );
 };
