@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import EditProfilePopup from "./EditProfilePopup";
+import { toast, ToastContainer } from "react-toastify";
 
 const SettingsView = () => {
   const [username, setUsername] = useState("");
@@ -6,30 +8,34 @@ const SettingsView = () => {
   const [password, setPassword] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(false);
   const [badgeNotifications, setBadgeNotifications] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const showEditProfilePopup = () => setShowEditProfile(true);
+  const hideEditProfilePopup = () => setShowEditProfile(false);
 
-  const placeholderUser = {
-    username: "John Doe",
+  const [placeholderUser, setPlaceHolderUser] = useState({
+    name: "John Doe",
     email: "asdasd@asdasd.asd",
-    phone: "123-456-7890",
+    phone: "1234567890",
     title: "Project manager",
-    password: "password",
-  };
+  });
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
+  const checkFieldsNotify = () => {
+    toast.error("Please fill all the fields", {
+      position: "top-center",
+      theme: "dark",
+    });
   };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+  const successNotify = () => {
+    toast.success("Profile edited successfully", {
+      position: "top-center",
+      theme: "dark",
+    });
   };
 
   return (
     // center the form on the page
     <div className="bg-navBarPadding max-w-2xl flex flex-col justify-center m-auto top-1/2 h-fit">
+      <ToastContainer />
       <h1 className="w-full text-xl text-white bg-[#BB98B8] shadow-lg p-2">
         Profile
       </h1>
@@ -38,7 +44,7 @@ const SettingsView = () => {
           {/* Placeholder for profile picture */}
         </div>
         <p className="top-1/2 justify-center mt-6 ml-3">
-          {placeholderUser.username} <br />
+          {placeholderUser.name} <br />
           {placeholderUser.title} <br />
         </p>
       </div>
@@ -47,9 +53,12 @@ const SettingsView = () => {
           <p className="text-slate-100">
             Name:
             <br />
-            <p className="text-slate-500">{placeholderUser.username}</p>
+            <p className="text-slate-500">{placeholderUser.name}</p>
           </p>
-          <button className="ml-2 bg-navBarPadding px-5 py-2 rounded-sm hover:bg-navBarButtonHover w-[64px]">
+          <button
+            className="ml-2 bg-navBarPadding px-5 py-2 rounded-sm hover:bg-navBarButtonHover w-[64px]"
+            onClick={() => showEditProfilePopup()}
+          >
             Edit
           </button>
         </div>
@@ -110,6 +119,14 @@ const SettingsView = () => {
           </button>
         </div>
       </div>
+      {showEditProfile && (
+        <EditProfilePopup
+          onClose={hideEditProfilePopup}
+          profileToEdit={placeholderUser}
+          checkFieldsNotify={checkFieldsNotify}
+          successNotify={successNotify}
+        />
+      )}
     </div>
   );
 };
