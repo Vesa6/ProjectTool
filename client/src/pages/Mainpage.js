@@ -10,9 +10,9 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
+import SettingsView from "../components/SettingsView.js";
 
 import { Link, Navigate, useNavigate } from "react-router-dom";
-
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
   const showLogoutPopup = () => setShowLogout(true);
@@ -28,6 +28,7 @@ const Mainpage = () => {
   const [projects, setProjects] = useState([]);
 
   const [showTasksview, setShowTasksview] = useState(false);
+  const [showSettingsView, setShowSettingsView] = useState(false);
   const [user, SetUser] = useState("");
   const navigate = useNavigate();
 
@@ -47,19 +48,24 @@ const Mainpage = () => {
   /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
   const handleToggleCalendarView = () => {
     setShowTasksview(false);
+    setShowSettingsView(false);
     setShowCalendar((prevState) => !prevState);
   };
-
+  const handleToggleSettingsView = () => {
+    setShowTasksview(false);
+    setShowCalendar(false);
+    setShowSettingsView((prevState) => !prevState);
+  };
+  const handleToggleTasksView = () => {
+    setShowCalendar(false);
+    setShowSettingsView(false);
+    setShowTasksview((prevState) => !prevState);
+  };
   const [notifications, setNotifications] = useState([
     { id: 1, message: "New person added to Project Z", date: "02/04/2024" },
     { id: 2, message: "New person added to Project Y", date: "03/04/2024" },
     { id: 3, message: "Project X has 7 days left", date: "04/04/2024" },
   ]);
-
-  const handleToggleTasksView = () => {
-    setShowCalendar(false);
-    setShowTasksview((prevState) => !prevState);
-  };
 
   useEffect(() => {
     console.log(projects);
@@ -125,6 +131,7 @@ const Mainpage = () => {
           <Navbar
             toggleCalendarView={handleToggleCalendarView}
             toggleTasksView={handleToggleTasksView}
+            toggleSettingsView={handleToggleSettingsView}
           />
           {activeProjectId ? (
             <div className="bg-gray-700 text-white p-4 m-4 rounded-lg">
@@ -139,6 +146,8 @@ const Mainpage = () => {
                 <Calendar />
               ) : showTasksview ? (
                 <TasksView />
+              ) : showSettingsView ? (
+                <SettingsView />
               ) : (
                 <div className="flex flex-col md:flex-row">
                   <div className="md:flex-grow">

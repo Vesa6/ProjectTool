@@ -33,7 +33,10 @@ const LoginPage = () => {
           position: "top-center",
           theme: "dark",
         });
-        navigate("/");
+        setTimeout(() => {
+          //
+          navigate("/");
+        }, 2000);
         window.localStorage.setItem(
           "loggedUser",
           JSON.stringify(response.data)

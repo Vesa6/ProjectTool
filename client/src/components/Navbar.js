@@ -1,6 +1,11 @@
 import React from "react";
+import { IoSettingsSharp } from "react-icons/io5";
 
-const Navbar = ({ toggleCalendarView, toggleTasksView }) => {
+const Navbar = ({
+  toggleCalendarView,
+  toggleTasksView,
+  toggleSettingsView,
+}) => {
   return (
     <div className="bg-gray-900 text-white p-4 flex justify-between items-center">
       <div className="p-4 bg-navBarPadding rounded m-2 text-xl">
@@ -29,6 +34,10 @@ const Navbar = ({ toggleCalendarView, toggleTasksView }) => {
           Calendar
         </button>
       </div>
+      <IoSettingsSharp
+        className="text-4xl text-white m-2 hover:text-slate-300"
+        onClick={toggleSettingsView}
+      />
     </div>
   );
 };
