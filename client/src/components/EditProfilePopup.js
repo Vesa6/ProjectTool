@@ -1,41 +1,43 @@
 import { useState } from "react";
 
-const EditTaskPopup = ({
+const EditProfilePopup = ({
   onClose,
-  taskToEdit,
-  successNotify,
+  profileToEdit,
   checkFieldsNotify,
+  successNotify,
 }) => {
-  const [assignee, setAssignee] = useState(taskToEdit.assignee);
-  const [status, setStatus] = useState(taskToEdit.status);
-  const [deadline, setDeadline] = useState(taskToEdit.deadline);
+  const [name, setName] = useState(profileToEdit.name);
+  const [email, setEmail] = useState(profileToEdit.email);
+  const [phoneNumber, setPhoneNumber] = useState(profileToEdit.phone);
 
-  const handleAssigneeChange = (e) => {
-    setAssignee(e.target.value);
+  const handleNameChange = (e) => {
+    setName(e.target.value);
   };
 
-  const handleStatusChange = (e) => {
-    setStatus(e.target.value);
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
-  const handleDeadlineChange = (e) => {
-    setDeadline(e.target.value);
+  const handlePhoneChange = (e) => {
+    setPhoneNumber(e.target.value);
   };
 
   const handleEditTask = () => {
     // Add logic to handle editing the task
     // Reset task name input
     // check that all the fields are filled
-    if (assignee === "" || status === "" || deadline === "") {
+    if (name === "" || email === "" || phoneNumber === "") {
       checkFieldsNotify();
       return;
     }
 
-    taskToEdit.assignee = assignee;
-    taskToEdit.status = status;
-    taskToEdit.deadline = deadline;
+    profileToEdit.name = name;
+    profileToEdit.email = email;
+    profileToEdit.phone = phoneNumber;
     successNotify();
     // add api logic here
+
+    console.log("Profile edited:", profileToEdit);
 
     onClose();
   };
@@ -59,42 +61,35 @@ const EditTaskPopup = ({
           &times;
         </button>
         <h2 className=" text-2xl font-bold text-center m-3 text-white">
-          {taskToEdit.name}
+          Edit Profile
         </h2>
-        <h3 className="text-center font-bold m-3 text-white">
-          Part of project: {taskToEdit.project}
-        </h3>
         <div className="flex flex-col space-y-2">
           <label className="text-white" htmlFor="assignee">
-            Assignee:
+            Name:
           </label>
           <input
             className="bg-gray-200 text-black p-2 rounded"
             type="text"
-            value={assignee}
-            onChange={handleAssigneeChange}
+            value={name}
+            onChange={handleNameChange}
           />
           <label className="text-white" htmlFor="status">
-            Status:
-          </label>
-          <select
-            className="bg-gray-200 text-black p-2 rounded"
-            name="status"
-            defaultValue={taskToEdit.status}
-            onChange={handleStatusChange}
-          >
-            <option value="Not started">Not started</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-          </select>
-          <label className="text-white" htmlFor="deadline">
-            Deadline:
+            email:
           </label>
           <input
             className="bg-gray-200 text-black p-2 rounded"
-            type="date"
-            value={deadline}
-            onChange={handleDeadlineChange}
+            type="text"
+            value={email}
+            onChange={handleEmailChange}
+          />
+          <label className="text-white" htmlFor="deadline">
+            Phone:
+          </label>
+          <input
+            className="bg-gray-200 text-black p-2 rounded"
+            type="tel"
+            value={phoneNumber}
+            onChange={handlePhoneChange}
           ></input>
           <div className="h-5" />
           <button
@@ -108,4 +103,4 @@ const EditTaskPopup = ({
     </div>
   );
 };
-export default EditTaskPopup;
+export default EditProfilePopup;
