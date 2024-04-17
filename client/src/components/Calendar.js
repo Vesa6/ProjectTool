@@ -3,55 +3,68 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { format, parseISO } from "date-fns";
+import CalendarTaskPopup from "./CalendarTaskPopup";
 
-// const events = [
-//   {
-//     title: 'Team Meeting',
-//     start: '2024-03-25',
-//     id: 'event-1'
-//   },
-//   {
-//     title: 'Project Deadline',
-//     start: '2024-03-24',
-//     id: 'event-2'
-//   },
-//   {
-//     title: 'Company Workshop',
-//     start: '2024-03-21',
-//     id: 'event-3'
-//   }
-// ];
+const FullCalendarComponent = ({ setHighlightedDay, eventsCalendar }) => {
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-const FullCalendarComponent = ({ setHighlightedDay, highlightedDay, eventsCalendar: eventsInCalendar }) => (
-  <FullCalendar
-    plugins={[dayGridPlugin, interactionPlugin]}
-    initialView="dayGridMonth"
-    dateClick={(arg) => {
-      setHighlightedDay(format(parseISO(arg.dateStr), "yyyy-MM-dd")); //fix later, not sure why it only works w this
-    }}
-    events={eventsInCalendar}
-    headerToolbar={{
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,dayGridWeek',
-    }}
-    height="80%"
-  />
-);
+  const handleEventClick = ({ event }) => {
+    console.log(event);
+    setSelectedEvent({
+      title: event.title,
+      start: event.start,
+      status: event.extendedProps.status,
+      end: event.end,
+      participants: event.extendedProps.participants,
+      description: event.extendedProps.description
+    });
+  };
+
+  const handleDateClick = (arg) => {
+    setHighlightedDay(format(arg.date, "yyyy-MM-dd"));
+  };
+
+  const closeDialog = () => setSelectedEvent(null);
+
+  return (
+    <>
+      <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        events={eventsCalendar}
+        eventClick={handleEventClick}
+        dateClick={handleDateClick}
+        headerToolbar={{
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,dayGridWeek',
+        }}
+        height="80%"
+      />
+      <CalendarTaskPopup event={selectedEvent} onClose={closeDialog} />
+    </>
+  );
+};
 
 //activeProjectId is currently passed down to disable "add task" dynamically.
+
 //TODO: Cleanup and refactor this component
-const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
+
+const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjects }) => {
   const [highlightedDay, setHighlightedDay] = useState(format(new Date(), "yyyy-MM-dd"));
+
   // This weird syntax is the "nullish coalescing operator", basically just makes sure we don't acess nulls.
   const [eventsCalendar, seteventsCalendar] = useState([...activeProject?.tasks ?? allProjects.flatMap(project => project.tasks)]);
+
   const [newEvent, setNewEvent] = useState({
-    title: 'YARE YARE DAZE',
-    status: 'In progress',
+    title: '',
+    status: 'Not started',
     start: highlightedDay,
     end: '',
     participants: [],
+    description: '',
   });
+
   const [isPopupscreenOpen, setIsPopupscreenOpen] = useState(false);
 
   const [participants] = useState([
@@ -73,7 +86,7 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
 
     seteventsCalendar(currentEvents => {
       // This is a bit of mess, but practically adds the highlighted day to the calendar.
-      // Don't ask. 
+      // Don't ask.
       return currentEvents.filter(event => event.id !== 'selected-date').concat(highlighted);
     });
   }, [highlightedDay]);
@@ -81,9 +94,16 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
   // This watches for if the active project changes -> changes stuff in calendar to match project
   // If none selected, then it just shows all tasks from all projects and does some ugly mapping to add the project name to the task
   useEffect(() => {
-    seteventsCalendar([...activeProject?.tasks ?? allProjects.flatMap(project =>
-      project.tasks.map(task =>
-        ({ ...task, title: `${project.project}: ${task.title}` })))]);
+    seteventsCalendar([
+      ...activeProject?.tasks ?? allProjects.flatMap(project =>
+        project.tasks.map(task => ({
+          ...task,
+          title: `${project.project}: ${task.title}`,
+          participants: task.participants, // Add participants property
+          status: task.status // Add status property
+        }))
+      )
+    ]);
   }, [activeProject]);
 
   // This hacky use effect ensures that dates work even if user does not change it.
@@ -93,62 +113,48 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
       start: highlightedDay
     }));
   }, [highlightedDay]);
-  
-
-  /*
-  * Add begin
-  *
-  * */
 
   async function addTaskToProject(projectId, newTask) {
     const url = `http://localhost:3001/api/projects/${projectId}/add-task`;
     try {
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newTask)
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to add task');
-        }
-
-        console.log('Task added successfully');
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newTask)
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add task');
+      }
+      console.log('Task added successfully');
+      fetchProjects();
     } catch (error) {
-        console.error('Error adding task:', error);
+      console.error('Error adding task:', error);
+      fetchProjects(); // here just in case, should not be needed.
     }
-}
+
+  }
+
+  const resetFormFields = () => {
+    setNewEvent({
+      title: '',
+      status: 'Not started',
+      start: highlightedDay,
+      end: '',
+      participants: [],
+      description: '',
+    });
+    setIsPopupscreenOpen(false);
+  };
 
   const handleAddTask = () => {
     console.log(activeProject)
     addTaskToProject(activeProject._id, newEvent);
-    setIsPopupscreenOpen(false);
+    resetFormFields();
   };
 
-  /*
- * Add end
- *
- * */
-
-  // if (title.trim() && date) {
-  //   const dateTime = allDay ? date : `${date}T${time}`; // If it's not an allday event then get date and time
-
-  //   const newCalendarEvent = {
-  //     id: `event-${eventsCalendar.length + 1}`,
-  //     title,
-  //     start: dateTime,
-  //     allDay,
-  //     color: important ? '#ff0000' : '#007bff', //red if important, blue if not
-  //     extendedProps: { location, participants },
-  //   };
-
-  //   //TODO: add db post here and remove this
-  //   seteventsCalendar(currentEvents => [...currentEvents, newCalendarEvent]);
-  //   setIsPopupscreenOpen(false);
-  //   setNewEvent({ title: '', date: '', time: '', location: '', participants: [], important: false, allDay: false });
-  // }
+  // Specific time functionality from previous version removed to keep it simple
 
   return (
     <div className="relative flex h-screen text-white">
@@ -179,7 +185,7 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
           <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
             <div className="w-full max-w-md p-6 bg-gray-900 rounded-lg text-white">
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-xl font-semibold">New Event</h2>
+                <h2 className="text-xl font-semibold">New Task</h2>
                 <button onClick={() => setIsPopupscreenOpen(false)}>✖️</button>
               </div>
               <div className="mb-4">
@@ -192,6 +198,18 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
                   onChange={e => setNewEvent({ ...newEvent, title: e.target.value })}
                 />
               </div>
+              <div className="mb-4">
+                <label htmlFor="description" className="block mb-2">Description:</label>
+                <textarea
+                  id="description"
+                  className="w-full p-2 text-white bg-gray-800 rounded"
+                  rows="3"
+                  maxLength="200"
+                  placeholder="Enter task description (max 200 characters)..."
+                  value={newEvent.description}
+                  onChange={e => setNewEvent({ ...newEvent, description: e.target.value })}
+                />
+              </div>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <label htmlFor="date" className="block mb-2">Task date:</label>
@@ -202,6 +220,18 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
                     value={newEvent.start}
                     onChange={e => setNewEvent({ ...newEvent, start: e.target.value })}
                   />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="status" className="block mb-2">Status:</label>
+                  <select
+                    id="status"
+                    className="w-full p-2 text-white bg-gray-800 rounded"
+                    value={newEvent.status}
+                    onChange={e => setNewEvent({ ...newEvent, status: e.target.value })}
+                  >
+                    <option value="Not started">Not started</option>
+                    <option value="In progress">In progress</option>
+                  </select>
                 </div>
               </div>
               <div className="mb-4">
@@ -221,7 +251,7 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
                 </select>
               </div>
               <div className="flex justify-between">
-                <button onClick={() => setIsPopupscreenOpen(false)} className="px-4 py-2 bg-red-500 rounded hover:bg-red-600 focus:outline-none">Cancel</button>
+                <button onClick={resetFormFields} className="px-4 py-2 bg-red-500 rounded hover:bg-red-600 focus:outline-none">Cancel</button>
                 <button onClick={handleAddTask} className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 focus:outline-none">Add</button>
               </div>
             </div>
@@ -230,9 +260,7 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId }) => {
       </div>
     </div>
   );
-  
-  
-
 };
 
 export default CalendarView;
+

@@ -102,7 +102,7 @@ projectRouter.put('/:id/add-task', async (request, response) => {
   try {
 
     const task = {
-    _id: new ObjectId(), //Use this as unique ID. I don't think this needs to be displayed anywhere, and this is solid and easy to do.
+    _id: new ObjectId(), //Use this as unique ID. I don't think this needs to be displayed anywhere, but this is solid and easy to do.
     title: request.body.title,
     status: request.body.status || 'In Progress',
     start: request.body.start,

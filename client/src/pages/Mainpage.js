@@ -57,15 +57,22 @@ const Mainpage = () => {
     setShowTasksview((prevState) => !prevState);
   };
 
-  useEffect(() => {
-    console.log(projects);
+  const fetchProjects = () => {
+    setIsLoading(true);
     fetch('http://localhost:3001/api/projects')
       .then(response => response.json())
       .then(data => {
         setProjects(data);
         setIsLoading(false);
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+        setIsLoading(false);
+      });
+  };
+  
+  useEffect(() => {
+    fetchProjects();
   }, []);
 
   function parseAllTasks(projects) {
@@ -94,7 +101,8 @@ const Mainpage = () => {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    // Show loading spinner or something ? Simply rendering div causes screen flashing upon some updates...
+    // Too intrusive, making it look janky.
   }
 
   return (
@@ -114,7 +122,7 @@ const Mainpage = () => {
             toggleTasksView={handleToggleTasksView}
           />
           {showCalendar ? (
-            <Calendar activeProject={activeProject} allProjects={projects} activeProjectId={activeProjectId} />
+            <Calendar activeProject={activeProject} allProjects={projects} activeProjectId={activeProjectId} fetchProjects={fetchProjects} />
           ) : showTasksview ? (
             <TasksView />
           ) : activeProjectId ? (
