@@ -5,6 +5,11 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { format, parseISO } from "date-fns";
 import CalendarTaskPopup from "./CalendarTaskPopup";
 
+/*
+/ event == task. This component is a calendar view for tasks.
+/ Didn't want to rename all this stuff, so it's still called "event".
+*/
+
 const FullCalendarComponent = ({ setHighlightedDay, eventsCalendar }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -67,6 +72,8 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
 
   const [isPopupscreenOpen, setIsPopupscreenOpen] = useState(false);
 
+  // All the possible options for participants.
+  // This could be fetched from the server, but for now it's hardcoded.
   const [participants] = useState([
     { id: 1, name: 'Aada' },
     { id: 2, name: 'Mikael' },
@@ -99,14 +106,14 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
         project.tasks.map(task => ({
           ...task,
           title: `${project.project}: ${task.title}`,
-          participants: task.participants, // Add participants property
-          status: task.status // Add status property
+          participants: task.participants,
+          status: task.status
         }))
       )
     ]);
   }, [activeProject]);
 
-  // This hacky use effect ensures that dates work even if user does not change it.
+  // This hacky use effect ensures that dates default to the current day if none chosen
   useEffect(() => {
     setNewEvent(current => ({
       ...current,
@@ -156,6 +163,8 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
 
   // Specific time functionality from previous version removed to keep it simple
 
+
+  //TODO: Refactor return to use components.
   return (
     <div className="relative flex h-screen text-white">
       <div className="w-4/5">

@@ -91,13 +91,13 @@ projectRouter.put('/:id', async (request, response) => {
   }
 })
 
-// Vesan työmaa
+// For calendars new tasks.
 projectRouter.put('/:id/add-task', async (request, response) => {
   const db = request.app.locals.db;
   const projectId = new ObjectId(request.params.id);
 
-  console.log('Received Project ID:', request.params.id);
-  console.log('Converted to ObjectId:', projectId);
+  // console.log('Received Project ID:', request.params.id);
+  // console.log('Converted to ObjectId:', projectId);
 
   try {
 
