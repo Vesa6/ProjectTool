@@ -11,8 +11,8 @@ import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
 import SettingsView from "../components/SettingsView.js";
-
 import { Link, Navigate, useNavigate } from "react-router-dom";
+
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
   const showLogoutPopup = () => setShowLogout(true);
@@ -24,9 +24,7 @@ const Mainpage = () => {
   const [activeUser, setActiveUser] = useState(1);
   const [showCalendar, setShowCalendar] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
   const [projects, setProjects] = useState([]);
-
   const [showTasksview, setShowTasksview] = useState(false);
   const [showSettingsView, setShowSettingsView] = useState(false);
   const [user, SetUser] = useState("");
@@ -37,15 +35,21 @@ const Mainpage = () => {
     if (user) {
       let jsonedUser = JSON.parse(user);
       SetUser(jsonedUser.name);
+    } else {
+      navigate("/login");
     }
-  }
+}
+
+useEffect(() => {
+    checkLogin();
+    fetchProjects();
+}, []);
 
   const handleLogout = () => {
     window.localStorage.setItem("loggedUser", "");
     navigate("/login");
   };
 
-  /*kind of a hack but will do the trick for now... all other views should be hidden here when more views are added */
   const handleToggleCalendarView = () => {
     setShowTasksview(false);
     setShowSettingsView(false);
@@ -67,35 +71,37 @@ const Mainpage = () => {
     { id: 3, message: "Project X has 7 days left", date: "04/04/2024" },
   ]);
 
-  useEffect(() => {
-    console.log(projects);
-    fetch("http://localhost:3001/api/projects")
-      .then((response) => response.json())
-      .then((data) => {
+  const fetchProjects = () => {
+    setIsLoading(true);
+    fetch('http://localhost:3001/api/projects')
+      .then(response => response.json())
+      .then(data => {
         setProjects(data);
         setIsLoading(false);
       })
-      .catch((error) => console.error("Error:", error));
+      .catch(error => {
+        console.error('Error:', error);
+        setIsLoading(false);
+      });
+  };
+  
+  useEffect(() => {
+    fetchProjects();
   }, []);
 
   function parseAllTasks(projects) {
-    // Use flatMap to iterate through each project and collect all tasks
-    const allTasks = projects.flatMap((project) => project.tasks);
+    const allTasks = projects.flatMap(project => project.tasks);
     return allTasks;
   }
 
   let users = [
-    { id: 1, name: user, role: "Projektipäällikkö" },
+    { id: 1, name: "Test Person", role: "Projektipäällikkö" },
     { id: 2, name: "Matti Meikäläinen", role: "Tyhjän toimittaja" },
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
 
-  const activeUserName =
-    users.find((user) => user.id === activeUser)?.name || "???";
-  const activeProject = projects.find(
-    (project) => project._id === activeProjectId
-  );
-
+  const activeUserName = users.find((user) => user.id === activeUser)?.name || "???";
+  const activeProject = projects.find(project => project._id === activeProjectId);
   const tasks = activeProject?.tasks;
 
   const deleteNotification = (notificationId) => {
@@ -111,9 +117,9 @@ const Mainpage = () => {
     return <Navigate to="/login"></Navigate>;
   }
 
-  //Here if DB does not load, shows this to give it some time.
   if (isLoading) {
-    return <div>Loading...</div>;
+    // Show loading spinner or something ? Simply rendering div causes screen flashing upon some updates...
+    // Too intrusive, making it look janky.
   }
 
   return (
@@ -133,34 +139,31 @@ const Mainpage = () => {
             toggleTasksView={handleToggleTasksView}
             toggleSettingsView={handleToggleSettingsView}
           />
-          {activeProjectId ? (
+          {showCalendar ? (
+            <Calendar activeProject={activeProject} allProjects={projects} activeProjectId={activeProjectId} fetchProjects={fetchProjects} />
+          ) : showTasksview ? (
+            <TasksView />
+          ) : showSettingsView ? (
+            <SettingsView />
+          ) : activeProjectId ? (
             <div className="bg-gray-700 text-white p-4 m-4 rounded-lg">
               <h2 className="text-xl font-bold">{activeProject?.project}</h2>
               <p>{activeProject?.description}</p>
               <ProjectOverview project={activeProject} />
-              {/* Display more project details here */}
             </div>
           ) : (
             <div className="mt-4">
-              {showCalendar ? (
-                <Calendar />
-              ) : showTasksview ? (
-                <TasksView />
-              ) : showSettingsView ? (
-                <SettingsView />
-              ) : (
-                <div className="flex flex-col md:flex-row">
-                  <div className="md:flex-grow">
-                    <Notifications
-                      notifications={notifications}
-                      deleteNotification={deleteNotification}
-                    />
-                  </div>
-                  <div className="md:w-1/2 md:ml-4 mt-4 md:mt-0">
-                    <Tasks projects={parseAllTasks(projects)} />
-                  </div>
+              <div className="flex flex-col md:flex-row">
+                <div className="md:flex-grow">
+                  <Notifications
+                    notifications={notifications}
+                    deleteNotification={deleteNotification}
+                  />
                 </div>
-              )}
+                <div className="md:w-1/2 md:ml-4 mt-4 md:mt-0">
+                  <Tasks projects={parseAllTasks(projects)} />
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -170,11 +173,12 @@ const Mainpage = () => {
         >
           Logout
         </button>
-        {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
-        {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
       </div>
+      {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
+      {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
     </div>
   );
 };
 
 export default Mainpage;
+
