@@ -10,6 +10,7 @@ import Notifications from "../components/Notifications";
 import Calendar from "../components/Calendar";
 import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
+import SettingsView from "../components/SettingsView.js";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const Mainpage = () => {
@@ -25,6 +26,7 @@ const Mainpage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [projects, setProjects] = useState([]);
   const [showTasksview, setShowTasksview] = useState(false);
+  const [showSettingsView, setShowSettingsView] = useState(false);
   const [user, SetUser] = useState("");
   const navigate = useNavigate();
 
@@ -33,8 +35,15 @@ const Mainpage = () => {
     if (user) {
       let jsonedUser = JSON.parse(user);
       SetUser(jsonedUser.name);
+    } else {
+      navigate("/login");
     }
-  };
+}
+
+useEffect(() => {
+    checkLogin();
+    fetchProjects();
+}, []);
 
   const handleLogout = () => {
     window.localStorage.setItem("loggedUser", "");
@@ -43,19 +52,24 @@ const Mainpage = () => {
 
   const handleToggleCalendarView = () => {
     setShowTasksview(false);
+    setShowSettingsView(false);
     setShowCalendar((prevState) => !prevState);
   };
-
+  const handleToggleSettingsView = () => {
+    setShowTasksview(false);
+    setShowCalendar(false);
+    setShowSettingsView((prevState) => !prevState);
+  };
+  const handleToggleTasksView = () => {
+    setShowCalendar(false);
+    setShowSettingsView(false);
+    setShowTasksview((prevState) => !prevState);
+  };
   const [notifications, setNotifications] = useState([
     { id: 1, message: "New person added to Project Z", date: "02/04/2024" },
     { id: 2, message: "New person added to Project Y", date: "03/04/2024" },
     { id: 3, message: "Project X has 7 days left", date: "04/04/2024" },
   ]);
-
-  const handleToggleTasksView = () => {
-    setShowCalendar(false);
-    setShowTasksview((prevState) => !prevState);
-  };
 
   const fetchProjects = () => {
     setIsLoading(true);
@@ -91,13 +105,16 @@ const Mainpage = () => {
   const tasks = activeProject?.tasks;
 
   const deleteNotification = (notificationId) => {
-    setNotifications(currentNotifications =>
-      currentNotifications.filter(notification => notification.id !== notificationId));
+    setNotifications((currentNotifications) =>
+      currentNotifications.filter(
+        (notification) => notification.id !== notificationId
+      )
+    );
   };
 
   if (user === "") {
     checkLogin();
-    return <Navigate to="/login" />;
+    return <Navigate to="/login"></Navigate>;
   }
 
   if (isLoading) {
@@ -120,11 +137,14 @@ const Mainpage = () => {
           <Navbar
             toggleCalendarView={handleToggleCalendarView}
             toggleTasksView={handleToggleTasksView}
+            toggleSettingsView={handleToggleSettingsView}
           />
           {showCalendar ? (
             <Calendar activeProject={activeProject} allProjects={projects} activeProjectId={activeProjectId} fetchProjects={fetchProjects} />
           ) : showTasksview ? (
             <TasksView />
+          ) : showSettingsView ? (
+            <SettingsView />
           ) : activeProjectId ? (
             <div className="bg-gray-700 text-white p-4 m-4 rounded-lg">
               <h2 className="text-xl font-bold">{activeProject?.project}</h2>
@@ -161,3 +181,4 @@ const Mainpage = () => {
 };
 
 export default Mainpage;
+

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { ToastContainer, toast } from "react-toastify";
 const AddProjectPopup = ({ onClose }) => {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
@@ -8,14 +8,23 @@ const AddProjectPopup = ({ onClose }) => {
     event.preventDefault();
 
     if (!projectName || !projectDescription) {
-      alert("Please fill in all fields");
+      toast.error("Please fill all the fields", {
+        position: "top-center",
+        theme: "dark",
+      });
       return;
     }
+    toast.success("Project created successfully", {
+      position: "top-center",
+      theme: "dark",
+    });
+
     onClose();
   };
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+      <ToastContainer />
       <form
         onSubmit={handleSubmit}
         className="bg-slate-900 rounded-lg shadow-xl pt-16 px-16 pb-5 relative w-1/3 max-w-lg"

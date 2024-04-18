@@ -3,6 +3,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import AddTaskPopup from "./tasksviewcomponents/AddTaskPopup";
 import { Tooltip } from "react-tooltip";
 import EditTaskPopup from "./tasksviewcomponents/EditTaskPopup";
+import { toast, ToastContainer } from "react-toastify";
 
 function applyFilter() {
   const filter = document.getElementById("filter").value;
@@ -113,6 +114,10 @@ const TasksView = () => {
     setTasks((currentTasks) => {
       const filteredTasks = currentTasks.filter((task) => task.id !== taskId);
       console.log("Remaining tasks after deletion:", filteredTasks);
+      toast.success("Task deleted!", {
+        position: "top-center",
+        theme: "dark",
+      });
       return filteredTasks;
     });
   };
@@ -122,10 +127,35 @@ const TasksView = () => {
       currentTasks.map((task) => {
         if (task.id === taskId) {
           task.status = "Completed";
+          toast.success("Task marked as completed", {
+            position: "top-center",
+            theme: "dark",
+          });
         }
         return task;
       })
     );
+  };
+  const successfulEditNotify = () => {
+    console.log("in success notify");
+    toast.success("Task edited successfully", {
+      position: "top-center",
+      theme: "dark",
+    });
+    /*     alert("Task edited successfully"); */
+  };
+  const successfulAddNotify = () => {
+    toast.success("Task added successfully", {
+      position: "top-center",
+      theme: "dark",
+    });
+  };
+
+  const checkFieldsNotify = () => {
+    toast.error("Please fill in all fields", {
+      position: "top-center",
+      theme: "dark",
+    });
   };
 
   const TaskTooltip = ({ taskId, onDelete, onComplete }) => (
@@ -155,6 +185,7 @@ const TasksView = () => {
 
   return (
     <div className="h-screen">
+      <ToastContainer />
       <div className="flex">
         <h1 className="text-white text-3xl">Tasks</h1>
         <select
@@ -162,8 +193,9 @@ const TasksView = () => {
           id="filter"
           className="rounded ml-auto"
           onChange={applyFilter}
+          defaultValue={""}
         >
-          <option value="" selected disabled>
+          <option value="" disabled>
             Filter by:
           </option>
           <option value="All">All</option>
@@ -221,6 +253,8 @@ const TasksView = () => {
           onClose={hideAddTaskPopup}
           setTasks={setTasks}
           tasks={tasks}
+          checkFieldsNotify={checkFieldsNotify}
+          successNotify={successfulAddNotify}
         />
       )}
       {taskToEdit.id && (
@@ -228,6 +262,8 @@ const TasksView = () => {
           onClose={hideEditTaskPopup}
           setTasks={setTasks}
           taskToEdit={taskToEdit}
+          checkFieldsNotify={checkFieldsNotify}
+          successNotify={successfulEditNotify}
         />
       )}
     </div>
