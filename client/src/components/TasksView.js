@@ -124,6 +124,7 @@ const TasksView = ({ allProjects, fetchProjects }) => {
         throw new Error("Failed to add task");
       }
       console.log("Task added successfully");
+      successfulAddNotify();
       fetchProjects();
     } catch (error) {
       console.error("Error adding task:", error);
@@ -298,7 +299,6 @@ const TasksView = ({ allProjects, fetchProjects }) => {
           setTasks={setTasks}
           tasks={tasks}
           checkFieldsNotify={checkFieldsNotify}
-          successNotify={successfulAddNotify}
           addTaskToProject={addTaskToProject}
           projects={allProjects}
         />

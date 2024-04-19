@@ -2,26 +2,20 @@ import React, { useState } from "react";
 
 const AddTaskPopup = ({
   onClose,
-  setTasks,
   tasks,
   checkFieldsNotify,
-  successNotify,
   addTaskToProject,
   projects,
 }) => {
   const [taskName, setTaskName] = useState("");
-  const [projectName, setProjectName] = useState("");
+  const [projectId, setProjectId] = useState();
   const [assignee, setAssignee] = useState("");
   const [status, setStatus] = useState("Not started");
   const [deadline, setDeadline] = useState("");
 
-  const handleTaskNameChange = (e) => {
-    setTaskName(e.target.value);
-  };
-
   // parse projects to get the project names as optons for the select
   const projectOptions = projects.map((project) => (
-    <option key={project.id} value={project.project} className="text-white ">
+    <option selected value={project.id} className="text-white ">
       {project.project}
     </option>
   ));
@@ -30,7 +24,7 @@ const AddTaskPopup = ({
     // Add logic to handle adding the task
 
     // check that all the fields are filled
-    if (!taskName || !projectName || !assignee || !deadline) {
+    if (!taskName || !projectId || !assignee || !deadline) {
       checkFieldsNotify();
       return;
     }
@@ -38,7 +32,6 @@ const AddTaskPopup = ({
     // Create a new task object
     const newTask = {
       id: tasks.length + 1,
-      project: projectName,
       title: taskName,
       participants: assignee,
       end: deadline,
@@ -46,13 +39,8 @@ const AddTaskPopup = ({
     };
 
     // find the corresponding project id in the projects array
-    const projectId = projects.find(
-      (project) => project.project === projectName
-    ).id;
 
     addTaskToProject(projectId, newTask);
-    console.log("Task added:", taskName);
-    successNotify();
     // Reset task name input
     setTaskName("");
     onClose();
@@ -86,9 +74,9 @@ const AddTaskPopup = ({
           <select
             className="bg-gray-200 text-black p-2 rounded"
             type="text"
-            value={projectName}
-            defaultValue={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
+            value={projectId}
+            defaultValue={projectId}
+            onChange={(e) => setProjectId(e.target.value)}
           >
             {projectOptions}
           </select>
