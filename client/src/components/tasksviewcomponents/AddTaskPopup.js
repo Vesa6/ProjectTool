@@ -6,6 +6,8 @@ const AddTaskPopup = ({
   tasks,
   checkFieldsNotify,
   successNotify,
+  addTaskToProject,
+  projects,
 }) => {
   const [taskName, setTaskName] = useState("");
   const [projectName, setProjectName] = useState("");
@@ -16,6 +18,13 @@ const AddTaskPopup = ({
   const handleTaskNameChange = (e) => {
     setTaskName(e.target.value);
   };
+
+  // parse projects to get the project names as optons for the select
+  const projectOptions = projects.map((project) => (
+    <option key={project.id} value={project.project} className="text-white ">
+      {project.project}
+    </option>
+  ));
 
   const handleAddTask = () => {
     // Add logic to handle adding the task
@@ -29,16 +38,17 @@ const AddTaskPopup = ({
     // Create a new task object
     const newTask = {
       id: tasks.length + 1,
-      project: projectName,
-      name: taskName,
-      assignee: assignee,
-      deadline: deadline,
+      project_id: projects.find((project) => project.project === projectName)
+        .id,
+      title: taskName,
+      participants: assignee,
+      end: deadline,
       status: status,
     };
 
     // Add the new task to the tasks array
-    setTasks([...tasks, newTask]);
 
+    addTaskToProject(newTask);
     console.log("Task added:", taskName);
     successNotify();
     // Reset task name input
@@ -71,12 +81,15 @@ const AddTaskPopup = ({
           <label className="text-white" htmlFor="projectName">
             Project Name:
           </label>
-          <input
+          <select
             className="bg-gray-200 text-black p-2 rounded"
             type="text"
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
-          />
+          >
+            {projectOptions}
+          </select>
+
           <label className="text-white" htmlFor="taskName">
             Task Name:
           </label>
