@@ -38,17 +38,19 @@ const AddTaskPopup = ({
     // Create a new task object
     const newTask = {
       id: tasks.length + 1,
-      project_id: projects.find((project) => project.project === projectName)
-        .id,
+      project: projectName,
       title: taskName,
       participants: assignee,
       end: deadline,
       status: status,
     };
 
-    // Add the new task to the tasks array
+    // find the corresponding project id in the projects array
+    const projectId = projects.find(
+      (project) => project.project === projectName
+    ).id;
 
-    addTaskToProject(newTask);
+    addTaskToProject(projectId, newTask);
     console.log("Task added:", taskName);
     successNotify();
     // Reset task name input
@@ -85,6 +87,7 @@ const AddTaskPopup = ({
             className="bg-gray-200 text-black p-2 rounded"
             type="text"
             value={projectName}
+            defaultValue={projectName}
             onChange={(e) => setProjectName(e.target.value)}
           >
             {projectOptions}
