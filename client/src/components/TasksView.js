@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddTaskPopup from "./tasksviewcomponents/AddTaskPopup";
 import { Tooltip } from "react-tooltip";
@@ -22,10 +22,11 @@ function applyFilter() {
   }
 }
 
-const TasksView = () => {
+const TasksView = ({ allProjects, fetchProjects }) => {
   const [showAddTask, setShowAddTask] = useState(false);
   const showAddTaskPopup = () => setShowAddTask(true);
   const hideAddTaskPopup = () => setShowAddTask(false);
+  const [counter, setCounter] = useState(0);
 
   const [taskToEdit, setTaskToEdit] = useState({});
   const hideEditTaskPopup = () => setTaskToEdit({});
@@ -108,6 +109,49 @@ const TasksView = () => {
       status: "Completed",
     },
   ]);
+
+  async function addTaskToProject(projectId, newTask) {
+    const url = `http://localhost:3001/api/projects/${projectId}/add-task`;
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTask),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to add task");
+      }
+      console.log("Task added successfully");
+      fetchProjects();
+    } catch (error) {
+      console.error("Error adding task:", error);
+      fetchProjects(); // here just in case, should not be needed.
+    }
+  }
+
+  function parseAllTasks(projects) {
+    console.log("Parsing all tasks");
+    setCounter(counter + 1);
+    console.log("counter:", counter);
+    console.log("Projects:", projects);
+    // Flatten all tasks from all projects into a single array and add projetct name to each task
+    const allTasks = projects.flatMap((project) =>
+      project.tasks.map((task) => {
+        task.project = project.project;
+        task.projectId = project._id;
+        return task;
+      })
+    );
+    console.log("All tasks:", allTasks);
+    return allTasks;
+  }
+
+  useEffect(() => {
+    fetchProjects();
+    setTasks(parseAllTasks(allProjects));
+  }, []);
 
   const deleteTask = (taskId) => {
     console.log("Deleting task with ID:", taskId);
@@ -225,10 +269,10 @@ const TasksView = () => {
           {tasks.map((task) => (
             <tr key={task.id} className="mt-10">
               <td className="text-white">{task.project}</td>
-              <td className="text-white">{task.name}</td>
-              <td className="text-white">{task.deadline}</td>
+              <td className="text-white">{task.title}</td>
+              <td className="text-white">{task.end}</td>
               <td className="text-white">{task.status}</td>
-              <td className="text-white">{task.assignee}</td>
+              <td className="text-white">{task.participants}</td>
               <td className="text-slate-500 text-4xl flex justify-center items-center mt-3">
                 <div className="flex justify-center items-center">
                   <a
@@ -255,6 +299,8 @@ const TasksView = () => {
           tasks={tasks}
           checkFieldsNotify={checkFieldsNotify}
           successNotify={successfulAddNotify}
+          addTaskToProject={addTaskToProject}
+          projects={allProjects}
         />
       )}
       {taskToEdit.id && (

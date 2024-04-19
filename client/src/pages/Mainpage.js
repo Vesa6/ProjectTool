@@ -38,12 +38,12 @@ const Mainpage = () => {
     } else {
       navigate("/login");
     }
-}
+  }
 
-useEffect(() => {
+  useEffect(() => {
     checkLogin();
     fetchProjects();
-}, []);
+  }, []);
 
   const handleLogout = () => {
     window.localStorage.setItem("loggedUser", "");
@@ -73,24 +73,24 @@ useEffect(() => {
 
   const fetchProjects = () => {
     setIsLoading(true);
-    fetch('http://localhost:3001/api/projects')
-      .then(response => response.json())
-      .then(data => {
+    fetch("http://localhost:3001/api/projects")
+      .then((response) => response.json())
+      .then((data) => {
         setProjects(data);
         setIsLoading(false);
       })
-      .catch(error => {
-        console.error('Error:', error);
+      .catch((error) => {
+        console.error("Error:", error);
         setIsLoading(false);
       });
   };
-  
+
   useEffect(() => {
     fetchProjects();
   }, []);
 
   function parseAllTasks(projects) {
-    const allTasks = projects.flatMap(project => project.tasks);
+    const allTasks = projects.flatMap((project) => project.tasks);
     return allTasks;
   }
 
@@ -100,8 +100,11 @@ useEffect(() => {
     { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
   ];
 
-  const activeUserName = users.find((user) => user.id === activeUser)?.name || "???";
-  const activeProject = projects.find(project => project._id === activeProjectId);
+  const activeUserName =
+    users.find((user) => user.id === activeUser)?.name || "???";
+  const activeProject = projects.find(
+    (project) => project._id === activeProjectId
+  );
   const tasks = activeProject?.tasks;
 
   const deleteNotification = (notificationId) => {
@@ -140,9 +143,14 @@ useEffect(() => {
             toggleSettingsView={handleToggleSettingsView}
           />
           {showCalendar ? (
-            <Calendar activeProject={activeProject} allProjects={projects} activeProjectId={activeProjectId} fetchProjects={fetchProjects} />
+            <Calendar
+              activeProject={activeProject}
+              allProjects={projects}
+              activeProjectId={activeProjectId}
+              fetchProjects={fetchProjects}
+            />
           ) : showTasksview ? (
-            <TasksView />
+            <TasksView allProjects={projects} fetchProjects={fetchProjects} />
           ) : showSettingsView ? (
             <SettingsView />
           ) : activeProjectId ? (
@@ -181,4 +189,3 @@ useEffect(() => {
 };
 
 export default Mainpage;
-
