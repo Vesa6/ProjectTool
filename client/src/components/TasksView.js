@@ -31,7 +31,8 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   const hideEditTaskPopup = () => setTaskToEdit({});
 
   const findTask = (taskId) => {
-    setTaskToEdit(tasks.find((task) => task.id === taskId));
+    console.log("Finding task with ID:", taskId);
+    setTaskToEdit(tasks.find((task) => task._id === taskId));
   };
 
   const [tasks, setTasks] = useState([
@@ -279,9 +280,9 @@ const TasksView = ({ allProjects, fetchProjects }) => {
         </thead>
         <tbody className="text-center">
           {tasks.map((task) => (
-            <tr key={task.id} className="mt-10">
+            <tr key={task._id} className="mt-10">
               <td className="text-white">{task.project}</td>
-              <td className="text-white">{task.name}</td>
+              <td className="text-white">{task.title}</td>
               <td className="text-white">{task.start}</td>
               <td className="text-white">{task.end}</td>
               <td className="text-white">{task.status}</td>
@@ -289,13 +290,13 @@ const TasksView = ({ allProjects, fetchProjects }) => {
               <td className="text-slate-500 text-4xl flex justify-center items-center mt-3">
                 <div className="flex justify-center items-center">
                   <a
-                    data-tooltip-id={`options-${task.id}`}
+                    data-tooltip-id={`options-${task._id}`}
                     data-tooltip-place="left"
                   >
                     <BsThreeDotsVertical />
                   </a>
                   <TaskTooltip
-                    taskId={task.id}
+                    taskId={task._id}
                     onDelete={deleteTask}
                     onComplete={changeToCompleted}
                   />
@@ -315,7 +316,7 @@ const TasksView = ({ allProjects, fetchProjects }) => {
           projects={allProjects}
         />
       )}
-      {taskToEdit.id && (
+      {taskToEdit._id && (
         <EditTaskPopup
           onClose={hideEditTaskPopup}
           setTasks={setTasks}
