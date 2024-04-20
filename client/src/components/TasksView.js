@@ -110,6 +110,8 @@ const TasksView = ({ allProjects, fetchProjects }) => {
     },
   ]);
 
+  //useEffect for listening to changes in tasks
+
   async function addTaskToProject(projectId, newTask) {
     const url = `http://localhost:3001/api/projects/${projectId}/add-task`;
     try {
@@ -126,6 +128,7 @@ const TasksView = ({ allProjects, fetchProjects }) => {
       console.log("Task added successfully");
       successfulAddNotify();
       fetchProjects();
+      setTasksUpdated(!tasksUpdated);
     } catch (error) {
       console.error("Error adding task:", error);
       fetchProjects(); // here just in case, should not be needed.
@@ -134,8 +137,6 @@ const TasksView = ({ allProjects, fetchProjects }) => {
 
   function parseAllTasks(projects) {
     console.log("Parsing all tasks");
-    setCounter(counter + 1);
-    console.log("counter:", counter);
     console.log("Projects:", projects);
     // Flatten all tasks from all projects into a single array and add projetct name to each task
     const allTasks = projects.flatMap((project) =>
@@ -148,6 +149,11 @@ const TasksView = ({ allProjects, fetchProjects }) => {
     console.log("All tasks:", allTasks);
     return allTasks;
   }
+
+  useEffect(() => {
+    fetchProjects();
+    setTasks(parseAllTasks(allProjects));
+  }, []);
 
   useEffect(() => {
     fetchProjects();
