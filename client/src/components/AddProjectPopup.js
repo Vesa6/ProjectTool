@@ -13,16 +13,7 @@ const AddProjectPopup = ({ onClose }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    let project = {
-      name : projectName,
-      description: projectDescription,
-      manager: projectManager,
-      budget: projectBudget,
-      start: projectStart,
-      end: projectEnd,
-      tasks:[],
-    }
-    console.log(project)
+
 
     if (!projectName || !projectDescription || !projectStart || !projectEnd || !projectBudget || !projectManager) {
       toast.error("Please fill all the fields", {
@@ -30,16 +21,27 @@ const AddProjectPopup = ({ onClose }) => {
         theme: "dark",
       });
     }
-    try{
-    let response = await ProjectServices.postProjects(project)
-    console.log(response)
-      if(response.status === 200){
+
+    let project = {
+      name: projectName,
+      description: projectDescription,
+      manager: projectManager,
+      budget: projectBudget,
+      start: projectStart,
+      end: projectEnd,
+      tasks: [],
+    }
+
+    try {
+      let response = await ProjectServices.postProjects(project)
+      console.log(response)
+      if (response.status === 200) {
         toast.success("Project added successfully!", {
           position: "top-center",
           theme: "dark",
         });
       }
-    }catch(e){
+    } catch (e) {
       toast.error("Failed to send", {
         position: "top-center",
         theme: "dark",
