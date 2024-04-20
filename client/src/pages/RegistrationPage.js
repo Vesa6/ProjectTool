@@ -3,6 +3,7 @@ import { MdArrowBackIos } from "react-icons/md";
 import { Link } from "react-router-dom";
 import RegServices from "../components/apicomponents/Registerationservices"
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from "react-toastify";
 
 
 const RegistrationPage = () => {
@@ -33,11 +34,17 @@ const RegistrationPage = () => {
     let response = ""
     // Perform registration logic here
     if (repeatPassword !== password) {
-      alert("Passwords don't match")
+      toast.error("Passwords don't match", {
+        position: "top-center",
+        theme: "dark"
+      })
       return
     }
     if (email.length === 0 || password.length === 0 || name.length === 0) {
-      alert("All fields are required")
+      toast.error("All fields are required", {
+        position: "top-center",
+        theme: "dark"
+      })
       return
     }
     let newUser = {
@@ -48,10 +55,19 @@ const RegistrationPage = () => {
     response = await RegServices.register(newUser)
     console.log(response)
     if (response.status === 201) {
-      alert("Registration succesful");
-      navigate("/login")
+      toast.success("Registration succesful! \n\nYou will be redirected to login page", {
+        position: "top-center",
+        theme: "dark"
+      })
+      setTimeout(() => {
+        //
+        navigate("/login")
+      }, 3000);
     } else {
-      alert("Registration failed")
+      toast.error("Email already in Use", {
+        position: "top-center",
+        theme: "dark"
+      })
       console.log(response)
     }
 
@@ -60,6 +76,7 @@ const RegistrationPage = () => {
 
   return (
     <div className="bg-gray-700 w-screen h-screen relative">
+      <ToastContainer/>
       <form
         onSubmit={handleSubmit}
         className=" bg-gray-900 w-fit h-fit text-white absolute top-1/2 left-1/2 flex-col p-8 rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 max-w-md max-h-md"

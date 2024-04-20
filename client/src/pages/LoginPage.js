@@ -36,7 +36,7 @@ const LoginPage = () => {
         setTimeout(() => {
           //
           navigate("/");
-        }, 2000);
+        }, 1000);
         window.localStorage.setItem(
           "loggedUser",
           JSON.stringify(response.data)

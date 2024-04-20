@@ -59,7 +59,7 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
   const [highlightedDay, setHighlightedDay] = useState(format(new Date(), "yyyy-MM-dd"));
 
   // This weird syntax is the "nullish coalescing operator", basically just makes sure we don't acess nulls.
-  const [eventsCalendar, seteventsCalendar] = useState([...activeProject?.tasks ?? allProjects.flatMap(project => project.tasks)]);
+  const [eventsCalendar, seteventsCalendar] = useState([...activeProject?.data.tasks ?? allProjects.flatMap(project => project.data.tasks)]);
 
   const [newEvent, setNewEvent] = useState({
     title: '',
@@ -102,10 +102,10 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
   // If none selected, then it just shows all tasks from all projects and does some ugly mapping to add the project name to the task
   useEffect(() => {
     seteventsCalendar([
-      ...activeProject?.tasks ?? allProjects.flatMap(project =>
-        project.tasks.map(task => ({
+      ...activeProject?.data.tasks ?? allProjects.flatMap(project =>
+        project.data.tasks.map(task => ({
           ...task,
-          title: `${project.project}: ${task.title}`,
+          title: `${project.data.name}: ${task.title}`,
           participants: task.participants,
           status: task.status
         }))

@@ -20,15 +20,14 @@ projectRouter.get('/', async (request, response) => {
 projectRouter.post('/', async (request, response) => {
   const body = request.body
   console.log("Sending POST request")
-  if (body.id && body.data) {
-    const user = {
-      id: body.id,
-      data: body.data,
+  if (body) {
+    const project = {
+      data: body,
     }
     try {
       const db = request.app.locals.db;
-      if (user) {
-        const result = await db.collection("projects").insertOne(user);
+      if (project) {
+        const result = await db.collection("projects").insertOne(project);
         console.log("POST was succesful")
         response.json(result)
       }
@@ -39,7 +38,7 @@ projectRouter.post('/', async (request, response) => {
   } else {
 
     response.json("POST failed")
-    response.status(400).end(console.log("Request failed because id or data is empty"))
+    response.status(400).end(console.log("Request failed"))
   }
 
 })
