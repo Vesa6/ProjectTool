@@ -6,9 +6,9 @@ const EditTaskPopup = ({
   successNotify,
   checkFieldsNotify,
 }) => {
-  const [assignee, setAssignee] = useState(taskToEdit.assignee);
+  const [assignee, setAssignee] = useState(taskToEdit.participants);
   const [status, setStatus] = useState(taskToEdit.status);
-  const [deadline, setDeadline] = useState(taskToEdit.deadline);
+  const [deadline, setDeadline] = useState(taskToEdit.end);
 
   const handleAssigneeChange = (e) => {
     setAssignee(e.target.value);

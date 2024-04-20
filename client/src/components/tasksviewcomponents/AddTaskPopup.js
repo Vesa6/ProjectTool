@@ -2,47 +2,42 @@ import React, { useState } from "react";
 
 const AddTaskPopup = ({
   onClose,
-  setTasks,
-  tasks,
   checkFieldsNotify,
-  successNotify,
+  addTaskToProject,
+  projects,
 }) => {
   const [taskName, setTaskName] = useState("");
-  const [projectName, setProjectName] = useState("");
+  const [projectId, setProjectId] = useState();
   const [assignee, setAssignee] = useState("");
   const [status, setStatus] = useState("Not started");
   const [deadline, setDeadline] = useState("");
 
-  const handleTaskNameChange = (e) => {
-    setTaskName(e.target.value);
-  };
+  // parse projects to get the project names as optons for the select.
+  const projectOptions = projects.map((project) => (
+    <option value={project._id} className="text-white ">
+      {project.data.name}
+    </option>
+  ));
 
   const handleAddTask = () => {
     // Add logic to handle adding the task
 
     // check that all the fields are filled
-    if (!taskName || !projectName || !assignee || !deadline) {
+    if (!taskName || !projectId || !assignee || !deadline) {
       checkFieldsNotify();
       return;
     }
 
-    // Create a new task object
     const newTask = {
-      id: tasks.length + 1,
-      project: projectName,
-      name: taskName,
-      assignee: assignee,
-      deadline: deadline,
+      title: taskName,
       status: status,
+      start: " ",
+      end: deadline,
+      participants: assignee,
+      description: "",
     };
 
-    // Add the new task to the tasks array
-    setTasks([...tasks, newTask]);
-
-    console.log("Task added:", taskName);
-    successNotify();
-    // Reset task name input
-    setTaskName("");
+    addTaskToProject(projectId, newTask);
     onClose();
   };
 
@@ -71,12 +66,18 @@ const AddTaskPopup = ({
           <label className="text-white" htmlFor="projectName">
             Project Name:
           </label>
-          <input
+          <select
             className="bg-gray-200 text-black p-2 rounded"
             type="text"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-          />
+            value={projectId}
+            onChange={(e) => setProjectId(e.target.value)}
+          >
+            <option value=" " selected disabled>
+              Select a project
+            </option>
+            {projectOptions}
+          </select>
+
           <label className="text-white" htmlFor="taskName">
             Task Name:
           </label>
@@ -98,7 +99,11 @@ const AddTaskPopup = ({
           <label className="text-white" htmlFor="status">
             Status:
           </label>
-          <select className="bg-gray-200 text-black p-2 rounded" name="status">
+          <select
+            className="bg-gray-200 text-black p-2 rounded"
+            name="status"
+            onChange={(e) => setStatus(e.target.value)}
+          >
             <option value="Not started">Not started</option>
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>

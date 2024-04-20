@@ -9,13 +9,17 @@ const AddProjectPopup = ({ onClose }) => {
   const [projectStart, setProjectStart] = useState("");
   const [projectEnd, setProjectEnd] = useState("");
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-
-
-    if (!projectName || !projectDescription || !projectStart || !projectEnd || !projectBudget || !projectManager) {
+    if (
+      !projectName ||
+      !projectDescription ||
+      !projectStart ||
+      !projectEnd ||
+      !projectBudget ||
+      !projectManager
+    ) {
       toast.error("Please fill all the fields", {
         position: "top-center",
         theme: "dark",
@@ -29,12 +33,11 @@ const AddProjectPopup = ({ onClose }) => {
       budget: projectBudget,
       start: projectStart,
       end: projectEnd,
-      tasks: [],
-    }
+    };
 
     try {
-      let response = await ProjectServices.postProjects(project)
-      console.log(response)
+      let response = await ProjectServices.postProjects(project);
+      console.log(response);
       if (response.status === 200) {
         toast.success("Project added successfully!", {
           position: "top-center",
@@ -50,7 +53,7 @@ const AddProjectPopup = ({ onClose }) => {
     setTimeout(() => {
       //
       onClose();
-      window.location.reload()
+      window.location.reload();
     }, 2000);
   };
 
@@ -89,7 +92,7 @@ const AddProjectPopup = ({ onClose }) => {
             value={projectDescription}
             onChange={(e) => setProjectDescription(e.target.value)}
           />
-          <label className="text-white" htmlFor="projectManager" >
+          <label className="text-white" htmlFor="projectManager">
             Project Manager:
           </label>
           <input
