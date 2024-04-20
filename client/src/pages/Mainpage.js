@@ -49,6 +49,11 @@ useEffect(() => {
     window.localStorage.setItem("loggedUser", "");
     navigate("/login");
   };
+  const handleToggleOverview = () => {
+    setShowTasksview(false);
+    setShowCalendar(false);
+    setShowSettingsView(false);
+  }
 
   const handleToggleCalendarView = () => {
     setShowTasksview(false);
@@ -90,7 +95,7 @@ useEffect(() => {
   }, []);
 
   function parseAllTasks(projects) {
-    const allTasks = projects.flatMap(project => project.tasks);
+    const allTasks = projects.flatMap(project => project.data.tasks);
     return allTasks;
   }
 
@@ -102,7 +107,7 @@ useEffect(() => {
 
   const activeUserName = users.find((user) => user.id === activeUser)?.name || "???";
   const activeProject = projects.find(project => project._id === activeProjectId);
-  const tasks = activeProject?.tasks;
+  const tasks = activeProject?.data.tasks;
 
   const deleteNotification = (notificationId) => {
     setNotifications((currentNotifications) =>
@@ -138,6 +143,7 @@ useEffect(() => {
             toggleCalendarView={handleToggleCalendarView}
             toggleTasksView={handleToggleTasksView}
             toggleSettingsView={handleToggleSettingsView}
+            toggleOverview={handleToggleOverview}
           />
           {showCalendar ? (
             <Calendar activeProject={activeProject} allProjects={projects} activeProjectId={activeProjectId} fetchProjects={fetchProjects} />
