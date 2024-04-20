@@ -270,6 +270,7 @@ const TasksView = ({ allProjects, fetchProjects }) => {
           <tr className="text-slate-500">
             <th className="">Project</th>
             <th className="">Task name</th>
+            <th className="">Start</th>
             <th className="">Deadline</th>
             <th className="">Status</th>
             <th className="">Assignee</th>
@@ -280,7 +281,8 @@ const TasksView = ({ allProjects, fetchProjects }) => {
           {tasks.map((task) => (
             <tr key={task.id} className="mt-10">
               <td className="text-white">{task.project}</td>
-              <td className="text-white">{task.title}</td>
+              <td className="text-white">{task.name}</td>
+              <td className="text-white">{task.start}</td>
               <td className="text-white">{task.end}</td>
               <td className="text-white">{task.status}</td>
               <td className="text-white">{task.participants}</td>
