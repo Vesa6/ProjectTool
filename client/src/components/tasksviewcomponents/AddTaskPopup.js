@@ -10,6 +10,7 @@ const AddTaskPopup = ({
   const [projectId, setProjectId] = useState();
   const [assignee, setAssignee] = useState("");
   const [status, setStatus] = useState("Not started");
+  const [startDate, setStartDate] = useState("");
   const [deadline, setDeadline] = useState("");
 
   // parse projects to get the project names as optons for the select.
@@ -31,7 +32,7 @@ const AddTaskPopup = ({
     const newTask = {
       title: taskName,
       status: status,
-      start: " ",
+      start: startDate,
       end: deadline,
       participants: assignee,
       description: "",
@@ -108,6 +109,15 @@ const AddTaskPopup = ({
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
           </select>
+          <label className="text-white" htmlFor="startDate">
+            Start Date:
+          </label>
+          <input
+            className="bg-gray-200 text-black p-2 rounded"
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          ></input>
           <label className="text-white" htmlFor="deadline">
             Deadline:
           </label>
