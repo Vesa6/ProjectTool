@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 const AddTaskPopup = ({
   onClose,
-  tasks,
   checkFieldsNotify,
   addTaskToProject,
   projects,
@@ -13,9 +12,18 @@ const AddTaskPopup = ({
   const [status, setStatus] = useState("Not started");
   const [deadline, setDeadline] = useState("");
 
-  // parse projects to get the project names as optons for the select
+  const [newTask, setNewTask] = useState({
+    title: "",
+    status: "",
+    start: " ",
+    end: "",
+    participants: "",
+    description: "",
+  });
+
+  // parse projects to get the project names as optons for the select.
   const projectOptions = projects.map((project) => (
-    <option selected value={project.id} className="text-white ">
+    <option value={project.id} className="text-white ">
       {project.project}
     </option>
   ));
@@ -29,17 +37,16 @@ const AddTaskPopup = ({
       return;
     }
 
-    // Create a new task object
-    const newTask = {
-      id: tasks.length + 1,
+    setNewTask({
       title: taskName,
-      participants: assignee,
-      end: deadline,
       status: status,
-    };
-
-    // find the corresponding project id in the projects array
-
+      start: " ",
+      end: deadline,
+      participants: assignee,
+      description: "",
+    });
+    console.log("New task:", newTask);
+    console.log("Project ID:", projectId);
     addTaskToProject(projectId, newTask);
     // Reset task name input
     setTaskName("");
@@ -75,7 +82,6 @@ const AddTaskPopup = ({
             className="bg-gray-200 text-black p-2 rounded"
             type="text"
             value={projectId}
-            defaultValue={projectId}
             onChange={(e) => setProjectId(e.target.value)}
           >
             {projectOptions}
@@ -106,6 +112,7 @@ const AddTaskPopup = ({
             <option value="Not started">Not started</option>
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
+            onChange={(e) => setStatus(e.target.value)}
           </select>
           <label className="text-white" htmlFor="deadline">
             Deadline:
