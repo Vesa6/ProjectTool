@@ -15,7 +15,7 @@ const AddTaskPopup = ({
   // parse projects to get the project names as optons for the select.
   const projectOptions = projects.map((project) => (
     <option value={project._id} className="text-white ">
-      {project.project}
+      {project.data.name}
     </option>
   ));
 
@@ -36,12 +36,6 @@ const AddTaskPopup = ({
       participants: assignee,
       description: "",
     };
-
-    console.log("Project ID:", projectId);
-    console.log("Task Name:", taskName);
-    console.log("Assignee:", assignee);
-    console.log("Status:", status);
-    console.log("Deadline:", deadline);
 
     addTaskToProject(projectId, newTask);
     onClose();
@@ -78,6 +72,9 @@ const AddTaskPopup = ({
             value={projectId}
             onChange={(e) => setProjectId(e.target.value)}
           >
+            <option value=" " selected disabled>
+              Select a project
+            </option>
             {projectOptions}
           </select>
 

@@ -21,7 +21,7 @@ const FullCalendarComponent = ({ setHighlightedDay, eventsCalendar }) => {
       status: event.extendedProps.status,
       end: event.end,
       participants: event.extendedProps.participants,
-      description: event.extendedProps.description
+      description: event.extendedProps.description,
     });
   };
 
@@ -40,9 +40,9 @@ const FullCalendarComponent = ({ setHighlightedDay, eventsCalendar }) => {
         eventClick={handleEventClick}
         dateClick={handleDateClick}
         headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,dayGridWeek',
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,dayGridWeek",
         }}
         height="80%"
       />
@@ -55,19 +55,29 @@ const FullCalendarComponent = ({ setHighlightedDay, eventsCalendar }) => {
 
 //TODO: Cleanup and refactor this component
 
-const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjects }) => {
-  const [highlightedDay, setHighlightedDay] = useState(format(new Date(), "yyyy-MM-dd"));
+const CalendarView = ({
+  activeProject,
+  allProjects,
+  activeProjectId,
+  fetchProjects,
+}) => {
+  const [highlightedDay, setHighlightedDay] = useState(
+    format(new Date(), "yyyy-MM-dd")
+  );
 
   // This weird syntax is the "nullish coalescing operator", basically just makes sure we don't acess nulls.
-  const [eventsCalendar, seteventsCalendar] = useState([...activeProject?.data.tasks ?? allProjects.flatMap(project => project.data.tasks)]);
+  const [eventsCalendar, seteventsCalendar] = useState([
+    ...(activeProject?.tasks ??
+      allProjects.flatMap((project) => project.tasks)),
+  ]);
 
   const [newEvent, setNewEvent] = useState({
-    title: '',
-    status: 'Not started',
+    title: "",
+    status: "Not started",
     start: highlightedDay,
-    end: '',
+    end: "",
     participants: [],
-    description: '',
+    description: "",
   });
 
   const [isPopupscreenOpen, setIsPopupscreenOpen] = useState(false);
@@ -75,26 +85,28 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
   // All the possible options for participants.
   // This could be fetched from the server, but for now it's hardcoded.
   const [participants] = useState([
-    { id: 1, name: 'Aada' },
-    { id: 2, name: 'Mikael' },
-    { id: 3, name: 'Asla' },
-    { id: 4, name: 'Jani' },
-    { id: 5, name: 'Vesa' },
-    { id: 6, name: 'Arttu' },
+    { id: 1, name: "Aada" },
+    { id: 2, name: "Mikael" },
+    { id: 3, name: "Asla" },
+    { id: 4, name: "Jani" },
+    { id: 5, name: "Vesa" },
+    { id: 6, name: "Arttu" },
   ]);
 
   useEffect(() => {
     const highlighted = {
-      title: 'Selected Day',
+      title: "Selected Day",
       start: highlightedDay,
-      color: '#378006',
-      id: 'selected-date',
+      color: "#378006",
+      id: "selected-date",
     };
 
-    seteventsCalendar(currentEvents => {
+    seteventsCalendar((currentEvents) => {
       // This is a bit of mess, but practically adds the highlighted day to the calendar.
       // Don't ask.
-      return currentEvents.filter(event => event.id !== 'selected-date').concat(highlighted);
+      return currentEvents
+        .filter((event) => event.id !== "selected-date")
+        .concat(highlighted);
     });
   }, [highlightedDay]);
 
@@ -102,22 +114,23 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
   // If none selected, then it just shows all tasks from all projects and does some ugly mapping to add the project name to the task
   useEffect(() => {
     seteventsCalendar([
-      ...activeProject?.data.tasks ?? allProjects.flatMap(project =>
-        project.data.tasks.map(task => ({
-          ...task,
-          title: `${project.data.name}: ${task.title}`,
-          participants: task.participants,
-          status: task.status
-        }))
-      )
+      ...(activeProject?.tasks ??
+        allProjects.flatMap((project) =>
+          project.tasks.map((task) => ({
+            ...task,
+            title: `${project.data.name}: ${task.title}`,
+            participants: task.participants,
+            status: task.status,
+          }))
+        )),
     ]);
   }, [activeProject]);
 
   // This hacky use effect ensures that dates default to the current day if none chosen
   useEffect(() => {
-    setNewEvent(current => ({
+    setNewEvent((current) => ({
       ...current,
-      start: highlightedDay
+      start: highlightedDay,
     }));
   }, [highlightedDay]);
 
@@ -125,44 +138,42 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
     const url = `http://localhost:3001/api/projects/${projectId}/add-task`;
     try {
       const response = await fetch(url, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(newTask)
+        body: JSON.stringify(newTask),
       });
       if (!response.ok) {
-        throw new Error('Failed to add task');
+        throw new Error("Failed to add task");
       }
-      console.log('Task added successfully');
+      console.log("Task added successfully");
       fetchProjects();
     } catch (error) {
-      console.error('Error adding task:', error);
+      console.error("Error adding task:", error);
       fetchProjects(); // here just in case, should not be needed.
     }
-
   }
 
   const resetFormFields = () => {
     setNewEvent({
-      title: '',
-      status: 'Not started',
+      title: "",
+      status: "Not started",
       start: highlightedDay,
-      end: '',
+      end: "",
       participants: [],
-      description: '',
+      description: "",
     });
     setIsPopupscreenOpen(false);
   };
 
   const handleAddTask = () => {
-    console.log(activeProject)
+    console.log(activeProject);
     addTaskToProject(activeProject._id, newEvent);
     resetFormFields();
   };
 
   // Specific time functionality from previous version removed to keep it simple
-
 
   //TODO: Refactor return to use components.
   return (
@@ -198,17 +209,23 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
                 <button onClick={() => setIsPopupscreenOpen(false)}>✖️</button>
               </div>
               <div className="mb-4">
-                <label htmlFor="title" className="block mb-2">Title:</label>
+                <label htmlFor="title" className="block mb-2">
+                  Title:
+                </label>
                 <input
                   type="text"
                   id="title"
                   className="w-full p-2 text-white bg-gray-800 rounded"
                   value={newEvent.title}
-                  onChange={e => setNewEvent({ ...newEvent, title: e.target.value })}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, title: e.target.value })
+                  }
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="description" className="block mb-2">Description:</label>
+                <label htmlFor="description" className="block mb-2">
+                  Description:
+                </label>
                 <textarea
                   id="description"
                   className="w-full p-2 text-white bg-gray-800 rounded"
@@ -216,27 +233,37 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
                   maxLength="200"
                   placeholder="Enter task description (max 200 characters)..."
                   value={newEvent.description}
-                  onChange={e => setNewEvent({ ...newEvent, description: e.target.value })}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, description: e.target.value })
+                  }
                 />
               </div>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label htmlFor="date" className="block mb-2">Task date:</label>
+                  <label htmlFor="date" className="block mb-2">
+                    Task date:
+                  </label>
                   <input
                     type="date"
                     id="start"
                     className="w-full p-2 text-white bg-gray-800 rounded"
                     value={newEvent.start}
-                    onChange={e => setNewEvent({ ...newEvent, start: e.target.value })}
+                    onChange={(e) =>
+                      setNewEvent({ ...newEvent, start: e.target.value })
+                    }
                   />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="status" className="block mb-2">Status:</label>
+                  <label htmlFor="status" className="block mb-2">
+                    Status:
+                  </label>
                   <select
                     id="status"
                     className="w-full p-2 text-white bg-gray-800 rounded"
                     value={newEvent.status}
-                    onChange={e => setNewEvent({ ...newEvent, status: e.target.value })}
+                    onChange={(e) =>
+                      setNewEvent({ ...newEvent, status: e.target.value })
+                    }
                   >
                     <option value="Not started">Not started</option>
                     <option value="In progress">In progress</option>
@@ -244,24 +271,41 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
                 </div>
               </div>
               <div className="mb-4">
-                <label htmlFor="participants" className="block mb-2 text-sm">Select Participants:</label>
+                <label htmlFor="participants" className="block mb-2 text-sm">
+                  Select Participants:
+                </label>
                 <select
                   multiple
                   id="participants"
                   className="w-full p-2 text-white bg-gray-800 rounded"
-                  onChange={e => {
-                    const values = Array.from(e.target.selectedOptions, option => option.value);
+                  onChange={(e) => {
+                    const values = Array.from(
+                      e.target.selectedOptions,
+                      (option) => option.value
+                    );
                     setNewEvent({ ...newEvent, participants: values });
                   }}
                 >
-                  {participants.map(participant => (
-                    <option key={participant.id} value={participant.name}>{participant.name}</option>
+                  {participants.map((participant) => (
+                    <option key={participant.id} value={participant.name}>
+                      {participant.name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="flex justify-between">
-                <button onClick={resetFormFields} className="px-4 py-2 bg-red-500 rounded hover:bg-red-600 focus:outline-none">Cancel</button>
-                <button onClick={handleAddTask} className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 focus:outline-none">Add</button>
+                <button
+                  onClick={resetFormFields}
+                  className="px-4 py-2 bg-red-500 rounded hover:bg-red-600 focus:outline-none"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddTask}
+                  className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 focus:outline-none"
+                >
+                  Add
+                </button>
               </div>
             </div>
           </div>
@@ -272,4 +316,3 @@ const CalendarView = ({ activeProject, allProjects, activeProjectId, fetchProjec
 };
 
 export default CalendarView;
-

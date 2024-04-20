@@ -137,13 +137,20 @@ const TasksView = ({ allProjects, fetchProjects }) => {
     console.log("Parsing all tasks");
     console.log("Projects:", projects);
     // Flatten all tasks from all projects into a single array and add projetct name to each task
-    const allTasks = projects.flatMap((project) =>
-      project.tasks.map((task) => {
-        task.project = project.project;
-        task.projectId = project._id;
-        return task;
-      })
-    );
+    let allTasks = [];
+    try {
+      allTasks = projects.flatMap((project) =>
+        project.tasks.map((task) => {
+          task.project = project.data.name;
+          task.projectId = project._id;
+          return task;
+        })
+      );
+    } catch (error) {
+      console.error("Error parsing all tasks:", error);
+      return [];
+    }
+
     console.log("All tasks:", allTasks);
     return allTasks;
   }
@@ -154,7 +161,6 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   }, []);
 
   useEffect(() => {
-    fetchProjects();
     setTasks(parseAllTasks(allProjects));
   }, [allProjects]);
 
