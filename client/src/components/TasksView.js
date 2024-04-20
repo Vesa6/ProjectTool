@@ -26,7 +26,7 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   const [showAddTask, setShowAddTask] = useState(false);
   const showAddTaskPopup = () => setShowAddTask(true);
   const hideAddTaskPopup = () => setShowAddTask(false);
-  const [counter, setCounter] = useState(0);
+  const [tasksUpdated, setTasksUpdated] = useState(false);
 
   const [taskToEdit, setTaskToEdit] = useState({});
   const hideEditTaskPopup = () => setTaskToEdit({});
@@ -152,7 +152,7 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   useEffect(() => {
     fetchProjects();
     setTasks(parseAllTasks(allProjects));
-  }, []);
+  }, [tasksUpdated]);
 
   const deleteTask = (taskId) => {
     console.log("Deleting task with ID:", taskId);
