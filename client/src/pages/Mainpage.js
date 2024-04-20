@@ -146,6 +146,7 @@ const Mainpage = () => {
             toggleCalendarView={handleToggleCalendarView}
             toggleTasksView={handleToggleTasksView}
             toggleSettingsView={handleToggleSettingsView}
+            toggleOverview={handleToggleOverview}
           />
           {showCalendar ? (
             <Calendar
