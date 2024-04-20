@@ -1,25 +1,55 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import ProjectServices from "./apicomponents/Projectservices";
 const AddProjectPopup = ({ onClose }) => {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+  const [projectManager, setProjectManager] = useState("");
+  const [projectBudget, setProjectBudget] = useState("");
+  const [projectStart, setProjectStart] = useState("");
+  const [projectEnd, setProjectEnd] = useState("");
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!projectName || !projectDescription) {
+    let project = {
+      name : projectName,
+      description: projectDescription,
+      manager: projectManager,
+      budget: projectBudget,
+      start: projectStart,
+      end: projectEnd,
+      tasks:[],
+    }
+    console.log(project)
+
+    if (!projectName || !projectDescription || !projectStart || !projectEnd || !projectBudget || !projectManager) {
       toast.error("Please fill all the fields", {
         position: "top-center",
         theme: "dark",
       });
-      return;
     }
-    toast.success("Project created successfully", {
-      position: "top-center",
-      theme: "dark",
-    });
-
-    onClose();
+    try{
+    let response = await ProjectServices.postProjects(project)
+    console.log(response)
+      if(response.status === 200){
+        toast.success("Project added successfully!", {
+          position: "top-center",
+          theme: "dark",
+        });
+      }
+    }catch(e){
+      toast.error("Failed to send", {
+        position: "top-center",
+        theme: "dark",
+      });
+    }
+    setTimeout(() => {
+      //
+      onClose();
+      window.location.reload()
+    }, 2000);
   };
 
   return (
@@ -57,12 +87,14 @@ const AddProjectPopup = ({ onClose }) => {
             value={projectDescription}
             onChange={(e) => setProjectDescription(e.target.value)}
           />
-          <label className="text-white" htmlFor="projectManager">
+          <label className="text-white" htmlFor="projectManager" >
             Project Manager:
           </label>
           <input
             className="bg-gray-200 text-black p-2 rounded"
             type="text"
+            value={projectManager}
+            onChange={(e) => setProjectManager(e.target.value)}
           ></input>
           <label className="text-white" htmlFor="projectBudget">
             Budgeted hours:
@@ -70,6 +102,8 @@ const AddProjectPopup = ({ onClose }) => {
           <input
             className="bg-gray-200 text-black p-2 rounded"
             type="number"
+            value={projectBudget}
+            onChange={(e) => setProjectBudget(e.target.value)}
           ></input>
           <label className="text-white" htmlFor="startDate">
             Begins on:
@@ -77,13 +111,17 @@ const AddProjectPopup = ({ onClose }) => {
           <input
             className="bg-gray-200 text-black p-2 rounded"
             type="date"
+            value={projectStart}
+            onChange={(e) => setProjectStart(e.target.value)}
           ></input>
           <label className="text-white" htmlFor="deadline">
-            Deadline:
+            Ends on:
           </label>
           <input
             className="bg-gray-200 text-black p-2 rounded"
             type="date"
+            value={projectEnd}
+            onChange={(e) => setProjectEnd(e.target.value)}
           ></input>
           <div className="h-5" />
           <button

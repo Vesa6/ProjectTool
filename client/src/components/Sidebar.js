@@ -55,7 +55,7 @@ const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId,
             onClick={() => setActiveProjectId(activeProjectId === project._id ? undefined : project._id)}
           >
             <div>
-              <p className="text-white font-semibold">{project.project}</p>
+              <p className="text-white font-semibold">{project.data.name}</p>
               {/* Other project details */}
             </div>
           </div>

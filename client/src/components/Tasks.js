@@ -4,17 +4,24 @@ import { PieChart, Pie, Cell, Tooltip } from "recharts";
 const Tasks = ({ projects }) => { // tasks passed as props
 
   // Calculate the status totals
-  console.log(projects)
-  const tasksStatus = projects.reduce((acc, task) => {
-    if (task.status === "Not started") acc[0].value += 1;
-    else if (task.status === "Completed") acc[1].value += 1;
-    else if (task.status === "In progress") acc[2].value += 1;
-    return acc;
-  }, [
-    { name: "Not started", value: 0 },
-    { name: "Completed", value: 0 },
-    { name: "In Progress", value: 0 },
-  ]);
+  let tasksStatus = ""
+  if (projects){
+    try{
+      tasksStatus = projects.reduce((acc, task) => {
+      if (task.status === "Not started") acc[0].value += 1;
+      else if (task.status === "Completed") acc[1].value += 1;
+      else if (task.status === "In progress") acc[2].value += 1;
+      return acc;
+    }, [
+      { name: "Not started", value: 0 },
+      { name: "Completed", value: 0 },
+      { name: "In Progress", value: 0 },
+    ]);
+    }catch(e){
+      return "";
+    }
+  }
+
 
   const colors = {
     "Not started": "#3B82F6",
