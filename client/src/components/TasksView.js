@@ -26,7 +26,6 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   const [showAddTask, setShowAddTask] = useState(false);
   const showAddTaskPopup = () => setShowAddTask(true);
   const hideAddTaskPopup = () => setShowAddTask(false);
-  const [tasksUpdated, setTasksUpdated] = useState(false);
 
   const [taskToEdit, setTaskToEdit] = useState({});
   const hideEditTaskPopup = () => setTaskToEdit({});
@@ -128,7 +127,6 @@ const TasksView = ({ allProjects, fetchProjects }) => {
       console.log("Task added successfully");
       successfulAddNotify();
       fetchProjects();
-      setTasksUpdated(!tasksUpdated);
     } catch (error) {
       console.error("Error adding task:", error);
       fetchProjects(); // here just in case, should not be needed.
@@ -158,7 +156,7 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   useEffect(() => {
     fetchProjects();
     setTasks(parseAllTasks(allProjects));
-  }, [tasksUpdated]);
+  }, [allProjects]);
 
   const deleteTask = (taskId) => {
     console.log("Deleting task with ID:", taskId);
