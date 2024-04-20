@@ -12,18 +12,9 @@ const AddTaskPopup = ({
   const [status, setStatus] = useState("Not started");
   const [deadline, setDeadline] = useState("");
 
-  const [newTask, setNewTask] = useState({
-    title: "",
-    status: "",
-    start: " ",
-    end: "",
-    participants: "",
-    description: "",
-  });
-
   // parse projects to get the project names as optons for the select.
   const projectOptions = projects.map((project) => (
-    <option value={project.id} className="text-white ">
+    <option value={project._id} className="text-white ">
       {project.project}
     </option>
   ));
@@ -37,19 +28,22 @@ const AddTaskPopup = ({
       return;
     }
 
-    setNewTask({
+    const newTask = {
       title: taskName,
       status: status,
       start: " ",
       end: deadline,
       participants: assignee,
       description: "",
-    });
-    console.log("New task:", newTask);
+    };
+
     console.log("Project ID:", projectId);
+    console.log("Task Name:", taskName);
+    console.log("Assignee:", assignee);
+    console.log("Status:", status);
+    console.log("Deadline:", deadline);
+
     addTaskToProject(projectId, newTask);
-    // Reset task name input
-    setTaskName("");
     onClose();
   };
 
@@ -108,11 +102,14 @@ const AddTaskPopup = ({
           <label className="text-white" htmlFor="status">
             Status:
           </label>
-          <select className="bg-gray-200 text-black p-2 rounded" name="status">
+          <select
+            className="bg-gray-200 text-black p-2 rounded"
+            name="status"
+            onChange={(e) => setStatus(e.target.value)}
+          >
             <option value="Not started">Not started</option>
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
-            onChange={(e) => setStatus(e.target.value)}
           </select>
           <label className="text-white" htmlFor="deadline">
             Deadline:
