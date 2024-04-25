@@ -188,27 +188,39 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   }, [allProjects]);
 
   const deleteTask = (taskId) => {
-    console.log("Deleting task with ID:", taskId);
-    setTasks((currentTasks) => {
-      const filteredTasks = currentTasks.filter((task) => task.id !== taskId);
-      console.log("Remaining tasks after deletion:", filteredTasks);
-      toast.success("Task deleted!", {
-        position: "top-center",
-        theme: "dark",
+    const tasktoDelete = tasks.find((task) => task._id === taskId);
+    const projectId = tasktoDelete.projectId;
+    const url = `http://localhost:3001/api/projects/${projectId}/delete-task/${taskId}`;
+    fetch(url, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to delete task");
+        }
+        console.log("Task deleted successfully");
+        fetchProjects();
+        toast.success("Task deleted successfully", {
+          position: "top-center",
+          theme: "dark",
+        });
+      })
+      .catch((error) => {
+        console.error("Error deleting task:", error);
+        toast.error("Failed to delete task, please try again", {
+          position: "top-center",
+          theme: "dark",
+        });
+        fetchProjects(); // here just in case, should not be needed.
       });
-      return filteredTasks;
-    });
   };
 
   const changeToCompleted = (taskId) => {
     setTasks((currentTasks) =>
       currentTasks.map((task) => {
-        if (task.id === taskId) {
+        if (task._id === taskId) {
           task.status = "Completed";
-          toast.success("Task marked as completed", {
-            position: "top-center",
-            theme: "dark",
-          });
+          editTask(task.projectId, task);
         }
         return task;
       })
@@ -220,7 +232,6 @@ const TasksView = ({ allProjects, fetchProjects }) => {
       position: "top-center",
       theme: "dark",
     });
-    /*     alert("Task edited successfully"); */
   };
   const successfulAddNotify = () => {
     toast.success("Task added successfully", {
