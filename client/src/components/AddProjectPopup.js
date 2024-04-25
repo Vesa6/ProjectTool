@@ -58,7 +58,7 @@ const AddProjectPopup = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+    <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center max-h-full overflow-y-auto">
       <ToastContainer />
       <form
         onSubmit={handleSubmit}
