@@ -3,11 +3,12 @@ import { useState } from "react";
 const EditTaskPopup = ({
   onClose,
   taskToEdit,
-  successNotify,
   checkFieldsNotify,
+  editTask,
 }) => {
   const [assignee, setAssignee] = useState(taskToEdit.participants);
   const [status, setStatus] = useState(taskToEdit.status);
+  const [start, setStart] = useState(taskToEdit.start);
   const [deadline, setDeadline] = useState(taskToEdit.end);
 
   const handleAssigneeChange = (e) => {
@@ -30,13 +31,18 @@ const EditTaskPopup = ({
       checkFieldsNotify();
       return;
     }
-
-    taskToEdit.assignee = assignee;
-    taskToEdit.status = status;
-    taskToEdit.deadline = deadline;
-    successNotify();
+    const editedTask = {
+      _id: taskToEdit._id,
+      title: taskToEdit.title,
+      status: status,
+      start: start,
+      end: deadline,
+      participants: assignee,
+    };
+    console.log("taskToEdit", editedTask);
     // add api logic here
-
+    // find the project that the task belongs to and get the project id
+    editTask(taskToEdit.projectId, editedTask);
     onClose();
   };
 
@@ -59,7 +65,7 @@ const EditTaskPopup = ({
           &times;
         </button>
         <h2 className=" text-2xl font-bold text-center m-3 text-white">
-          {taskToEdit.name}
+          {taskToEdit.title}
         </h2>
         <h3 className="text-center font-bold m-3 text-white">
           Part of project: {taskToEdit.project}
@@ -87,6 +93,15 @@ const EditTaskPopup = ({
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
           </select>
+          <label className="text-white" htmlFor="start">
+            Start:
+          </label>
+          <input
+            className="bg-gray-200 text-black p-2 rounded"
+            type="date"
+            value={start}
+            onChange={(e) => setStart(e.target.value)}
+          ></input>
           <label className="text-white" htmlFor="deadline">
             Deadline:
           </label>

@@ -134,6 +134,28 @@ const TasksView = ({ allProjects, fetchProjects }) => {
     }
   }
 
+  async function editTask(projectId, updatedTask) {
+    const url = `http://localhost:3001/api/projects/${projectId}/update-task`;
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTask),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to edit task");
+      }
+      console.log("Task edited successfully");
+      successfulEditNotify();
+      fetchProjects();
+    } catch (error) {
+      console.error("Error editing task:", error);
+      fetchProjects(); // here just in case, should not be needed.
+    }
+  }
+
   function parseAllTasks(projects) {
     console.log("Parsing all tasks");
     console.log("Projects:", projects);
@@ -323,6 +345,7 @@ const TasksView = ({ allProjects, fetchProjects }) => {
           taskToEdit={taskToEdit}
           checkFieldsNotify={checkFieldsNotify}
           successNotify={successfulEditNotify}
+          editTask={editTask}
         />
       )}
     </div>
