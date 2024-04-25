@@ -273,9 +273,9 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   );
 
   return (
-    <div className="h-screen">
+    <div className="max-h-full">
       <ToastContainer />
-      <div className="flex">
+      <div className="flex mt-3">
         <h1 className="text-white text-3xl">Tasks</h1>
         <select
           name="Filter by"
