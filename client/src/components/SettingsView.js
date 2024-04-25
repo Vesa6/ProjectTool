@@ -68,7 +68,10 @@ const SettingsView = () => {
             <br />
             <p className="text-slate-500">{placeholderUser.email}</p>
           </p>
-          <button className="ml-2 bg-navBarPadding px-5 py-2 rounded-sm hover:bg-navBarButtonHover w-[64px]">
+          <button
+            className="ml-2 bg-navBarPadding px-5 py-2 rounded-sm hover:bg-navBarButtonHover w-[64px]"
+            onClick={() => showEditProfilePopup()}
+          >
             Edit
           </button>
         </div>
@@ -78,7 +81,10 @@ const SettingsView = () => {
             <br />
             <p className="text-slate-500">{placeholderUser.phone}</p>
           </p>
-          <button className="ml-2 bg-navBarPadding px-5 py-2 rounded-sm hover:bg-navBarButtonHover w-[64px]">
+          <button
+            className="ml-2 bg-navBarPadding px-5 py-2 rounded-sm hover:bg-navBarButtonHover w-[64px]"
+            onClick={() => showEditProfilePopup()}
+          >
             Edit
           </button>
         </div>

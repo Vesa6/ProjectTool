@@ -65,7 +65,7 @@ const AddProjectPopup = ({ onClose }) => {
         className="bg-slate-900 rounded-lg shadow-xl pt-16 px-16 pb-5 relative w-1/3 max-w-lg"
       >
         <button
-          className="absolute text-3xl top-0 right-0 p-3 m2 mr-2 text-gray-300"
+          className="absolute text-3xl top-0 right-0 p-3 m2 mr-2  text-slate-300 hover:text-gray-500"
           onClick={onClose}
         >
           &times;
