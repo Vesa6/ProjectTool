@@ -99,6 +99,7 @@ projectRouter.put("/:id/update-project", async (request, response) => {
     response.status(500).send("Error updating project");
   }
 });
+// delete project
 
 // For calendars new tasks.
 projectRouter.put("/:id/add-task", async (request, response) => {
@@ -139,7 +140,7 @@ projectRouter.put("/:id/add-task", async (request, response) => {
 projectRouter.delete("/:id", async (request, response) => {
   try {
     const db = request.app.locals.db;
-    const filter = { id: request.params.id };
+    const filter = { _id: new ObjectId(request.params.id) };
     console.log(filter);
     const result = await db.collection("projects").deleteOne(filter);
     response.json(result);

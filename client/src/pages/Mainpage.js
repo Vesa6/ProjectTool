@@ -131,17 +131,20 @@ const Mainpage = () => {
     toast.success(message, {
       position: "top-center",
       theme: "dark",
+      containerId: "B",
     });
   }
   function errorNotify(message) {
     toast.error(message, {
       position: "top-center",
       theme: "dark",
+      containerId: "B",
     });
   }
 
   return (
     <div className="flex h-screen bg-gray-900">
+      <ToastContainer containerId="B" />
       <Sidebar
         projects={projects}
         activeProjectId={activeProjectId}

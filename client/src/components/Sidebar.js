@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
 import { IoMdAdd } from "react-icons/io";
 import moment from "moment";
-import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import EditProjectPopup from "../components/EditProjectPopup";
 import { useState } from "react";
 import LogOutPopup from "./LogOutPopup";
-import { set } from "mongoose";
+import { ToastContainer, toast } from "react-toastify";
 
 const Sidebar = ({
   projects,
@@ -60,10 +59,38 @@ const Sidebar = ({
         throw new Error("Failed to edit project");
       }
       // notify for successful edit here
+      successNotify("Project edited successfully");
       fetchProjects();
     } catch (e) {
       console.log(e);
     }
+  };
+  const deleteProject = async (projectId) => {
+    const url = `http://localhost:3001/api/projects/${projectId}`;
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete project");
+      }
+      // notify for successful delete here
+      successNotify("Project deleted successfully");
+      fetchProjects();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const successNotify = (message) => {
+    toast.success(message, {
+      position: "top-center",
+      theme: "dark",
+      containerId: "A",
+    });
   };
 
   const ProjectTooltip = ({ projectId }) => (
@@ -72,7 +99,6 @@ const Sidebar = ({
       clickable
       onClick={(e) => {
         e.stopPropagation();
-        console.log("demo");
       }}
     >
       <div className="p-2 rounded text-sm flex flex-col w-20">
@@ -82,13 +108,19 @@ const Sidebar = ({
         >
           Edit
         </button>
-        <button className="text-white hover:text-slate-300">Delete</button>
+        <button
+          className="text-white hover:text-slate-300"
+          onClick={() => deleteProject(projectId)}
+        >
+          Delete
+        </button>
       </div>
     </Tooltip>
   );
 
   return (
     <div className="w-64 flex flex-col bg-gray-800 min-h-screen">
+      <ToastContainer containerId="A" />
       {/* User profile */}
       <div className="p-8 flex flex-col items-center">
         <div className="w-24 h-24 bg-purple-500 rounded-full flex items-center justify-center mb-4">
@@ -165,6 +197,7 @@ const Sidebar = ({
           fetchProjects={fetchProjects}
           onClose={hideEditProjectPopup}
           editProject={editProject}
+          successNotify={successNotify}
         />
       )}
       {showLogoutPopup && <LogOutPopup onClose={hideLogoutPopup} />}

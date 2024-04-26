@@ -45,7 +45,7 @@ const AddProjectPopup = ({
       if (response.status === 200) {
         setReloadTrigger(!reloadTrigger);
         onClose();
-        successNotify();
+        successNotify("Project created successfully");
       }
     } catch (e) {
       console.error(e);

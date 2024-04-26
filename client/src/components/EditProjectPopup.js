@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-const EditProjectPopup = ({ onClose, project, editProject }) => {
+const EditProjectPopup = ({ onClose, project, editProject, successNotify }) => {
   const [projectName, setProjectName] = useState(project.data.name);
   const [projectDescription, setProjectDescription] = useState(
     project.data.description
   );
+
   const [projectManager, setProjectManager] = useState(project.data.manager);
   const [projectBudget, setProjectBudget] = useState(project.data.budget);
   const [projectStart, setProjectStart] = useState(project.data.start);
@@ -38,6 +39,7 @@ const EditProjectPopup = ({ onClose, project, editProject }) => {
 
     editProject(editedProject);
     onClose();
+    successNotify("Project edited successfully");
   };
 
   return (
