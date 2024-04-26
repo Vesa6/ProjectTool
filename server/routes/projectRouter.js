@@ -92,7 +92,7 @@ projectRouter.put("/:id/update-project", async (request, response) => {
   try {
     const updateResult = await db
       .collection("projects")
-      .updateOne({ _id: projectId }, { $set: request.body });
+      .updateOne({ _id: projectId }, { $set: { data: request.body } });
     console.log("MongoDB Update Result:", updateResult);
   } catch (error) {
     console.error("Database operation failed:", error);

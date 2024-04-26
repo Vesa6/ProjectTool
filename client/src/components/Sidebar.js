@@ -68,7 +68,7 @@ const Sidebar = ({
     navigate("/login");
   };
 
-  const ProjectTooltip = ({ projectId, project }) => (
+  const ProjectTooltip = ({ projectId }) => (
     <Tooltip
       id={`options-${projectId}`}
       clickable
