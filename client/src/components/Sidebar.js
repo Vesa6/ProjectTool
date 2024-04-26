@@ -6,6 +6,8 @@ import { Tooltip } from "react-tooltip";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import EditProjectPopup from "../components/EditProjectPopup";
 import { useState } from "react";
+import LogOutPopup from "./LogOutPopup";
+import { set } from "mongoose";
 
 const Sidebar = ({
   projects,
@@ -28,10 +30,11 @@ const Sidebar = ({
     return targetDate.diff(currentDate, "days");
   };
   const [projectToEdit, setProjectToEdit] = useState({});
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const hideLogoutPopup = () => setShowLogoutPopup(false);
   const hideEditProjectPopup = () => {
     setProjectToEdit({});
   };
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProjects();
@@ -61,11 +64,6 @@ const Sidebar = ({
     } catch (e) {
       console.log(e);
     }
-  };
-
-  const handleLogout = () => {
-    window.localStorage.setItem("loggedUser", "");
-    navigate("/login");
   };
 
   const ProjectTooltip = ({ projectId }) => (
@@ -102,7 +100,7 @@ const Sidebar = ({
       <div className="flex flex-col items-center">
         <button
           className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded"
-          onClick={() => handleLogout()}
+          onClick={() => setShowLogoutPopup(true)}
         >
           Logout
         </button>
@@ -169,6 +167,7 @@ const Sidebar = ({
           editProject={editProject}
         />
       )}
+      {showLogoutPopup && <LogOutPopup onClose={hideLogoutPopup} />}
     </div>
   );
 };

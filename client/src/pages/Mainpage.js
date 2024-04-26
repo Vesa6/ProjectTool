@@ -12,6 +12,7 @@ import TasksView from "../components/TasksView";
 import "react-calendar/dist/Calendar.css";
 import SettingsView from "../components/SettingsView.js";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -20,6 +21,7 @@ const Mainpage = () => {
   const [showAddProject, setShowAddProject] = useState(false);
   const showAddProjectPopup = () => setShowAddProject(true);
   const hideAddProjectPopup = () => setShowAddProject(false);
+  const [reloadTrigger, setReloadTrigger] = useState(false);
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [activeUser, setActiveUser] = useState(1);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -44,6 +46,10 @@ const Mainpage = () => {
     checkLogin();
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [reloadTrigger]);
 
   const handleToggleOverview = () => {
     setShowTasksview(false);
@@ -86,10 +92,6 @@ const Mainpage = () => {
       });
   };
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
   function parseAllTasks(projects) {
     const allTasks = projects.flatMap((project) => project.tasks);
     return allTasks;
@@ -124,6 +126,18 @@ const Mainpage = () => {
   if (isLoading) {
     // Show loading spinner or something ? Simply rendering div causes screen flashing upon some updates...
     // Too intrusive, making it look janky.
+  }
+  function successNotify(message) {
+    toast.success(message, {
+      position: "top-center",
+      theme: "dark",
+    });
+  }
+  function errorNotify(message) {
+    toast.error(message, {
+      position: "top-center",
+      theme: "dark",
+    });
   }
 
   return (
@@ -180,7 +194,15 @@ const Mainpage = () => {
         </div>
       </div>
       {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
-      {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
+      {showAddProject && (
+        <AddProjectPopup
+          onClose={hideAddProjectPopup}
+          reloadTrigger={reloadTrigger}
+          setReloadTrigger={setReloadTrigger}
+          successNotify={successNotify}
+          errorNotify={errorNotify}
+        />
+      )}
     </div>
   );
 };

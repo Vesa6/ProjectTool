@@ -49,8 +49,12 @@ const EditProfilePopup = ({
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+    <div
+      className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center"
+      onClick={onClose}
+    >
       <form
+        onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
         className="bg-slate-900 rounded-lg shadow-xl pt-16 px-16 pb-5 relative w-1/3 max-w-lg max-h-full"
       >

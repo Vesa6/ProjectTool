@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import ProjectServices from "./apicomponents/Projectservices";
-const AddProjectPopup = ({ onClose }) => {
+const AddProjectPopup = ({
+  onClose,
+  reloadTrigger,
+  setReloadTrigger,
+  successNotify,
+  errorNotify,
+}) => {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [projectManager, setProjectManager] = useState("");
@@ -20,10 +26,8 @@ const AddProjectPopup = ({ onClose }) => {
       !projectBudget ||
       !projectManager
     ) {
-      toast.error("Please fill all the fields", {
-        position: "top-center",
-        theme: "dark",
-      });
+      errorNotify("Please fill all the fields");
+      return;
     }
 
     let project = {
@@ -39,28 +43,23 @@ const AddProjectPopup = ({ onClose }) => {
       let response = await ProjectServices.postProjects(project);
       console.log(response);
       if (response.status === 200) {
-        toast.success("Project added successfully!", {
-          position: "top-center",
-          theme: "dark",
-        });
+        setReloadTrigger(!reloadTrigger);
+        onClose();
+        successNotify();
       }
     } catch (e) {
-      toast.error("Failed to send", {
-        position: "top-center",
-        theme: "dark",
-      });
+      console.error(e);
+      errorNotify("Failed to send, please try again");
     }
-    setTimeout(() => {
-      //
-      onClose();
-      window.location.reload();
-    }, 2000);
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center overflow-hidden">
-      <ToastContainer />
+    <div
+      className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center overflow-hidden"
+      onClick={onClose}
+    >
       <form
+        onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
         className="bg-slate-900 rounded-lg shadow-xl pt-16 px-16 pb-5 relative w-1/3 max-w-lg max-h-full overflow-y-auto"
       >
