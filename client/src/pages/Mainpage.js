@@ -134,6 +134,7 @@ const Mainpage = () => {
         showAddProjectPopup={showAddProjectPopup}
         activeUserName={activeUserName}
         activeProject={activeProject}
+        fetchProjects={fetchProjects}
       />
       <div className="flex-grow flex flex-col bg-gray-800">
         <div className="flex-grow p-4 overflow-y-auto">

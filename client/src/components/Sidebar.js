@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IoMdAdd } from "react-icons/io";
 import moment from "moment";
 import { Link, Navigate, useNavigate } from "react-router-dom";
@@ -33,10 +33,34 @@ const Sidebar = ({
   };
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
   const findProjectToEdit = (projectId) => {
     const project = projects.find((project) => project._id === projectId);
     setProjectToEdit(project);
     console.log(project);
+  };
+
+  const editProject = async (project) => {
+    const url = `http://localhost:3001/api/projects/${projectToEdit._id}/update-project`;
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(project),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to edit project");
+      }
+      // notify for successful edit here
+      fetchProjects();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleLogout = () => {
@@ -142,6 +166,7 @@ const Sidebar = ({
           project={projectToEdit}
           fetchProjects={fetchProjects}
           onClose={hideEditProjectPopup}
+          editProject={editProject}
         />
       )}
     </div>

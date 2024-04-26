@@ -85,6 +85,20 @@ projectRouter.put("/:id", async (request, response) => {
     console.log(e);
   }
 });
+projectRouter.put("/:id/update-project", async (request, response) => {
+  const db = request.app.locals.db;
+  const projectId = new ObjectId(request.params.id);
+
+  try {
+    const updateResult = await db
+      .collection("projects")
+      .updateOne({ _id: projectId }, { $set: request.body });
+    console.log("MongoDB Update Result:", updateResult);
+  } catch (error) {
+    console.error("Database operation failed:", error);
+    response.status(500).send("Error updating project");
+  }
+});
 
 // For calendars new tasks.
 projectRouter.put("/:id/add-task", async (request, response) => {

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import ProjectServices from "./apicomponents/Projectservices";
-const EditProjectPopup = ({ onClose, project, fetchProjects }) => {
+const EditProjectPopup = ({ onClose, project, editProject }) => {
   const [projectName, setProjectName] = useState(project.data.name);
   const [projectDescription, setProjectDescription] = useState(
     project.data.description
@@ -28,7 +27,7 @@ const EditProjectPopup = ({ onClose, project, fetchProjects }) => {
       });
     }
 
-    let project = {
+    let editedProject = {
       name: projectName,
       description: projectDescription,
       manager: projectManager,
@@ -37,26 +36,8 @@ const EditProjectPopup = ({ onClose, project, fetchProjects }) => {
       end: projectEnd,
     };
 
-    try {
-      let response = await ProjectServices.postProjects(project);
-      console.log(response);
-      if (response.status === 200) {
-        toast.success("Project added successfully!", {
-          position: "top-center",
-          theme: "dark",
-        });
-      }
-    } catch (e) {
-      toast.error("Failed to send", {
-        position: "top-center",
-        theme: "dark",
-      });
-    }
-    setTimeout(() => {
-      //
-      onClose();
-      window.location.reload();
-    }, 2000);
+    editProject(editedProject);
+    onClose();
   };
 
   return (
@@ -139,7 +120,7 @@ const EditProjectPopup = ({ onClose, project, fetchProjects }) => {
             className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
             type="submit"
           >
-            Create
+            Edit
           </button>
         </div>
       </form>
