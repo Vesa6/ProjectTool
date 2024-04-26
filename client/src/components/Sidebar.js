@@ -35,7 +35,7 @@ const Sidebar = ({
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [projectToEdit]);
 
   const findProjectToEdit = (projectId) => {
     const project = projects.find((project) => project._id === projectId);

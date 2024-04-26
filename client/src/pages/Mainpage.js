@@ -44,6 +44,7 @@ const Mainpage = () => {
     checkLogin();
     fetchProjects();
   }, []);
+
   const handleToggleOverview = () => {
     setShowTasksview(false);
     setShowCalendar(false);
