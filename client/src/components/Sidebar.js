@@ -2,6 +2,10 @@ import React from "react";
 import { IoMdAdd } from "react-icons/io";
 import moment from "moment";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import EditProjectPopup from "../components/EditProjectPopup";
+import { useState } from "react";
 
 const Sidebar = ({
   projects,
@@ -10,7 +14,7 @@ const Sidebar = ({
   setActiveProjectId,
   showAddProjectPopup,
   activeUserName,
-  showLoginPopup,
+  fetchProjects,
 }) => {
   const calculateDaysLeft = (ends) => {
     console.log(ends);
@@ -23,13 +27,43 @@ const Sidebar = ({
 
     return targetDate.diff(currentDate, "days");
   };
-
+  const [projectToEdit, setProjectToEdit] = useState({});
+  const hideEditProjectPopup = () => {
+    setProjectToEdit({});
+  };
   const navigate = useNavigate();
+
+  const findProjectToEdit = (projectId) => {
+    const project = projects.find((project) => project._id === projectId);
+    setProjectToEdit(project);
+    console.log(project);
+  };
 
   const handleLogout = () => {
     window.localStorage.setItem("loggedUser", "");
     navigate("/login");
   };
+
+  const ProjectTooltip = ({ projectId, project }) => (
+    <Tooltip
+      id={`options-${projectId}`}
+      clickable
+      onClick={(e) => {
+        e.stopPropagation();
+        console.log("demo");
+      }}
+    >
+      <div className="p-2 rounded text-sm flex flex-col w-20">
+        <button
+          className="text-white hover:text-slate-300"
+          onClick={() => findProjectToEdit(projectId)}
+        >
+          Edit
+        </button>
+        <button className="text-white hover:text-slate-300">Delete</button>
+      </div>
+    </Tooltip>
+  );
 
   return (
     <div className="w-64 flex flex-col bg-gray-800 min-h-screen">
@@ -77,6 +111,18 @@ const Sidebar = ({
               <p className="text-white font-semibold">{project.data.name}</p>
               {/* Other project details */}
             </div>
+            <div
+              className="flex justify-center items-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <a
+                data-tooltip-id={`options-${project._id}`}
+                data-tooltip-place="right"
+              >
+                <BsThreeDotsVertical />
+              </a>
+              <ProjectTooltip projectId={project._id} />
+            </div>
           </div>
         ))}
       </div>
@@ -91,6 +137,13 @@ const Sidebar = ({
           Add Projects
         </button>
       </div>
+      {projectToEdit._id && (
+        <EditProjectPopup
+          project={projectToEdit}
+          fetchProjects={fetchProjects}
+          onClose={hideEditProjectPopup}
+        />
+      )}
     </div>
   );
 };

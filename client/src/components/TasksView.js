@@ -4,6 +4,7 @@ import AddTaskPopup from "./tasksviewcomponents/AddTaskPopup";
 import { Tooltip } from "react-tooltip";
 import EditTaskPopup from "./tasksviewcomponents/EditTaskPopup";
 import { toast, ToastContainer } from "react-toastify";
+import EditProjectPopup from "../components/EditProjectPopup";
 
 function applyFilter() {
   const filter = document.getElementById("filter").value;
