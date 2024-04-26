@@ -166,4 +166,71 @@ projectRouter.get("/test/deletetestdata", async (request, response) => {
   }
 });
 
+projectRouter.put("/:id/update-task", async (request, response) => {
+  const db = request.app.locals.db;
+  const projectId = new ObjectId(request.params.id);
+
+  try {
+    const taskId = new ObjectId(request.body._id);
+    const updateResult = await db.collection("projects").updateOne(
+      {
+        _id: projectId,
+        "tasks._id": taskId,
+      },
+      {
+        $set: {
+          "tasks.$.title": request.body.title,
+          "tasks.$.status": request.body.status,
+          "tasks.$.start": request.body.start,
+          "tasks.$.end": request.body.end,
+          "tasks.$.participants": request.body.participants,
+        },
+      }
+    );
+
+    console.log("MongoDB Update Result:", updateResult);
+
+    if (updateResult.modifiedCount === 0) {
+      return response.status(404).send("Task not found");
+    }
+
+    response.send("Task updated successfully");
+  } catch (error) {
+    console.error("Database operation failed:", error);
+    response.status(500).send("Error updating task");
+  }
+});
+
+projectRouter.delete("/:id/delete-task/:taskId", async (request, response) => {
+  const db = request.app.locals.db;
+  const projectId = new ObjectId(request.params.id);
+  const taskId = new ObjectId(request.params.taskId);
+
+  try {
+    const updateResult = await db.collection("projects").updateOne(
+      {
+        _id: projectId,
+      },
+      {
+        $pull: {
+          tasks: {
+            _id: taskId,
+          },
+        },
+      }
+    );
+
+    console.log("MongoDB Update Result:", updateResult);
+
+    if (updateResult.modifiedCount === 0) {
+      return response.status(404).send("Task not found");
+    }
+
+    response.send("Task deleted successfully");
+  } catch (error) {
+    console.error("Database operation failed:", error);
+    response.status(500).send("Error deleting task");
+  }
+});
+
 module.exports = projectRouter;

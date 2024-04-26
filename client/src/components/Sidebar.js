@@ -1,12 +1,19 @@
 import React from "react";
 import { IoMdAdd } from "react-icons/io";
 import moment from "moment";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
-
-const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId, showAddProjectPopup, activeUserName, showLoginPopup }) => {
+const Sidebar = ({
+  projects,
+  activeProject,
+  activeProjectId,
+  setActiveProjectId,
+  showAddProjectPopup,
+  activeUserName,
+  showLoginPopup,
+}) => {
   const calculateDaysLeft = (ends) => {
-    console.log(ends)
+    console.log(ends);
     const currentDate = moment();
     const targetDate = moment(ends, "DD/MM/YYYY");
 
@@ -17,7 +24,12 @@ const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId,
     return targetDate.diff(currentDate, "days");
   };
 
+  const navigate = useNavigate();
 
+  const handleLogout = () => {
+    window.localStorage.setItem("loggedUser", "");
+    navigate("/login");
+  };
 
   return (
     <div className="w-64 flex flex-col bg-gray-800 min-h-screen">
@@ -30,11 +42,12 @@ const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId,
         <p className="text-gray-400">Project Manager</p>
       </div>
       <div className="flex flex-col items-center">
-        <Link to="/login">
-          <button className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded">
-            Login
-          </button>
-        </Link>
+        <button
+          className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded"
+          onClick={() => handleLogout()}
+        >
+          Logout
+        </button>
       </div>
 
       {/* Search Projects */}
@@ -51,8 +64,14 @@ const Sidebar = ({ projects, activeProject, activeProjectId, setActiveProjectId,
         {projects.map((project) => (
           <div
             key={project._id}
-            className={`flex items-center justify-between px-4 py-3 mb-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out ${project._id === activeProjectId ? "bg-blue-600" : "bg-gray-700"} hover:bg-blue-600`}
-            onClick={() => setActiveProjectId(activeProjectId === project._id ? undefined : project._id)}
+            className={`flex items-center justify-between px-4 py-3 mb-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out ${
+              project._id === activeProjectId ? "bg-blue-600" : "bg-gray-700"
+            } hover:bg-blue-600`}
+            onClick={() =>
+              setActiveProjectId(
+                activeProjectId === project._id ? undefined : project._id
+              )
+            }
           >
             <div>
               <p className="text-white font-semibold">{project.data.name}</p>

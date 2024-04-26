@@ -31,7 +31,8 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   const hideEditTaskPopup = () => setTaskToEdit({});
 
   const findTask = (taskId) => {
-    setTaskToEdit(tasks.find((task) => task.id === taskId));
+    console.log("Finding task with ID:", taskId);
+    setTaskToEdit(tasks.find((task) => task._id === taskId));
   };
 
   const [tasks, setTasks] = useState([
@@ -133,6 +134,28 @@ const TasksView = ({ allProjects, fetchProjects }) => {
     }
   }
 
+  async function editTask(projectId, updatedTask) {
+    const url = `http://localhost:3001/api/projects/${projectId}/update-task`;
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTask),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to edit task");
+      }
+      console.log("Task edited successfully");
+      successfulEditNotify();
+      fetchProjects();
+    } catch (error) {
+      console.error("Error editing task:", error);
+      fetchProjects(); // here just in case, should not be needed.
+    }
+  }
+
   function parseAllTasks(projects) {
     console.log("Parsing all tasks");
     console.log("Projects:", projects);
@@ -165,27 +188,39 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   }, [allProjects]);
 
   const deleteTask = (taskId) => {
-    console.log("Deleting task with ID:", taskId);
-    setTasks((currentTasks) => {
-      const filteredTasks = currentTasks.filter((task) => task.id !== taskId);
-      console.log("Remaining tasks after deletion:", filteredTasks);
-      toast.success("Task deleted!", {
-        position: "top-center",
-        theme: "dark",
+    const tasktoDelete = tasks.find((task) => task._id === taskId);
+    const projectId = tasktoDelete.projectId;
+    const url = `http://localhost:3001/api/projects/${projectId}/delete-task/${taskId}`;
+    fetch(url, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to delete task");
+        }
+        console.log("Task deleted successfully");
+        fetchProjects();
+        toast.success("Task deleted successfully", {
+          position: "top-center",
+          theme: "dark",
+        });
+      })
+      .catch((error) => {
+        console.error("Error deleting task:", error);
+        toast.error("Failed to delete task, please try again", {
+          position: "top-center",
+          theme: "dark",
+        });
+        fetchProjects(); // here just in case, should not be needed.
       });
-      return filteredTasks;
-    });
   };
 
   const changeToCompleted = (taskId) => {
     setTasks((currentTasks) =>
       currentTasks.map((task) => {
-        if (task.id === taskId) {
+        if (task._id === taskId) {
           task.status = "Completed";
-          toast.success("Task marked as completed", {
-            position: "top-center",
-            theme: "dark",
-          });
+          editTask(task.projectId, task);
         }
         return task;
       })
@@ -197,7 +232,6 @@ const TasksView = ({ allProjects, fetchProjects }) => {
       position: "top-center",
       theme: "dark",
     });
-    /*     alert("Task edited successfully"); */
   };
   const successfulAddNotify = () => {
     toast.success("Task added successfully", {
@@ -239,9 +273,9 @@ const TasksView = ({ allProjects, fetchProjects }) => {
   );
 
   return (
-    <div className="h-screen">
+    <div className="max-h-full">
       <ToastContainer />
-      <div className="flex">
+      <div className="flex mt-3">
         <h1 className="text-white text-3xl">Tasks</h1>
         <select
           name="Filter by"
@@ -279,9 +313,9 @@ const TasksView = ({ allProjects, fetchProjects }) => {
         </thead>
         <tbody className="text-center">
           {tasks.map((task) => (
-            <tr key={task.id} className="mt-10">
+            <tr key={task._id} className="mt-10">
               <td className="text-white">{task.project}</td>
-              <td className="text-white">{task.name}</td>
+              <td className="text-white">{task.title}</td>
               <td className="text-white">{task.start}</td>
               <td className="text-white">{task.end}</td>
               <td className="text-white">{task.status}</td>
@@ -289,13 +323,13 @@ const TasksView = ({ allProjects, fetchProjects }) => {
               <td className="text-slate-500 text-4xl flex justify-center items-center mt-3">
                 <div className="flex justify-center items-center">
                   <a
-                    data-tooltip-id={`options-${task.id}`}
+                    data-tooltip-id={`options-${task._id}`}
                     data-tooltip-place="left"
                   >
                     <BsThreeDotsVertical />
                   </a>
                   <TaskTooltip
-                    taskId={task.id}
+                    taskId={task._id}
                     onDelete={deleteTask}
                     onComplete={changeToCompleted}
                   />
@@ -315,13 +349,14 @@ const TasksView = ({ allProjects, fetchProjects }) => {
           projects={allProjects}
         />
       )}
-      {taskToEdit.id && (
+      {taskToEdit._id && (
         <EditTaskPopup
           onClose={hideEditTaskPopup}
           setTasks={setTasks}
           taskToEdit={taskToEdit}
           checkFieldsNotify={checkFieldsNotify}
           successNotify={successfulEditNotify}
+          editTask={editTask}
         />
       )}
     </div>

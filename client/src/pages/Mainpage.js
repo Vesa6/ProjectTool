@@ -44,11 +44,6 @@ const Mainpage = () => {
     checkLogin();
     fetchProjects();
   }, []);
-
-  const handleLogout = () => {
-    window.localStorage.setItem("loggedUser", "");
-    navigate("/login");
-  };
   const handleToggleOverview = () => {
     setShowTasksview(false);
     setShowCalendar(false);
@@ -181,12 +176,6 @@ const Mainpage = () => {
             </div>
           )}
         </div>
-        <button
-          className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded center"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
       </div>
       {showLogout && <LogOutPopup onClose={hideLogoutPopup} />}
       {showAddProject && <AddProjectPopup onClose={hideAddProjectPopup} />}
