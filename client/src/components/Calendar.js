@@ -31,12 +31,41 @@ const FullCalendarComponent = ({ setHighlightedDay, eventsCalendar }) => {
 
   const closeDialog = () => setSelectedEvent(null);
 
+  /*
+  * startEvent == blue event in calendar
+  * endEvent == red event in calendar
+  * if no end date or same as start date, then it's just then event without "start" or "end" in the title.
+  */
+
+  const allEvents = eventsCalendar.map((event) => {
+    const startEvent = {
+      ...event,
+      title: event.ends && event.start !== event.ends ? `Start: ${event.title}` : event.title,
+      start: event.start,
+      end: event.start,
+    };
+  
+    if (!event.ends || event.start === event.ends) {
+      return startEvent;
+    }
+  
+    const endEvent = {
+      ...event,
+      title: `End: ${event.title}`,
+      start: event.ends,
+      end: event.ends,
+      color: 'red',
+    };
+  
+    return [startEvent, endEvent];
+  }).flat();
+
   return (
     <>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
-        events={eventsCalendar}
+        events={allEvents}
         eventClick={handleEventClick}
         dateClick={handleDateClick}
         headerToolbar={{
@@ -169,9 +198,13 @@ const CalendarView = ({
 
   const handleAddTask = () => {
     console.log(activeProject);
-    addTaskToProject(activeProject._id, newEvent);
-    resetFormFields();
-  };
+      const event = {
+        ...newEvent,
+        ends: newEvent.end,
+      };
+      addTaskToProject(activeProject._id, event);
+      resetFormFields();
+    };
 
   // Specific time functionality from previous version removed to keep it simple
 
@@ -241,7 +274,7 @@ const CalendarView = ({
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <label htmlFor="date" className="block mb-2">
-                    Task date:
+                    Start date:
                   </label>
                   <input
                     type="date"
@@ -250,6 +283,20 @@ const CalendarView = ({
                     value={newEvent.start}
                     onChange={(e) =>
                       setNewEvent({ ...newEvent, start: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label htmlFor="date" className="block mb-2">
+                    End date:
+                  </label>
+                  <input
+                    type="date"
+                    id="end"
+                    className="w-full p-2 text-white bg-gray-800 rounded"
+                    value={newEvent.end}
+                    onChange={(e) =>
+                      setNewEvent({ ...newEvent, end: e.target.value })
                     }
                   />
                 </div>
