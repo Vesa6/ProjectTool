@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IoMdAdd } from "react-icons/io";
 import moment from "moment";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import EditProjectPopup from "../components/EditProjectPopup";
+import { useState } from "react";
+import LogOutPopup from "./LogOutPopup";
+import { ToastContainer, toast } from "react-toastify";
 
 const Sidebar = ({
   projects,
@@ -10,7 +15,7 @@ const Sidebar = ({
   setActiveProjectId,
   showAddProjectPopup,
   activeUserName,
-  showLoginPopup,
+  fetchProjects,
 }) => {
   const calculateDaysLeft = (ends) => {
     console.log(ends);
@@ -23,16 +28,99 @@ const Sidebar = ({
 
     return targetDate.diff(currentDate, "days");
   };
-
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    window.localStorage.setItem("loggedUser", "");
-    navigate("/login");
+  const [projectToEdit, setProjectToEdit] = useState({});
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const hideLogoutPopup = () => setShowLogoutPopup(false);
+  const hideEditProjectPopup = () => {
+    setProjectToEdit({});
   };
+
+  useEffect(() => {
+    fetchProjects();
+  }, [projectToEdit]);
+
+  const findProjectToEdit = (projectId) => {
+    const project = projects.find((project) => project._id === projectId);
+    setProjectToEdit(project);
+    console.log(project);
+  };
+
+  const editProject = async (project) => {
+    const url = `http://localhost:3001/api/projects/${projectToEdit._id}/update-project`;
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(project),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to edit project");
+      }
+      // notify for successful edit here
+      successNotify("Project edited successfully");
+      fetchProjects();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const deleteProject = async (projectId) => {
+    const url = `http://localhost:3001/api/projects/${projectId}`;
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete project");
+      }
+      // notify for successful delete here
+      successNotify("Project deleted successfully");
+      fetchProjects();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const successNotify = (message) => {
+    toast.success(message, {
+      position: "top-center",
+      theme: "dark",
+      containerId: "A",
+    });
+  };
+
+  const ProjectTooltip = ({ projectId }) => (
+    <Tooltip
+      id={`options-${projectId}`}
+      clickable
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
+      <div className="p-2 rounded text-sm flex flex-col w-20">
+        <button
+          className="text-white hover:text-slate-300"
+          onClick={() => findProjectToEdit(projectId)}
+        >
+          Edit
+        </button>
+        <button
+          className="text-white hover:text-slate-300"
+          onClick={() => deleteProject(projectId)}
+        >
+          Delete
+        </button>
+      </div>
+    </Tooltip>
+  );
 
   return (
     <div className="w-64 flex flex-col bg-gray-800 min-h-screen">
+      <ToastContainer containerId="A" />
       {/* User profile */}
       <div className="p-8 flex flex-col items-center">
         <div className="w-24 h-24 bg-purple-500 rounded-full flex items-center justify-center mb-4">
@@ -44,7 +132,7 @@ const Sidebar = ({
       <div className="flex flex-col items-center">
         <button
           className="bg-navBarButton mt-2 mb-6 w-20 h-10 transition-colors duration-300 hover:bg-navBarButtonHover text-white px-4 py-2 rounded"
-          onClick={() => handleLogout()}
+          onClick={() => setShowLogoutPopup(true)}
         >
           Logout
         </button>
@@ -77,6 +165,18 @@ const Sidebar = ({
               <p className="text-white font-semibold">{project.data.name}</p>
               {/* Other project details */}
             </div>
+            <div
+              className="flex justify-center items-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <a
+                data-tooltip-id={`options-${project._id}`}
+                data-tooltip-place="right"
+              >
+                <BsThreeDotsVertical />
+              </a>
+              <ProjectTooltip projectId={project._id} />
+            </div>
           </div>
         ))}
       </div>
@@ -91,6 +191,16 @@ const Sidebar = ({
           Add Projects
         </button>
       </div>
+      {projectToEdit._id && (
+        <EditProjectPopup
+          project={projectToEdit}
+          fetchProjects={fetchProjects}
+          onClose={hideEditProjectPopup}
+          editProject={editProject}
+          successNotify={successNotify}
+        />
+      )}
+      {showLogoutPopup && <LogOutPopup onClose={hideLogoutPopup} />}
     </div>
   );
 };

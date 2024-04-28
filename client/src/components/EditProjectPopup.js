@@ -1,19 +1,15 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import ProjectServices from "./apicomponents/Projectservices";
-const AddProjectPopup = ({
-  onClose,
-  reloadTrigger,
-  setReloadTrigger,
-  successNotify,
-  errorNotify,
-}) => {
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
-  const [projectManager, setProjectManager] = useState("");
-  const [projectBudget, setProjectBudget] = useState("");
-  const [projectStart, setProjectStart] = useState("");
-  const [projectEnd, setProjectEnd] = useState("");
+const EditProjectPopup = ({ onClose, project, editProject, successNotify }) => {
+  const [projectName, setProjectName] = useState(project.data.name);
+  const [projectDescription, setProjectDescription] = useState(
+    project.data.description
+  );
+
+  const [projectManager, setProjectManager] = useState(project.data.manager);
+  const [projectBudget, setProjectBudget] = useState(project.data.budget);
+  const [projectStart, setProjectStart] = useState(project.data.start);
+  const [projectEnd, setProjectEnd] = useState(project.data.end);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -26,11 +22,13 @@ const AddProjectPopup = ({
       !projectBudget ||
       !projectManager
     ) {
-      errorNotify("Please fill all the fields");
-      return;
+      toast.error("Please fill all the fields", {
+        position: "top-center",
+        theme: "dark",
+      });
     }
 
-    let project = {
+    let editedProject = {
       name: projectName,
       description: projectDescription,
       manager: projectManager,
@@ -39,28 +37,20 @@ const AddProjectPopup = ({
       end: projectEnd,
     };
 
-    try {
-      let response = await ProjectServices.postProjects(project);
-      console.log(response);
-      if (response.status === 200) {
-        setReloadTrigger(!reloadTrigger);
-        onClose();
-        successNotify("Project created successfully");
-      }
-    } catch (e) {
-      console.error(e);
-      errorNotify("Failed to send, please try again");
-    }
+    editProject(editedProject);
+    onClose();
+    successNotify("Project edited successfully");
   };
 
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center overflow-hidden"
-      onClick={onClose}
+      onClick={() => onClose()}
     >
+      <ToastContainer />
       <form
-        onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
+        onClick={(e) => e.stopPropagation()}
         className="bg-slate-900 rounded-lg shadow-xl pt-16 px-16 pb-5 relative w-1/3 max-w-lg max-h-full overflow-y-auto"
       >
         <button
@@ -70,7 +60,7 @@ const AddProjectPopup = ({
           &times;
         </button>
         <h2 className=" text-2xl font-bold text-center m-3 text-white">
-          Create Project:
+          Edit project:
         </h2>
         <div className="flex flex-col space-y-2">
           <label className="text-white" htmlFor="projectName">
@@ -132,7 +122,7 @@ const AddProjectPopup = ({
             className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
             type="submit"
           >
-            Create
+            Edit
           </button>
         </div>
       </form>
@@ -140,4 +130,4 @@ const AddProjectPopup = ({
   );
 };
 
-export default AddProjectPopup;
+export default EditProjectPopup;

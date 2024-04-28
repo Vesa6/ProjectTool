@@ -85,6 +85,21 @@ projectRouter.put("/:id", async (request, response) => {
     console.log(e);
   }
 });
+projectRouter.put("/:id/update-project", async (request, response) => {
+  const db = request.app.locals.db;
+  const projectId = new ObjectId(request.params.id);
+
+  try {
+    const updateResult = await db
+      .collection("projects")
+      .updateOne({ _id: projectId }, { $set: { data: request.body } });
+    console.log("MongoDB Update Result:", updateResult);
+  } catch (error) {
+    console.error("Database operation failed:", error);
+    response.status(500).send("Error updating project");
+  }
+});
+// delete project
 
 // For calendars new tasks.
 projectRouter.put("/:id/add-task", async (request, response) => {
@@ -125,7 +140,7 @@ projectRouter.put("/:id/add-task", async (request, response) => {
 projectRouter.delete("/:id", async (request, response) => {
   try {
     const db = request.app.locals.db;
-    const filter = { id: request.params.id };
+    const filter = { _id: new ObjectId(request.params.id) };
     console.log(filter);
     const result = await db.collection("projects").deleteOne(filter);
     response.json(result);
