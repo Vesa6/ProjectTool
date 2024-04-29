@@ -34,7 +34,7 @@ const FullCalendarComponent = ({ setHighlightedDay, eventsCalendar }) => {
   /*
   * startEvent == blue event in calendar
   * endEvent == red event in calendar
-  * if no end date or same as start date, then it's just then event without "start" or "end" in the title.
+  * if no end date or same as start date, then it's just then event without "start" or "end" 
   */
 
   const allEvents = eventsCalendar.map((event) => {

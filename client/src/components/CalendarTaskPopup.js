@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 
+//WIP
+// Make calendar.js support updating.
+//WIP
+
 const CalendarTaskPopup = ({ event, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -13,19 +17,18 @@ const CalendarTaskPopup = ({ event, onClose, onUpdate }) => {
 
   useEffect(() => {
     if (event) {
-      // console.log(event);
       setFormData({
         title: event.title || "",
         status: event.status || "",
         start: event.start ? format(new Date(event.start), "yyyy-MM-dd") : "",
-        end: event.end ? format(new Date(event.end), "yyyy-MM-dd") : "", // future version could have a separate "TASK ENDS" shown in calendar.
+        end: event.end ? format(new Date(event.end), "yyyy-MM-dd") : "",
         participants: event.participants ? event.participants.join(", ") : "",
         description: event.description || "",
       });
     }
   }, [event]);
 
-  if (!event) return null; //failsafe
+  if (!event) return null;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,10 +55,6 @@ const CalendarTaskPopup = ({ event, onClose, onUpdate }) => {
         className="bg-white p-4 rounded-lg shadow-lg max-w-md w-full mx-auto"
         onSubmit={handleSubmit}
       >
-        <div className="text-black flex items-center justify-center border border-gray-300 p-3 rounded-md shadow-lg">
-          Due to MVP time constraints, the update feature is not implemented
-          yet. It will be added in the future.
-        </div>
         <h2 className="font-bold text-lg">Edit task</h2>
         <label className="block text-sm font-medium text-black">Title</label>
         <input
@@ -114,7 +113,7 @@ const CalendarTaskPopup = ({ event, onClose, onUpdate }) => {
         />
 
         <label className="block text-sm font-medium text-gray-700">
-          participants
+          Participants
         </label>
         <input
           type="text"
@@ -133,8 +132,8 @@ const CalendarTaskPopup = ({ event, onClose, onUpdate }) => {
             Cancel
           </button>
           <button
-            disabled
-            className="px-4 py-2 bg-gray-500 text-white rounded opacity-50 cursor-not-allowed"
+            type="submit"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Update
           </button>
