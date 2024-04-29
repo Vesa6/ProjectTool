@@ -45,7 +45,7 @@ const CalendarTaskPopup = ({ event, onClose, onUpdate }) => {
         .map((participant) => participant.trim()),
       description: formData.description,
     };
-    onUpdate(updatedEvent);
+    //onUpdate(updatedEvent); //WIP
     onClose();
   };
 
