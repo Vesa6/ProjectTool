@@ -15,7 +15,7 @@ const AddTaskPopup = ({
 
   // parse projects to get the project names as optons for the select.
   const projectOptions = projects.map((project) => (
-    <option value={project._id} className="text-white ">
+    <option value={project._id} className="text-black">
       {project.data.name}
     </option>
   ));

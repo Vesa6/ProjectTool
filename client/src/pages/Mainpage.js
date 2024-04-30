@@ -13,6 +13,7 @@ import "react-calendar/dist/Calendar.css";
 import SettingsView from "../components/SettingsView.js";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import ParticipantsList from "../components/ParticipantsList";
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -173,26 +174,32 @@ const Mainpage = () => {
             <TasksView allProjects={projects} fetchProjects={fetchProjects} />
           ) : showSettingsView ? (
             <SettingsView />
-          ) : activeProjectId ? (
-            <div className="bg-gray-700 text-white p-4 m-4 rounded-lg">
-              <h2 className="text-xl font-bold">{activeProject?.project}</h2>
-              <p>{activeProject?.description}</p>
-              <ProjectOverview project={activeProject} />
-            </div>
           ) : (
-            <div className="mt-4">
-              <div className="flex flex-col md:flex-row">
-                <div className="md:flex-grow">
+            <>
+              {activeProjectId ? (
+                <div className="bg-gray-700 text-white p-4 m-4 rounded-lg">
+                  <h2 className="text-xl font-bold">{activeProject?.project}</h2>
+                  <p>{activeProject?.description}</p>
+                  <ProjectOverview project={activeProject} />
+                </div>
+              ) : null}
+              <div className="mt-4 flex flex-col md:flex-row">
+                <div className="md:w-1/2 md:pr-4">
+                  <ParticipantsList activeProject={activeProject} />
                   <Notifications
                     notifications={notifications}
                     deleteNotification={deleteNotification}
+                    activeProjectId={activeProjectId}
                   />
                 </div>
-                <div className="md:w-1/2 md:ml-4 mt-4 md:mt-0">
-                  <Tasks projects={parseAllTasks(projects)} />
+                <div className="md:w-1/2">
+                  <Tasks tasks={activeProjectId ? activeProject?.tasks : parseAllTasks(projects)} />
+                  {activeProjectId ? (
+                  <Costs />
+                  ) : null}
                 </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
@@ -209,5 +216,6 @@ const Mainpage = () => {
     </div>
   );
 };
+
 
 export default Mainpage;
