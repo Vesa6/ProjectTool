@@ -44,7 +44,7 @@ const CalendarTaskPopup = ({ event, onClose }) => {
         </div>
         <form onSubmit={handleSubmit}>
           <h2 className="font-bold text-lg">Edit task</h2>
-          
+
           <label className="block text-sm font-medium text-black">Title</label>
           <input
             type="text"
