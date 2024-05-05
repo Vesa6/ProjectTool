@@ -97,6 +97,7 @@ const EditProfilePopup = ({
             type="text"
             value={email}
             onChange={handleEmailChange}
+            disabled
           />
           <label className="text-white" htmlFor="deadline">
             Phone:
