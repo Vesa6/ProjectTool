@@ -195,7 +195,7 @@ const Mainpage = () => {
                 <div className="md:w-1/2">
                   <Tasks tasks={activeProjectId ? activeProject?.tasks : parseAllTasks(projects)} />
                   {activeProjectId ? (
-                  <Costs />
+                  <Costs activeProject={activeProject} fetchProjects={fetchProjects} />
                   ) : null}
                 </div>
               </div>

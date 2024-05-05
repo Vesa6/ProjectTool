@@ -1,13 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 // If projects get their own costs, pass them here as prop.
-const Costs = () => {
+const Costs = ({ activeProject, fetchProjects }) => {
   const [costsData, setCostsData] = useState([
-    { category: "Actual", amount: 300, color: "#76C043" },
-    { category: "Planned", amount: 225, color: "#1FD1FF" },
-    { category: "Budget", amount: 150, color: "#2D95EC" },
+    { category: "Actual", amount: activeProject?.actual || 0, color: "#76C043" },
+    { category: "Planned", amount: activeProject?.planned || 0, color: "#1FD1FF" },
+    { category: "Budget", amount: activeProject?.budget || 0, color: "#2D95EC" },
   ]);
+
+  useEffect(() => {
+    setCostsData([
+      { category: "Actual", amount: activeProject?.actual || 0, color: "#76C043" },
+      { category: "Planned", amount: activeProject?.planned || 0, color: "#1FD1FF" },
+      { category: "Budget", amount: activeProject?.budget || 0, color: "#2D95EC" },
+    ]);
+  }, [activeProject]);
+
+  async function updateProjectCosts(projectId, updatedCosts) {
+    const url = `http://localhost:3001/api/projects/${projectId}/update-costs`;
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedCosts),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update project costs");
+      }
+      console.log("Project costs updated successfully");
+      fetchProjects();
+    } catch (error) {
+      console.error("Error updating project costs:", error);
+      fetchProjects(); // here just in case, should not be needed.
+    }
+  }
 
   const handleChange = (index, value) => {
     const newData = costsData.map((item, idx) => {
@@ -17,11 +46,18 @@ const Costs = () => {
       return item;
     });
     setCostsData(newData);
+
+    const updatedCosts = {
+      actual: newData.find((item) => item.category === "Actual")?.amount || 0,
+      planned: newData.find((item) => item.category === "Planned")?.amount || 0,
+      budget: newData.find((item) => item.category === "Budget")?.amount || 0,
+    };
+    updateProjectCosts(activeProject._id, updatedCosts);
   };
 
   return (
     <div className="bg-gray-700 p-4 rounded shadow-lg mb-4 mt-4">
-      <h2 className="text-white text-xl font-semibold mb-4">COSTS (in thousands)</h2>
+      <h2 className="text-white text-xl font-semibold mb-4">Costs (in thousands)</h2>
       <div className="flex justify-between mb-4">
         {costsData.map((cost, index) => (
           <div key={index} className="text-center flex items-center">
