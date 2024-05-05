@@ -64,19 +64,20 @@ projectRouter.put("/:id", async (request, response) => {
   };
   body = request.body;
   console.log("Sending PUT request");
+  const projectId = new ObjectId(request.params.id);
   let update = {
     $set: {
-      id: request.params.id,
       data: body.data,
+      tasks: body.tasks,
+      participants: body.participants,
     },
   };
-  console.log(request.params.id);
   try {
     const db = request.app.locals.db;
-    const filter = { id: request.params.id };
+    const filter = { _id: request.params.id };
     const result = await db
       .collection("projects")
-      .updateOne(filter, update, updateOptions);
+      .updateOne({_id: projectId}, update, updateOptions);
     response.json(result);
     console.log("PUT succesful");
     console.log(result);
@@ -85,6 +86,7 @@ projectRouter.put("/:id", async (request, response) => {
     console.log(e);
   }
 });
+
 projectRouter.put("/:id/update-project", async (request, response) => {
   const db = request.app.locals.db;
   const projectId = new ObjectId(request.params.id);
