@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-// If projects get their own costs, pass them here as prop.
 const Costs = ({ activeProject, fetchProjects }) => {
   const [costsData, setCostsData] = useState([
     { category: "Actual", amount: activeProject?.actual || 0, color: "#76C043" },
