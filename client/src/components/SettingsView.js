@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 const SettingsView = () => {
   const [emailNotifications, setEmailNotifications] = useState(false);
   const [badgeNotifications, setBadgeNotifications] = useState(false);
+  const [profileEdited, setProfileEdited] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const showEditProfilePopup = () => setShowEditProfile(true);
   const hideEditProfilePopup = () => setShowEditProfile(false);
@@ -16,11 +17,14 @@ const SettingsView = () => {
     title: "",
   });
 
+  useEffect(() => {
+      getUser();
+  }, [profileEdited]);
   const checkFieldsNotify = () => {
     toast.error("Please fill all the fields", {
       position: "top-center",
       theme: "dark",
-      id: 3,
+      containerId: "C",
     });
   };
 
@@ -28,14 +32,14 @@ const SettingsView = () => {
     toast.error(message, {
       position: "top-center",
       theme: "dark",
-      id: 3,
+      containerId: "C",
     });
   };
   const successNotify = (message) => {
     toast.success(message, {
       position: "top-center",
       theme: "dark",
-      id: 3,
+      containerId: "C",
     });
   };
 
@@ -82,8 +86,9 @@ const SettingsView = () => {
       errorNotify("Failed to send, please try again");
     }
     const data = await response.json();
-    console.log(data);
+    console.log("dadadadaddadada", data);
     successNotify("Profile edited successfully");
+    setProfileEdited(!profileEdited);
   };
 
 
@@ -96,7 +101,7 @@ const SettingsView = () => {
   return (
     // center the form on the page
     <div className="bg-navBarPadding max-w-2xl flex flex-col justify-center m-auto top-1/2 h-fit">
-      <ToastContainer containerId={3} />
+      <ToastContainer containerId="C" />
       <h1 className="w-full text-xl text-white bg-[#BB98B8] shadow-lg p-2">
         Profile
       </h1>

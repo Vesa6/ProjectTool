@@ -99,7 +99,11 @@ loginRouter.patch('/:id', async (request, response) => {
     let update = {
         $set: {
             id: request.params.id,
-            data: body.data
+            name: body.name,
+            email: body.email,
+            phone: body.phone,
+            title: body.title
+           
         }
     }
     console.log(update)
