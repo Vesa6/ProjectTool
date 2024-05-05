@@ -106,7 +106,8 @@ loginRouter.patch('/:id', async (request, response) => {
     console.log(request.params.id)
     try {
         const db = request.app.locals.db;
-        const filter = { id: request.params.id }
+        const id_ = new ObjectId(request.params.id)
+        const filter = { _id: id_ }
         const result = await db.collection("login").updateOne(filter, update, updateOptions);
         response.json(result)
         console.log("PATCH succesful")

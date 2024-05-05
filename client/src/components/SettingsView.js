@@ -68,7 +68,8 @@ const SettingsView = () => {
   const editUser = async (user) => {
     let response = null;
     try {
-      const url = `http://localhost:3001/login/${user.id}`;
+      let _id = JSON.parse(localStorage.getItem("loggedUser")).id;
+      const url = `http://localhost:3001/login/${_id}`;
       response = await fetch(url, {
         method: "PATCH",
         headers: {
