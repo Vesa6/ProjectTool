@@ -56,7 +56,7 @@ const Costs = ({ activeProject, fetchProjects }) => {
 
   return (
     <div className="bg-gray-700 p-4 rounded shadow-lg mb-4 mt-4">
-      <h2 className="text-white text-xl font-semibold mb-4">Costs (in thousands)</h2>
+      <h2 className="text-white text-2xl font-semibold mb-4">Costs (in thousands)</h2>
       <div className="flex justify-between mb-4">
         {costsData.map((cost, index) => (
           <div key={index} className="text-center flex items-center">

@@ -24,7 +24,7 @@ const Tasks = ({ tasks }) => {
 
   return (
     <div className="bg-gray-700 p-4 rounded shadow-lg mt-4">
-      <h2 className="text-white text-xl font-semibold mb-4">Task status</h2>
+      <h2 className="text-white text-2xl font-semibold mb-4">Tasks Status</h2>
       <div className="flex justify-center items-center">
         <PieChart width={200} height={200}>
           <Pie

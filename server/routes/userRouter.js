@@ -1,5 +1,6 @@
 const userRouter = require('express').Router()
 const testData = require('../testdata/usersdata')
+const { ObjectId } = require("mongodb");
 
 userRouter.get('/', async (request, response) => {
     try {
@@ -47,8 +48,8 @@ userRouter.post('/', async (request, response) => {
 userRouter.get('/:id', async (request, response) => {
     try {
         const db = request.app.locals.db;
-        const filter = { id: request.params.id }
-        const result = await db.collection("users").find(filter).toArray();
+        let projectId = new ObjectId(request.params.id) 
+        const result = await db.collection("users").find({_id: projectId}).toArray();
         response.json(result)
         console.log("GET User with uuid succesful")
         console.log(result)

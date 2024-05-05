@@ -2,6 +2,7 @@ const loginRouter = require('express').Router()
 const bcrypt = require('bcrypt')
 require('dotenv').config({ path: '../.env' })
 const jwt = require('jsonwebtoken')
+const { ObjectId } = require("mongodb");
 
 loginRouter.post('/', async (request, response) => {
     let secret = process.env.SECRET;
@@ -31,7 +32,7 @@ loginRouter.post('/', async (request, response) => {
             }
             console.log(user)
             const token = jwt.sign(userForToken, secret, {expiresIn: 60*60})
-            return response.status(200).send({token, email: user[0].email, name: user[0].name});
+            return response.status(200).send({token, email: user[0].email, name: user[0].name, id: user[0]._id});
         } else {
             return response.status(400).send("No account associated with this email")
         }
@@ -42,11 +43,11 @@ loginRouter.post('/', async (request, response) => {
 
 })
 
-loginRouter.get('/:id', async (request, response) => {
+loginRouter.get("/:id", async (request, response) => {
     try {
         const db = request.app.locals.db;
-        const filter = { id: request.params.id }
-        const result = await db.collection("login").find(filter).toArray();
+        let projectId = new ObjectId(request.params.id) 
+        const result = await db.collection("login").find({_id: projectId}).toArray();
         response.json(result)
         console.log("GET User with uuid succesful")
         console.log(result)

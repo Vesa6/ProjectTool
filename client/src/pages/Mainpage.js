@@ -23,6 +23,7 @@ const Mainpage = () => {
   const showAddProjectPopup = () => setShowAddProject(true);
   const hideAddProjectPopup = () => setShowAddProject(false);
   const [reloadTrigger, setReloadTrigger] = useState(false);
+  const [users, setUsers] = useState([{id: 1, name: "testuser", role: "test"}]);
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [activeUser, setActiveUser] = useState(1);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -93,19 +94,26 @@ const Mainpage = () => {
       });
   };
 
+  const fetchUsers = () => {
+    setIsLoading(true);
+    fetch("http://localhost:3001/api/users")
+      .then((response) => response.json())
+      .then((data) => {
+        setUsers(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setIsLoading(false);
+      });
+  };
+
   function parseAllTasks(projects) {
     const allTasks = projects.flatMap((project) => project.tasks);
     return allTasks;
   }
-
-  let users = [
-    { id: 1, name: "Test Person", role: "Projektipäällikkö" },
-    { id: 2, name: "Matti Meikäläinen", role: "Tyhjän toimittaja" },
-    { id: 3, name: "Maija Meikäläinen", role: "En tiä" },
-  ];
-
-  const activeUserName =
-    users.find((user) => user.id === activeUser)?.name || "???";
+    const activeUserName =
+    user
   const activeProject = projects.find(
     (project) => project._id === activeProjectId
   );
@@ -154,6 +162,7 @@ const Mainpage = () => {
         activeUserName={activeUserName}
         activeProject={activeProject}
         fetchProjects={fetchProjects}
+        fetchUsers={fetchUsers}
       />
       <div className="flex-grow flex flex-col bg-gray-800">
         <div className="flex-grow p-4 overflow-y-auto">
@@ -185,7 +194,7 @@ const Mainpage = () => {
               ) : null}
               <div className="mt-4 flex flex-col md:flex-row">
                 <div className="md:w-1/2 md:pr-4">
-                  <ParticipantsList activeProject={activeProject} />
+                  <ParticipantsList activeProject={activeProject} fetchUsers={fetchUsers} users={users} fetchProjects={fetchProjects}/>
                   <Notifications
                     notifications={notifications}
                     deleteNotification={deleteNotification}

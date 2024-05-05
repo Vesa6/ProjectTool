@@ -12,13 +12,21 @@ const postProjects = async (content) => {
     return e;
   }
 };
-const updateProject = async (content) => {
+const updateProject = async (content, id) => {
   try {
-    const response = await Axios.put(url, content);
+    const response = await Axios.put(url+"/"+id, content);
     return response;
   } catch (e) {
     return e;
   }
 };
 
-export default { postProjects, updateProject };
+const getProject = async (id) => {
+  try {
+    const response = await Axios.get(url+"/"+id);
+    return response;
+  } catch (e) {
+    return e;
+  }
+}
+export default { postProjects, updateProject, getProject};
