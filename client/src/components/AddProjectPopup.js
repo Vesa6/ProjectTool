@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import Select from "react-select"
 import { ToastContainer, toast } from "react-toastify";
 import ProjectServices from "./apicomponents/Projectservices";
 const AddProjectPopup = ({
@@ -14,6 +15,25 @@ const AddProjectPopup = ({
   const [projectBudget, setProjectBudget] = useState("");
   const [projectStart, setProjectStart] = useState("");
   const [projectEnd, setProjectEnd] = useState("");
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    // Fetch data from the server
+    fetch('http://localhost:3001/api/users')
+      .then(response => response.json())
+      .then(data => {
+        // Process data into format expected by React Select
+        console.log(data)
+        const processedData = data.map(user => ({
+          value: user._id,
+          label: user.name
+        }));
+        setUsers(processedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -28,8 +48,8 @@ const AddProjectPopup = ({
     ) {
       errorNotify("Please fill all the fields");
       return;
-    }
-
+    } else {
+      
     let project = {
       name: projectName,
       description: projectDescription,
@@ -51,6 +71,8 @@ const AddProjectPopup = ({
       console.error(e);
       errorNotify("Failed to send, please try again");
     }
+    }
+
   };
 
   return (
@@ -94,12 +116,11 @@ const AddProjectPopup = ({
           <label className="text-white" htmlFor="projectManager">
             Project Manager:
           </label>
-          <input
+          <Select
+            options={users}
             className="bg-gray-200 text-black p-2 rounded"
-            type="text"
-            value={projectManager}
-            onChange={(e) => setProjectManager(e.target.value)}
-          ></input>
+            onChange={(e) => setProjectManager(e.value)}
+          ></Select>
           <label className="text-white" htmlFor="projectBudget">
             Budgeted hours:
           </label>
