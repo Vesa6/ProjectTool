@@ -14,11 +14,14 @@ function applyFilter() {
     if (filter === "All") {
       rows[i].style.display = "";
     } else {
-      rows[i].style.display = cells[4].innerText === filter ? "" : "none";
+      if (cells[4].innerText !== filter) {
+        rows[i].style.display = "none";
+      } else {
+        rows[i].style.display = "";
+      }
     }
   }
 }
-
 
 const TasksView = ({ allProjects, fetchProjects }) => {
   const [showAddTask, setShowAddTask] = useState(false);
