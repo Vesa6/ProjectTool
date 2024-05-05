@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from "react-toastify";
 import ProjectServices from "./apicomponents/Projectservices";
+import Select from 'react-select'
 const AddProjectPopup = ({ onClose }) => {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
@@ -8,50 +9,67 @@ const AddProjectPopup = ({ onClose }) => {
   const [projectBudget, setProjectBudget] = useState("");
   const [projectStart, setProjectStart] = useState("");
   const [projectEnd, setProjectEnd] = useState("");
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    // Fetch data from the server
+    fetch('http://localhost:3001/api/users')
+      .then(response => response.json())
+      .then(data => {
+        // Process data into format expected by React Select
+        console.log(data)
+        const processedData = data.map(user => ({
+          value: user._id,
+          label: user.name
+        }));
+        setUsers(processedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-
 
     if (!projectName || !projectDescription || !projectStart || !projectEnd || !projectBudget || !projectManager) {
       toast.error("Please fill all the fields", {
         position: "top-center",
         theme: "dark",
       });
-    }
-
-    let project = {
-      name: projectName,
-      description: projectDescription,
-      manager: projectManager,
-      budget: projectBudget,
-      start: projectStart,
-      end: projectEnd,
-      tasks: [],
-    }
-
-    try {
-      let response = await ProjectServices.postProjects(project)
-      console.log(response)
-      if (response.status === 200) {
-        toast.success("Project added successfully!", {
+    }else{
+      let project = {
+        name: projectName,
+        description: projectDescription,
+        manager: projectManager,
+        budget: projectBudget,
+        start: projectStart,
+        end: projectEnd,
+        tasks: [],
+      }
+  
+      try {
+        let response = await ProjectServices.postProjects(project)
+        console.log(response)
+        if (response.status === 200) {
+          toast.success("Project added successfully!", {
+            position: "top-center",
+            theme: "dark",
+          });
+        }
+      } catch (e) {
+        toast.error("Failed to send", {
           position: "top-center",
           theme: "dark",
         });
       }
-    } catch (e) {
-      toast.error("Failed to send", {
-        position: "top-center",
-        theme: "dark",
-      });
-    }
-    setTimeout(() => {
-      //
-      onClose();
-      window.location.reload()
-    }, 2000);
+      setTimeout(() => {
+        //
+        onClose();
+        window.location.reload()
+      }, 2000);
+    }  
   };
 
   return (
@@ -92,12 +110,11 @@ const AddProjectPopup = ({ onClose }) => {
           <label className="text-white" htmlFor="projectManager" >
             Project Manager:
           </label>
-          <input
+          <Select
+            options={users}
             className="bg-gray-200 text-black p-2 rounded"
-            type="text"
-            value={projectManager}
-            onChange={(e) => setProjectManager(e.target.value)}
-          ></input>
+            onChange={(e) => setProjectManager(e.value)}
+          ></Select>
           <label className="text-white" htmlFor="projectBudget">
             Budgeted hours:
           </label>
