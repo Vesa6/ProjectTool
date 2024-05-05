@@ -14,7 +14,7 @@ function applyFilter() {
     if (filter === "All") {
       rows[i].style.display = "";
     } else {
-      if (cells[3].innerText !== filter) {
+      if (cells[4].innerText !== filter) {
         rows[i].style.display = "none";
       } else {
         rows[i].style.display = "";

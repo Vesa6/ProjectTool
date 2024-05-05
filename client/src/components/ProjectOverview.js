@@ -1,7 +1,7 @@
 import React from "react";
 
-// defaults to empty array to avoid problems
-const ProjectOverview = ({tasks = [] }) => {
+const ProjectOverview = ({ project }) => {
+  const tasks = project?.tasks || [];
 
   let completedTasks = 0;
   let inProgressTasks = 0;
@@ -16,10 +16,15 @@ const ProjectOverview = ({tasks = [] }) => {
 
   const completionPercentage = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
 
+  const actual = project?.actual || 0;
+  const budget = project?.budget || 0;
+  const planned = project?.planned || 0;
+  const costPercentage = budget !== 0 ? Math.round(((actual - budget) / budget) * 100) : 0;
+  const plannedPercentage = budget !== 0 ? Math.round((planned / budget) * 100) : 0;
 
   return (
     <div className="w-2/3 bg-gray-700 p-4 rounded shadow-lg">
-      <h2 className="text-white text-2xl font-semibold mb-4">OVERALL</h2>
+      <h2 className="text-white text-2xl font-semibold mb-4">Overall</h2>
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-gray-800 p-4 rounded">
           <p className="text-white">Time</p>
@@ -39,7 +44,13 @@ const ProjectOverview = ({tasks = [] }) => {
         </div>
         <div className="bg-gray-800 p-4 rounded">
           <p className="text-white">Cost</p>
-          <p className="text-white">27% under budget</p>
+          <p className="text-white">
+            {costPercentage >= 0 ? `${costPercentage}% over budget` : `${Math.abs(costPercentage)}% under budget`}
+          </p>
+        </div>
+        <div className="bg-gray-800 p-4 rounded">
+          <p className="text-white">Planned Budget</p>
+          <p className="text-white">{plannedPercentage}% of budget planned</p>
         </div>
       </div>
     </div>

@@ -99,7 +99,34 @@ projectRouter.put("/:id/update-project", async (request, response) => {
     response.status(500).send("Error updating project");
   }
 });
-// delete project
+
+projectRouter.put("/:id/update-costs", async (request, response) => {
+  const db = request.app.locals.db;
+  const projectId = new ObjectId(request.params.id);
+
+  try {
+    const updatedCosts = {
+      actual: request.body.actual,
+      planned: request.body.planned,
+      budget: request.body.budget,
+    };
+
+    const updateResult = await db
+      .collection("projects")
+      .updateOne({ _id: projectId }, { $set: updatedCosts });
+
+    console.log("MongoDB Update Result:", updateResult);
+
+    if (updateResult.modifiedCount === 0) {
+      return response.status(404).send("Project not found");
+    }
+
+    response.send("Project costs updated successfully");
+  } catch (error) {
+    console.error("Database operation failed:", error);
+    response.status(500).send("Error updating project costs");
+  }
+});
 
 // For calendars new tasks.
 projectRouter.put("/:id/add-task", async (request, response) => {
@@ -136,6 +163,7 @@ projectRouter.put("/:id/add-task", async (request, response) => {
     response.status(500).send("Error adding task to project");
   }
 });
+
 
 projectRouter.delete("/:id", async (request, response) => {
   try {
