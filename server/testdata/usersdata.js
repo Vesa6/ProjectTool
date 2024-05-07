@@ -1,19 +1,43 @@
 const testData = [
     {
-    "name": "testeri1",
-    "role": "testeri1",
+    "name": "Sami Hedberg",
+    "role": "Grilliasiantuntija",
     "currentTasks": "none",
     "currentProject" : "none",
     },
     {
-        "name": "testeri2",
-        "role": "testeri2",
+        "name": "Jorma Uotila",
+        "role": "Tanssija",
         "currentTasks": "none",
         "currentProject" : "none",
     },
     {
-        "name": "testeri3",
-        "role": "testeri3",
+        "name": "Kasperi Aave",
+        "role": "Kummittelija",
+        "currentTasks": "none",
+        "currentProject" : "none",
+    },
+    {
+        "name": "Steve Jobs",
+        "role": "Suunnittelija",
+        "currentTasks": "none",
+        "currentProject" : "none",
+    },
+    {
+        "name": "Bill Gates",
+        "role": "Rahoituspäällikkö",
+        "currentTasks": "none",
+        "currentProject" : "none",
+    },
+    {
+        "name": "Ukko Kolmonen",
+        "role": "Koodari",
+        "currentTasks": "none",
+        "currentProject" : "none",
+    },
+    {
+        "name": "Jaako Tarmokas",
+        "role": "Koodari",
         "currentTasks": "none",
         "currentProject" : "none",
     }

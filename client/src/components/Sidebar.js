@@ -16,6 +16,7 @@ const Sidebar = ({
   showAddProjectPopup,
   activeUserName,
   fetchProjects,
+  fetchUsers,
 }) => {
   const calculateDaysLeft = (ends) => {
     console.log(ends);
@@ -37,6 +38,7 @@ const Sidebar = ({
 
   useEffect(() => {
     fetchProjects();
+    fetchUsers();
   }, [projectToEdit]);
 
   const findProjectToEdit = (projectId) => {

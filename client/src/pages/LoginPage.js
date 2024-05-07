@@ -63,10 +63,6 @@ const LoginPage = () => {
         onSubmit={handleSubmit}
         className=" bg-gray-900 w-fit h-fit text-white absolute top-1/2 left-1/2 flex-col p-8 rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 max-w-md max-h-md"
       >
-        <Link to="/">
-          <MdArrowBackIos className="h-5 w-5 text-white mb-5" />
-        </Link>
-
         <img src={taskmaster} alt="TaskMaster logo" className=" w-30 m-0 p-0" />
         <p className="font-semibold text-center text-2xl">TaskMaster </p>
 
