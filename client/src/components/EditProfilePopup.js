@@ -4,11 +4,12 @@ const EditProfilePopup = ({
   onClose,
   profileToEdit,
   checkFieldsNotify,
-  successNotify,
+  editProfile
 }) => {
   const [name, setName] = useState(profileToEdit.name);
   const [email, setEmail] = useState(profileToEdit.email);
   const [phoneNumber, setPhoneNumber] = useState(profileToEdit.phone);
+  const [title, setTitle] = useState(profileToEdit.title);
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -21,6 +22,9 @@ const EditProfilePopup = ({
   const handlePhoneChange = (e) => {
     setPhoneNumber(e.target.value);
   };
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  };
 
   const handleEditTask = () => {
     // Add logic to handle editing the task
@@ -31,13 +35,12 @@ const EditProfilePopup = ({
       return;
     }
 
-    profileToEdit.name = name;
-    profileToEdit.email = email;
-    profileToEdit.phone = phoneNumber;
-    successNotify();
-    // add api logic here
-
-    console.log("Profile edited:", profileToEdit);
+    editProfile({
+      name: name,
+      email: email,
+      phone: phoneNumber,
+      title: title,
+    });
 
     onClose();
   };
@@ -77,6 +80,15 @@ const EditProfilePopup = ({
             value={name}
             onChange={handleNameChange}
           />
+          <label className="text-white" htmlFor="title">
+            Title:
+          </label>
+          <input
+            className="bg-gray-200 text-black p-2 rounded"
+            type="text"
+            value={title}
+            onChange={handleTitleChange}
+          />
           <label className="text-white" htmlFor="status">
             email:
           </label>
@@ -85,6 +97,7 @@ const EditProfilePopup = ({
             type="text"
             value={email}
             onChange={handleEmailChange}
+            disabled
           />
           <label className="text-white" htmlFor="deadline">
             Phone:

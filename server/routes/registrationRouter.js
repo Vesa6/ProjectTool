@@ -64,5 +64,6 @@ regRouter.get('/test/deletetestdata', async (request, response) => {
         response.status(400).end("error")
     }
 })
+    
 
 module.exports = regRouter

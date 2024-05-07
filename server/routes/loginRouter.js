@@ -2,6 +2,7 @@ const loginRouter = require('express').Router()
 const bcrypt = require('bcrypt')
 require('dotenv').config({ path: '../.env' })
 const jwt = require('jsonwebtoken')
+const { ObjectId } = require("mongodb");
 
 loginRouter.post('/', async (request, response) => {
     let secret = process.env.SECRET;
@@ -31,7 +32,7 @@ loginRouter.post('/', async (request, response) => {
             }
             console.log(user)
             const token = jwt.sign(userForToken, secret, {expiresIn: 60*60})
-            return response.status(200).send({token, email: user[0].email, name: user[0].name});
+            return response.status(200).send({token, email: user[0].email, name: user[0].name, id: user[0]._id });
         } else {
             return response.status(400).send("No account associated with this email")
         }
@@ -42,11 +43,11 @@ loginRouter.post('/', async (request, response) => {
 
 })
 
-loginRouter.get('/:id', async (request, response) => {
+loginRouter.get("/:id", async (request, response) => {
     try {
         const db = request.app.locals.db;
-        const filter = { id: request.params.id }
-        const result = await db.collection("login").find(filter).toArray();
+        let projectId = new ObjectId(request.params.id) 
+        const result = await db.collection("login").find({_id: projectId}).toArray();
         response.json(result)
         console.log("GET User with uuid succesful")
         console.log(result)
@@ -85,5 +86,41 @@ loginRouter.put('/:username', async (request, response) => {
         console.log(e)
     }
 })
+
+loginRouter.patch('/:id', async (request, response) => {
+    const updateOptions = {
+        // If set to true, creates a new document when no document matches the filter
+        upsert: false,
+        // If set to true, returns the updated document instead of the original document
+        returnOriginal: false
+    };
+    body = request.body
+    console.log("Sending PATCH request")
+    let update = {
+        $set: {
+            id: request.params.id,
+            name: body.name,
+            email: body.email,
+            phone: body.phone,
+            title: body.title
+           
+        }
+    }
+    console.log(update)
+    console.log(request.params.id)
+    try {
+        const db = request.app.locals.db;
+        const id_ = new ObjectId(request.params.id)
+        const filter = { _id: id_ }
+        const result = await db.collection("login").updateOne(filter, update, updateOptions);
+        response.json(result)
+        console.log("PATCH succesful")
+        console.log(result)
+    } catch (e) {
+        response.status(400).end("Error")
+        console.log(e)
+    }
+})
+
 
 module.exports = loginRouter

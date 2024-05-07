@@ -15,10 +15,10 @@ const LogOutPopup = ({ onClose }) => {
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center"
-      onClick={onClose}
+      onMouseDown={onClose}
     >
       <form
-        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
         className=" bg-gray-900 w-fit h-fit text-white absolute top-1/2 left-1/2 flex-col p-8 rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 max-w-md max-h-md"
       >
