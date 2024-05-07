@@ -78,7 +78,7 @@ const AddProjectPopup = ({
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center overflow-hidden" style={{zIndex:10}}
-      onClick={onClose}
+      onMouseDown={onClose}
     >
       <form
         onMouseDown={(e) => e.stopPropagation()}
