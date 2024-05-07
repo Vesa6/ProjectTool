@@ -1,6 +1,7 @@
 import Select from "react-select"
 import { React, useEffect, useState } from "react";
 import ProjectServices from "./apicomponents/Projectservices";
+import { MdArrowBackIos } from "react-icons/md";
 
 
 const SelectParticipantsPopup = (
@@ -85,7 +86,9 @@ const SelectParticipantsPopup = (
             <form
                 className="bg-slate-900 rounded-lg shadow-xl pt-16 px-16 pb-5 relative w-1/3 max-w-lg flex flex-col relative h-2/3 max-h-full overflow-y-auto"
                 onSubmit={handleSubmit}
-            >
+            >   
+
+                <MdArrowBackIos className="h-5 w-5 text-white mb-5" onClick={onClose}/>
                 <p className="text-white text-1xl font-semibold">Select Users</p>
                 <div>
                     <Select styles={customStyles} isMulti options={activeUsers} hideSelectedOptions={true} closeMenuOnSelect={false} onChange={(e) => setProjectParticipants(e)}>
