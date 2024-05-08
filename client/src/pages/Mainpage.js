@@ -14,6 +14,7 @@ import SettingsView from "../components/SettingsView.js";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import ParticipantsList from "../components/ParticipantsList";
+import ExtLinks from "../components/ExtLinks.js";
 
 const Mainpage = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -197,6 +198,10 @@ const Mainpage = () => {
                   <ParticipantsList activeProject={activeProject} fetchUsers={fetchUsers} users={users} fetchProjects={fetchProjects}/>
                   <Notifications
                     notifications={notifications}
+                    deleteNotification={deleteNotification}
+                    activeProjectId={activeProjectId}
+                  />
+                  <ExtLinks
                     deleteNotification={deleteNotification}
                     activeProjectId={activeProjectId}
                   />
