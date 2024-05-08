@@ -2,7 +2,6 @@ import React from "react";
 
 const ProjectOverview = ({ project }) => {
   const tasks = project?.tasks || [];
-
   let completedTasks = 0;
   let inProgressTasks = 0;
 
@@ -14,13 +13,16 @@ const ProjectOverview = ({ project }) => {
     }
   }
 
-  const completionPercentage = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
+  const completionPercentage =
+    tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
 
   const actual = project?.actual || 0;
   const budget = project?.budget || 0;
   const planned = project?.planned || 0;
-  const costPercentage = budget !== 0 ? Math.round(((actual - budget) / budget) * 100) : 0;
-  const plannedPercentage = budget !== 0 ? Math.round((planned / budget) * 100) : 0;
+  const costPercentage =
+    budget !== 0 ? Math.round(((actual - budget) / budget) * 100) : 0;
+  const plannedPercentage =
+    budget !== 0 ? Math.round((planned / budget) * 100) : 0;
 
   return (
     <div className="w-2/3 bg-gray-700 p-4 rounded shadow-lg">
@@ -45,7 +47,9 @@ const ProjectOverview = ({ project }) => {
         <div className="bg-gray-800 p-4 rounded">
           <p className="text-white">Cost</p>
           <p className="text-white">
-            {costPercentage >= 0 ? `${costPercentage}% over budget` : `${Math.abs(costPercentage)}% under budget`}
+            {costPercentage >= 0
+              ? `${costPercentage}% over budget`
+              : `${Math.abs(costPercentage)}% under budget`}
           </p>
         </div>
         <div className="bg-gray-800 p-4 rounded">

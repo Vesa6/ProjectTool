@@ -9,7 +9,7 @@ const Tasks = ({ tasks }) => {
   ];
 
   if (tasks) {
-    tasks.forEach(task => {
+    tasks.forEach((task) => {
       if (task.status === "Not started") taskStatus[0].value += 1;
       else if (task.status === "Completed") taskStatus[1].value += 1;
       else if (task.status === "In progress") taskStatus[2].value += 1;
@@ -18,7 +18,7 @@ const Tasks = ({ tasks }) => {
 
   const colors = {
     "Not started": "#3B82F6",
-    "Completed": "#10B981",
+    Completed: "#10B981",
     "In Progress": "#EF4444",
   };
 
@@ -49,7 +49,9 @@ const Tasks = ({ tasks }) => {
               className="w-4 h-4 rounded-full mr-2"
               style={{ backgroundColor: colors[entry.name] }}
             ></div>
-            <p className="text-white">{entry.name} ({entry.value})</p>
+            <p className="text-white">
+              {entry.name} ({entry.value})
+            </p>
           </div>
         ))}
       </div>
