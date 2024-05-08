@@ -110,7 +110,7 @@ const AddTaskPopup = ({
             onChange={(e) => setStatus(e.target.value)}
           >
             <option value="Not started">Not started</option>
-            <option value="In Progress">In Progress</option>
+            <option value="In progress">In Progress</option>
             <option value="Completed">Completed</option>
           </select>
           <label className="text-white" htmlFor="startDate">
