@@ -11,6 +11,15 @@ const CalendarTaskPopup = ({ event, onClose }) => {
     description: "",
   });
 
+  const [assignees] = useState([
+    { id: 1, name: "Aada" },
+    { id: 2, name: "Mikael" },
+    { id: 3, name: "Asla" },
+    { id: 4, name: "Jani" },
+    { id: 5, name: "Vesa" },
+    { id: 6, name: "Arttu" },
+  ]);
+
   useEffect(() => {
     if (event) {
       setFormData({
@@ -104,14 +113,17 @@ const CalendarTaskPopup = ({ event, onClose }) => {
           <label className="block text-sm font-medium text-gray-700">
             Participants
           </label>
-          <input
-            type="text"
+          <select
             name="participants"
             value={formData.participants}
             onChange={handleChange}
-            className="mt-1 p-2 w-full text-black rounded-md border-gray-300 shadow-sm"
-          />
-
+            className="mt-1 p-2 w-full rounded-md border-gray-300 text-black shadow-sm"
+          >
+            <option value="">Select an assignee</option>
+            {assignees.map(assignee => (
+              <option key={assignee.id} value={assignee.name}>{assignee.name}</option>
+            ))}
+          </select>
           <div className="flex justify-between mt-4">
             <button
               type="button"

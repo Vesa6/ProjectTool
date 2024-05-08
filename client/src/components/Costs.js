@@ -38,6 +38,11 @@ const Costs = ({ activeProject, fetchProjects }) => {
   }
 
   const handleChange = (index, value) => {
+
+    if (value < 0) {
+      return;
+    }
+
     const newData = costsData.map((item, idx) => {
       if (idx === index) {
         return { ...item, amount: Number(value) || 0 };
