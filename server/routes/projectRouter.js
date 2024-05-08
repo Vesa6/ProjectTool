@@ -278,4 +278,30 @@ projectRouter.delete("/:id/delete-task/:taskId", async (request, response) => {
   }
 });
 
+projectRouter.put("/:id/add-link", async (request, response) => {
+  const db = request.app.locals.db;
+  const projectId = new ObjectId(request.params.id);
+
+  try {
+    const link = {
+      url: request.body.url,
+    };
+
+    const updateResult = await db
+      .collection("projects")
+      .updateOne({ _id: projectId }, { $push: { links: link } });
+
+    console.log("MongoDB Update Result:", updateResult);
+
+    if (updateResult.modifiedCount === 0) {
+      return response.status(404).send("Project not found");
+    }
+
+    response.send("Link added successfully");
+  } catch (error) {
+    console.error("Database operation failed:", error);
+    response.status(500).send("Error adding link to project");
+  }
+});
+
 module.exports = projectRouter;

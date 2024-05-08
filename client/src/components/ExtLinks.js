@@ -1,4 +1,4 @@
-import { set } from "mongoose";
+
 import React, { useEffect , useState} from "react";
 
 const ExtLinks = ({activeProjectId}) => {
@@ -44,9 +44,49 @@ const ExtLinks = ({activeProjectId}) => {
         setLinks([...links]);
     }; 
 
+    const addLinkToDb = async (url) => {
+        try {
+            const response = await fetch(`http://localhost:3001/api/projects/${activeProjectId}/add-link`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    url: url,
+                }),
+            });
+            if (response.ok) {
+                fetchLinks();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const fetchLinks = async () => {
+        var datab;
+        try {
+            const response = await fetch(`http://localhost:3001/api/projects/${activeProjectId}`);
+            const data = await response.json();
+            datab = data;
+        } catch (error) {
+            console.error(error);
+        }
+
+        if (datab) {
+            setLinks(datab.links);
+        }
+        console.log("links after fetch", links)
+    }
+
     useEffect(() => {
         console.log(activeProjectId);
     }, [activeProjectId]);
+    useEffect(() => {
+        fetchLinks();
+    }
+    , []);
+
   return (
     <div className="flex-col bg-gray-700 text-white p-4 m-4 rounded-lg">
 
@@ -56,7 +96,7 @@ const ExtLinks = ({activeProjectId}) => {
         <>
         <div className="mb-2">
             <input type="text" placeholder="Add new link" className="p-2 rounded bg-gray-800 text-white" onChange={(e) => setNewLink(e.target.value)} />
-            <button className="bg-green-600 text-white ml-2 px-4 py-2 rounded hover:bg-green-700 transition-colors" onClick={() => addLink(newLink)}>Add</button>
+            <button className="bg-green-600 text-white ml-2 px-4 py-2 rounded hover:bg-green-700 transition-colors" onClick={() => addLinkToDb(newLink)}>Add</button>
         </div>
        { links.map((links) => (
             <div
