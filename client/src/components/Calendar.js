@@ -322,7 +322,6 @@ const CalendarView = ({
                   Select Participants:
                 </label>
                 <select
-                  multiple
                   id="participants"
                   className="w-full p-2 text-white bg-gray-800 rounded"
                   onChange={(e) => {

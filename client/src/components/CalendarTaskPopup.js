@@ -18,7 +18,7 @@ const CalendarTaskPopup = ({ event, onClose }) => {
         status: event.status || "",
         start: event.start ? format(new Date(event.start), "yyyy-MM-dd") : "",
         end: event.end ? format(new Date(event.end), "yyyy-MM-dd") : "",
-        participants: event.participants ? event.participants.join(", ") : "",
+        participants: event.participants ? event.participants : "",
         description: event.description || "",
       });
     }
