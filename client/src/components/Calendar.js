@@ -103,12 +103,23 @@ const CalendarView = ({
       allProjects.flatMap((project) => project.tasks)),
   ]);
 
+  // All the possible options for participants.
+  // This could be fetched from the server, but for now it's hardcoded.
+  const [participants] = useState([
+    { id: 1, name: "Aada" },
+    { id: 2, name: "Mikael" },
+    { id: 3, name: "Asla" },
+    { id: 4, name: "Jani" },
+    { id: 5, name: "Vesa" },
+    { id: 6, name: "Arttu" },
+  ]);
+
   const [newEvent, setNewEvent] = useState({
     title: "",
     status: "Not started",
     start: highlightedDay,
     end: "",
-    participants: [],
+    participants: [participants[0].name],
     description: "",
   });
 
@@ -129,23 +140,7 @@ const CalendarView = ({
     });
   };
 
-  const notVerySuccessfullAddNotify = () => {
-    toast.error("Error adding task, please try again!", {
-      position: "top-center",
-      theme: "dark",
-    });
-  };
 
-  // All the possible options for participants.
-  // This could be fetched from the server, but for now it's hardcoded.
-  const [participants] = useState([
-    { id: 1, name: "Aada" },
-    { id: 2, name: "Mikael" },
-    { id: 3, name: "Asla" },
-    { id: 4, name: "Jani" },
-    { id: 5, name: "Vesa" },
-    { id: 6, name: "Arttu" },
-  ]);
 
   useEffect(() => {
     const highlighted = {
@@ -208,7 +203,6 @@ const CalendarView = ({
     } catch (error) {
       console.error("Error adding task:", error);
       fetchProjects(); // here just in case, should not be needed.
-      
     }
   }
 
