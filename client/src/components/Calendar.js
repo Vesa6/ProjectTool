@@ -3,7 +3,10 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { format, parseISO } from "date-fns";
+import { toast, ToastContainer } from "react-toastify";
 import CalendarTaskPopup from "./CalendarTaskPopup";
+
+
 
 /*
 / event == task. This component is a calendar view for tasks.
@@ -40,23 +43,23 @@ const FullCalendarComponent = ({ setHighlightedDay, eventsCalendar }) => {
   const allEvents = eventsCalendar.map((event) => {
     const startEvent = {
       ...event,
-      title: event.ends && event.start !== event.ends ? `Start: ${event.title}` : event.title,
+      title: event.end && event.start !== event.end ? `START | ${event.title}` : event.title,
       start: event.start,
       end: event.start,
     };
-  
-    if (!event.ends || event.start === event.ends) {
+
+    if (!event.end || event.start === event.end) {
       return startEvent;
     }
-  
+
     const endEvent = {
       ...event,
-      title: `End: ${event.title}`,
-      start: event.ends,
-      end: event.ends,
+      title: `DEADLINE | ${event.title}`,
+      start: event.end,
+      end: event.end,
       color: 'red',
     };
-  
+
     return [startEvent, endEvent];
   }).flat();
 
@@ -100,17 +103,6 @@ const CalendarView = ({
       allProjects.flatMap((project) => project.tasks)),
   ]);
 
-  const [newEvent, setNewEvent] = useState({
-    title: "",
-    status: "Not started",
-    start: highlightedDay,
-    end: "",
-    participants: [],
-    description: "",
-  });
-
-  const [isPopupscreenOpen, setIsPopupscreenOpen] = useState(false);
-
   // All the possible options for participants.
   // This could be fetched from the server, but for now it's hardcoded.
   const [participants] = useState([
@@ -121,6 +113,34 @@ const CalendarView = ({
     { id: 5, name: "Vesa" },
     { id: 6, name: "Arttu" },
   ]);
+
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    status: "Not started",
+    start: highlightedDay,
+    end: "",
+    participants: [participants[0].name],
+    description: "",
+  });
+
+  const [isPopupscreenOpen, setIsPopupscreenOpen] = useState(false);
+
+  const checkFieldsNotify = () => {
+    console.log("Im here!!")
+    toast.error("Please fill in all fields", {
+      position: "top-center",
+      theme: "dark",
+    });
+  };
+
+  const successfulAddNotify = () => {
+    toast.success("Task added successfully", {
+      position: "top-center",
+      theme: "dark",
+    });
+  };
+
+
 
   useEffect(() => {
     const highlighted = {
@@ -150,10 +170,12 @@ const CalendarView = ({
             title: `${project.data.name}: ${task.title}`,
             participants: task.participants,
             status: task.status,
+            end: task.end || task.start, // Ensure 'end' is set, fallback to 'start' if 'end' is not specified
           }))
         )),
     ]);
-  }, [activeProject]);
+  }, [activeProject, allProjects]);
+
 
   // This hacky use effect ensures that dates default to the current day if none chosen
   useEffect(() => {
@@ -176,7 +198,7 @@ const CalendarView = ({
       if (!response.ok) {
         throw new Error("Failed to add task");
       }
-      console.log("Task added successfully");
+      successfulAddNotify();
       fetchProjects();
     } catch (error) {
       console.error("Error adding task:", error);
@@ -198,19 +220,26 @@ const CalendarView = ({
 
   const handleAddTask = () => {
     console.log(activeProject);
-      const event = {
-        ...newEvent,
-        ends: newEvent.end,
-      };
-      addTaskToProject(activeProject._id, event);
-      resetFormFields();
+
+    if (!newEvent.status || !newEvent.start || !newEvent.end || !newEvent.title || !newEvent.participants) {
+      checkFieldsNotify();
+      return;
+    }
+
+    const event = {
+      ...newEvent,
+      end: newEvent.end,
     };
+    addTaskToProject(activeProject._id, event);
+    resetFormFields();
+  };
 
   // Specific time functionality from previous version removed to keep it simple
 
   //TODO: Refactor return to use components.
   return (
     <div className="relative flex h-screen text-white">
+      <ToastContainer />
       <div className="w-4/5">
         <FullCalendarComponent
           highlightedDay={highlightedDay}
@@ -288,7 +317,7 @@ const CalendarView = ({
                 </div>
                 <div>
                   <label htmlFor="date" className="block mb-2">
-                    End date:
+                    Deadline:
                   </label>
                   <input
                     type="date"
@@ -319,10 +348,9 @@ const CalendarView = ({
               </div>
               <div className="mb-4">
                 <label htmlFor="participants" className="block mb-2 text-sm">
-                  Select Participants:
+                  Assignee:
                 </label>
                 <select
-                  multiple
                   id="participants"
                   className="w-full p-2 text-white bg-gray-800 rounded"
                   onChange={(e) => {

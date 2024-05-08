@@ -13,10 +13,25 @@ const AddTaskPopup = ({
   const [startDate, setStartDate] = useState("");
   const [deadline, setDeadline] = useState("");
 
+  const [assignees] = useState([
+    { id: 1, name: "Aada" },
+    { id: 2, name: "Mikael" },
+    { id: 3, name: "Asla" },
+    { id: 4, name: "Jani" },
+    { id: 5, name: "Vesa" },
+    { id: 6, name: "Arttu" },
+  ]);
+
   // parse projects to get the project names as optons for the select.
   const projectOptions = projects.map((project) => (
     <option value={project._id} className="text-black">
       {project.data.name}
+    </option>
+  ));
+
+  const assigneeOptions = assignees.map((assignee) => (
+    <option key={assignee.id} value={assignee.name}>
+      {assignee.name}
     </option>
   ));
 
@@ -95,12 +110,15 @@ const AddTaskPopup = ({
           <label className="text-white" htmlFor="projectDescription">
             Assignee:
           </label>
-          <input
+          <select
             className="bg-gray-200 text-black p-2 rounded"
-            type="text"
             value={assignee}
             onChange={(e) => setAssignee(e.target.value)}
-          />
+            id="assignee"
+          >
+            <option value="">Select an Assignee</option>
+            {assigneeOptions}
+          </select>
           <label className="text-white" htmlFor="status">
             Status:
           </label>
